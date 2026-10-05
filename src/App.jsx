@@ -5,7 +5,7 @@ import { createEscapeShortcutHandler, createNewConversationShortcutHandler } fro
 import { shouldSubmitMessageOnEnter } from './composer-keyboard.js';
 import { resizeComposer } from './composer-resize.js';
 import { savePreferences } from './preferences.js';
-import { isConnectionSetupLocked, resetConnectionForProviderConfigChange } from './provider-settings.js';
+import { isConnectionSetupLocked, markProviderAsResponding, resetConnectionForProviderConfigChange } from './provider-settings.js';
 import { parseJsonResponse } from './api-response.js';
 import {
   ArrowDown, ArrowUp, Bot, Check, ChevronDown, CircleHelp, Clipboard,
@@ -181,7 +181,7 @@ export default function App() {
       const data = await parseJsonResponse(response, 'The server returned an invalid chat response.');
       if (!response.ok) throw new Error(data.error || 'The model request failed.');
       setMessages([...conversation, { role: 'assistant', content: data.text, provider: PROVIDERS[provider].short, model, usage: data.usage }]);
-      setConnection('connected');
+      markProviderAsResponding({ setConnection, setConnectionMessage });
     } catch (requestError) {
       setError(requestError.message || 'Something went wrong. Please try again.');
     } finally {
