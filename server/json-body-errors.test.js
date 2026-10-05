@@ -24,10 +24,10 @@ async function withApi(run) {
   }
 }
 
-async function postJson(url, body) {
+async function postJson(url, body, headers = {}) {
   return fetch(url, {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
+    headers: { 'content-type': 'application/json', ...headers },
     body,
   });
 }
@@ -49,6 +49,28 @@ test('returns a JSON 413 when the request body exceeds the configured limit', as
     assert.deepEqual(await response.json(), { error: 'Request body exceeds the 1 MiB limit.' });
   });
 });
+
+for (const scenario of [
+  {
+    description: 'an unsupported JSON charset',
+    headers: { 'content-type': 'application/json; charset=iso-8859-1' },
+    expectedError: 'Request body must use UTF-8 encoding.',
+  },
+  {
+    description: 'an unsupported content encoding',
+    headers: { 'content-encoding': 'compress' },
+    expectedError: 'Unsupported request content encoding.',
+  },
+]) {
+  test(`returns a JSON 415 for ${scenario.description}`, async () => {
+    await withApi(async (url) => {
+      const response = await postJson(url, '{}', scenario.headers);
+      assert.equal(response.status, 415);
+      assert.equal(response.headers.get('content-type')?.split(';')[0], 'application/json');
+      assert.deepEqual(await response.json(), { error: scenario.expectedError });
+    });
+  });
+}
 
 test('passes valid JSON bodies through to the API route', async () => {
   await withApi(async (url) => {

@@ -7,5 +7,11 @@ export function jsonBodyErrorHandler(error, _request, response, next) {
   if (error?.type === 'entity.parse.failed') {
     return response.status(400).json({ error: 'Request body must be valid JSON.' });
   }
+  if (error?.type === 'charset.unsupported') {
+    return response.status(415).json({ error: 'Request body must use UTF-8 encoding.' });
+  }
+  if (error?.type === 'encoding.unsupported') {
+    return response.status(415).json({ error: 'Unsupported request content encoding.' });
+  }
   return next(error);
 }
