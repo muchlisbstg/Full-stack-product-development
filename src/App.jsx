@@ -7,6 +7,7 @@ import { resizeComposer } from './composer-resize.js';
 import { savePreferences } from './preferences.js';
 import { isConnectionSetupLocked, markProviderAsResponding, resetConnectionForProviderConfigChange } from './provider-settings.js';
 import { parseJsonResponse } from './api-response.js';
+import { resetConversationView } from './conversation-reset.js';
 import {
   ArrowDown, ArrowUp, Bot, Check, ChevronDown, CircleHelp, Clipboard,
   Cpu, FileText, Gauge, Github, KeyRound, LockKeyhole, MessageSquareText,
@@ -200,11 +201,8 @@ export default function App() {
   }
 
   const startFresh = useCallback(() => {
-    if (busy) return;
-    setMessages([]);
-    setDraft('');
-    setError('');
-    setSidebarOpen(false);
+    const didReset = resetConversationView({ busy, setMessages, setDraft, setError, setSidebarOpen, setScrollVisible });
+    if (!didReset) return;
     textareaRef.current?.focus();
   }, [busy]);
 
