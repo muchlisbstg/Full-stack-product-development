@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { createEscapeShortcutHandler, createNewConversationShortcutHandler } from './keyboard-shortcuts.js';
 import { shouldSubmitMessageOnEnter } from './composer-keyboard.js';
+import { savePreferences } from './preferences.js';
 import {
   ArrowDown, ArrowUp, Bot, Check, ChevronDown, CircleHelp, Clipboard,
   Cpu, FileText, Gauge, Github, KeyRound, LockKeyhole, MessageSquareText,
@@ -94,7 +95,7 @@ export default function App() {
   const textareaRef = useRef(null);
 
   useEffect(() => {
-    localStorage.setItem('switchboard.preferences', JSON.stringify({ provider, baseUrl, model }));
+    savePreferences({ provider, baseUrl, model });
   }, [provider, baseUrl, model]);
 
   useEffect(() => {
