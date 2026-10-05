@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { createNewConversationShortcutHandler } from './keyboard-shortcuts.js';
+import { shouldSubmitMessageOnEnter } from './composer-keyboard.js';
 import {
   ArrowDown, ArrowUp, Bot, Check, ChevronDown, CircleHelp, Clipboard,
   Cpu, FileText, Gauge, Github, KeyRound, LockKeyhole, MessageSquareText,
@@ -269,7 +270,7 @@ export default function App() {
 
             <div className="composer-wrap">
               <form className="composer" onSubmit={submit}>
-                <textarea ref={textareaRef} value={draft} onChange={onDraftChange} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); submit(event); } }} placeholder={provider === 'openai' && !apiKey ? 'Add your OpenAI key to start chatting…' : 'Message your agent…'} rows={1} aria-label="Message your agent" />
+                <textarea ref={textareaRef} value={draft} onChange={onDraftChange} onKeyDown={(event) => { if (shouldSubmitMessageOnEnter(event)) submit(event); }} placeholder={provider === 'openai' && !apiKey ? 'Add your OpenAI key to start chatting…' : 'Message your agent…'} rows={1} aria-label="Message your agent" />
                 <div className="composer-bottom"><div className="composer-hint"><span><kbd>↵</kbd> to send</span><span className="hint-divider">·</span><span><kbd>⇧ ↵</kbd> for a new line</span></div><button className="send-button" type="submit" disabled={!draft.trim() || busy || !isReady} aria-label="Send message">{busy ? <span className="send-spinner" /> : <SendHorizontal size={17} />}</button></div>
               </form>
               <div className="composer-caption">AI can make mistakes. Check important information.</div>
