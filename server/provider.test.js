@@ -11,12 +11,23 @@ const validChat = {
 
 async function withStubbedFetch(response, operation) {
   const originalFetch = globalThis.fetch;
-  globalThis.fetch = async () => response;
+  globalThis.fetch = typeof response === 'function' ? response : async () => response;
   try {
     return await operation();
   } finally {
     globalThis.fetch = originalFetch;
   }
+}
+
+async function assertProviderTimeout(fetchStub) {
+  await withStubbedFetch(fetchStub, async () => {
+    await assert.rejects(
+      fetchProviderModels({ provider: 'ollama', baseUrl: 'http://localhost:11434' }),
+      (error) => error instanceof RequestError
+        && error.status === 504
+        && error.message === 'The model took too long to respond. Check that the provider is running and try again.',
+    );
+  });
 }
 
 test('adds /v1 to a root OpenAI API URL', () => {
@@ -74,6 +85,18 @@ test('rejects malformed JSON from a successful provider response', async () => {
         && error.message === 'The provider returned an invalid JSON response.',
     );
   });
+});
+
+for (const name of ['TimeoutError', 'AbortError']) {
+  test(`maps ${name} while reading the provider response body to a 504`, async () => {
+    const timeout = Object.assign(new Error('request deadline'), { name });
+    await assertProviderTimeout({ ok: true, json: async () => { throw timeout; } });
+  });
+}
+
+test('maps a fetch-time timeout to the same 504 provider error', async () => {
+  const timeout = Object.assign(new Error('request deadline'), { name: 'TimeoutError' });
+  await assertProviderTimeout(async () => { throw timeout; });
 });
 
 for (const scenario of [

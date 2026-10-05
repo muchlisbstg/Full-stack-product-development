@@ -1,6 +1,7 @@
 const OPENAI_DEFAULT = 'https://api.openai.com/v1';
 const OLLAMA_DEFAULT = 'http://localhost:11434';
 const REQUEST_TIMEOUT_MS = 120_000;
+const REQUEST_TIMEOUT_MESSAGE = 'The model took too long to respond. Check that the provider is running and try again.';
 
 export class RequestError extends Error {
   constructor(message, status = 400) {
@@ -8,6 +9,14 @@ export class RequestError extends Error {
     this.name = 'RequestError';
     this.status = status;
   }
+}
+
+function isTimeoutError(error) {
+  return error?.name === 'TimeoutError' || error?.name === 'AbortError';
+}
+
+function timeoutRequestError() {
+  return new RequestError(REQUEST_TIMEOUT_MESSAGE, 504);
 }
 
 function requireObject(value) {
@@ -117,15 +126,14 @@ async function fetchJson(url, options, fallbackMessage) {
   try {
     response = await fetch(url, { ...options, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
   } catch (error) {
-    if (error.name === 'TimeoutError' || error.name === 'AbortError') {
-      throw new RequestError('The model took too long to respond. Check that the provider is running and try again.', 504);
-    }
+    if (isTimeoutError(error)) throw timeoutRequestError();
     throw new RequestError(`Could not reach the provider: ${error.message}`, 502);
   }
   let payload;
   try {
     payload = await response.json();
-  } catch {
+  } catch (error) {
+    if (isTimeoutError(error)) throw timeoutRequestError();
     if (response.ok) {
       throw new RequestError('The provider returned an invalid JSON response.', 502);
     }
