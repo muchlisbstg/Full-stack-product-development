@@ -126,6 +126,9 @@ async function fetchJson(url, options, fallbackMessage) {
   try {
     payload = await response.json();
   } catch {
+    if (response.ok) {
+      throw new RequestError('The provider returned an invalid JSON response.', 502);
+    }
     payload = {};
   }
   if (!response.ok) {
@@ -168,13 +171,26 @@ export async function callChatProvider(config) {
   return { text, usage: totalTokens > 0 ? { totalTokens } : null };
 }
 
+function providerModelItems(payload, property, provider) {
+  const items = payload?.[property];
+  if (items === undefined || items === null) return [];
+  if (!Array.isArray(items)) throw new RequestError(`${provider} returned an invalid model list.`, 502);
+  return items;
+}
+
 export async function fetchProviderModels(config) {
   if (config.provider === 'openai') {
     const payload = await fetchJson(`${config.baseUrl}/models`, {
       headers: { authorization: `Bearer ${config.apiKey}` },
     }, 'OpenAI could not load your models.');
-    return (payload.data || []).map((item) => item.id).filter(Boolean).sort((a, b) => a.localeCompare(b));
+    return providerModelItems(payload, 'data', 'OpenAI')
+      .map((item) => item?.id)
+      .filter((id) => typeof id === 'string' && id.trim())
+      .sort((a, b) => a.localeCompare(b));
   }
   const payload = await fetchJson(`${config.baseUrl}/api/tags`, {}, 'Ollama could not load installed models.');
-  return (payload.models || []).map((item) => item.name || item.model).filter(Boolean).sort((a, b) => a.localeCompare(b));
+  return providerModelItems(payload, 'models', 'Ollama')
+    .map((item) => item?.name || item?.model)
+    .filter((name) => typeof name === 'string' && name.trim())
+    .sort((a, b) => a.localeCompare(b));
 }
