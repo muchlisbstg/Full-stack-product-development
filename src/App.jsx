@@ -8,6 +8,7 @@ import { savePreferences } from './preferences.js';
 import { isConnectionSetupLocked, markProviderAsResponding, resetConnectionForProviderConfigChange } from './provider-settings.js';
 import { parseJsonResponse } from './api-response.js';
 import { resetConversationView } from './conversation-reset.js';
+import { copyStatusLabel, copyTextToClipboard } from './clipboard.js';
 import {
   ArrowDown, ArrowUp, Bot, Check, ChevronDown, CircleHelp, Clipboard,
   Cpu, FileText, Gauge, Github, KeyRound, LockKeyhole, MessageSquareText,
@@ -35,16 +36,12 @@ function loadPreferences() {
 }
 
 function Message({ message, index }) {
-  const [copied, setCopied] = useState(false);
+  const [copyStatus, setCopyStatus] = useState('idle');
   const isUser = message.role === 'user';
   async function copyMessage() {
-    try {
-      await navigator.clipboard.writeText(message.content);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1400);
-    } catch {
-      setCopied(false);
-    }
+    const status = await copyTextToClipboard(globalThis.navigator?.clipboard, message.content);
+    setCopyStatus(status);
+    window.setTimeout(() => setCopyStatus('idle'), 1400);
   }
   return (
     <article className={`message-row ${isUser ? 'message-row-user' : ''}`}>
@@ -64,9 +61,14 @@ function Message({ message, index }) {
         {!isUser && (
           <div className="message-actions">
             {message.usage?.totalTokens && <span className="token-count">{message.usage.totalTokens.toLocaleString()} tokens</span>}
-            <button className="icon-button copy-button" onClick={copyMessage} aria-label="Copy response" title="Copy response">
-              {copied ? <Check size={14} /> : <Clipboard size={14} />}
-              <span>{copied ? 'Copied' : 'Copy'}</span>
+            <button
+              className="icon-button copy-button"
+              onClick={copyMessage}
+              aria-label={copyStatus === 'failed' ? 'Copy failed. Check clipboard permissions.' : copyStatus === 'copied' ? 'Response copied' : 'Copy response'}
+              title={copyStatus === 'failed' ? 'Copy failed. Check clipboard permissions.' : copyStatus === 'copied' ? 'Response copied' : 'Copy response'}
+            >
+              {copyStatus === 'copied' ? <Check size={14} /> : copyStatus === 'failed' ? <X size={14} /> : <Clipboard size={14} />}
+              <span aria-live="polite">{copyStatusLabel(copyStatus)}</span>
             </button>
           </div>
         )}
