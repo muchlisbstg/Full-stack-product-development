@@ -5,7 +5,7 @@ import { createEscapeShortcutHandler, createNewConversationShortcutHandler } fro
 import { shouldSubmitMessageOnEnter } from './composer-keyboard.js';
 import { resizeComposer } from './composer-resize.js';
 import { savePreferences } from './preferences.js';
-import { isConnectionSetupLocked } from './provider-settings.js';
+import { isConnectionSetupLocked, resetConnectionForProviderConfigChange } from './provider-settings.js';
 import {
   ArrowDown, ArrowUp, Bot, Check, ChevronDown, CircleHelp, Clipboard,
   Cpu, FileText, Gauge, Github, KeyRound, LockKeyhole, MessageSquareText,
@@ -122,10 +122,8 @@ export default function App() {
     setProvider(next);
     setBaseUrl(PROVIDERS[next].baseUrl);
     setModel(PROVIDERS[next].model);
-    setModels([]);
     setApiKey('');
-    setConnection('idle');
-    setConnectionMessage('');
+    resetConnectionForProviderConfigChange({ setModels, setConnection, setConnectionMessage });
     setError('');
   }
 
@@ -303,8 +301,8 @@ export default function App() {
                 <input id="model" className="text-field model-field" list="available-models" value={model} onChange={(event) => setModel(event.target.value)} placeholder="e.g. llama3.2" disabled={busy} />
                 <datalist id="available-models">{models.map((name) => <option key={name} value={name} />)}</datalist>
               </div>
-              {provider === 'openai' && <div className="field-group"><div className="field-label-row"><label htmlFor="api-key">API KEY</label><span className="field-safe"><LockKeyhole size={11} /> SESSION ONLY</span></div><div className="input-with-icon"><KeyRound size={15} /><input id="api-key" type="password" autoComplete="off" className="text-field" value={apiKey} onChange={(event) => { setApiKey(event.target.value); setConnection('idle'); setConnectionMessage(''); }} placeholder="sk-••••••••••••••••" disabled={connectionSetupLocked} /></div></div>}
-              <div className="field-group"><div className="field-label-row"><label htmlFor="endpoint">{provider === 'openai' ? 'API BASE URL' : 'OLLAMA SERVER'}</label></div><input id="endpoint" className="text-field endpoint-field" value={baseUrl} onChange={(event) => { setBaseUrl(event.target.value); setConnection('idle'); setConnectionMessage(''); }} placeholder={PROVIDERS[provider].baseUrl} disabled={connectionSetupLocked} /></div>
+              {provider === 'openai' && <div className="field-group"><div className="field-label-row"><label htmlFor="api-key">API KEY</label><span className="field-safe"><LockKeyhole size={11} /> SESSION ONLY</span></div><div className="input-with-icon"><KeyRound size={15} /><input id="api-key" type="password" autoComplete="off" className="text-field" value={apiKey} onChange={(event) => { setApiKey(event.target.value); resetConnectionForProviderConfigChange({ setModels, setConnection, setConnectionMessage }); }} placeholder="sk-••••••••••••••••" disabled={connectionSetupLocked} /></div></div>}
+              <div className="field-group"><div className="field-label-row"><label htmlFor="endpoint">{provider === 'openai' ? 'API BASE URL' : 'OLLAMA SERVER'}</label></div><input id="endpoint" className="text-field endpoint-field" value={baseUrl} onChange={(event) => { setBaseUrl(event.target.value); resetConnectionForProviderConfigChange({ setModels, setConnection, setConnectionMessage }); }} placeholder={PROVIDERS[provider].baseUrl} disabled={connectionSetupLocked} /></div>
               <div className={`connection-status status-${connection}`}><span className="status-indicator">{connection === 'checking' ? <span className="tiny-spinner" /> : connection === 'connected' ? <Check size={12} /> : connection === 'error' ? <X size={11} /> : <span />}</span><span>{connectionMessage || (provider === 'ollama' ? 'Ready when Ollama is running.' : 'API key required to connect.')}</span></div>
               <button className="test-button" onClick={testConnection} disabled={connectionSetupLocked}>{connection === 'checking' ? 'Connecting…' : 'Test connection'}<ArrowUp size={14} className="test-button-arrow" /></button>
               <div className="panel-divider" />
