@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { createNewConversationShortcutHandler } from './keyboard-shortcuts.js';
 import {
   ArrowDown, ArrowUp, Bot, Check, ChevronDown, CircleHelp, Clipboard,
   Cpu, FileText, Gauge, Github, KeyRound, LockKeyhole, MessageSquareText,
@@ -192,14 +193,20 @@ export default function App() {
     event.target.style.height = `${Math.min(event.target.scrollHeight, 180)}px`;
   }
 
-  function startFresh() {
+  const startFresh = useCallback(() => {
     if (busy) return;
     setMessages([]);
     setDraft('');
     setError('');
     setSidebarOpen(false);
     textareaRef.current?.focus();
-  }
+  }, [busy]);
+
+  useEffect(() => {
+    const handleKeyDown = createNewConversationShortcutHandler(startFresh);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [startFresh]);
 
   const isReady = provider === 'ollama' || Boolean(apiKey.trim());
 
@@ -211,7 +218,7 @@ export default function App() {
           <span>switchboard</span>
           <span className="brand-beta">LOCAL</span>
         </div>
-        <button className="new-chat-button" onClick={startFresh}><Plus size={17} /> <span>New conversation</span><kbd>⌘ K</kbd></button>
+        <button className="new-chat-button" onClick={startFresh}><Plus size={17} /> <span>New conversation</span><kbd>⌘ / Ctrl K</kbd></button>
         <div className="sidebar-section-label">WORKSPACE</div>
         <button className="side-link active"><MessageSquareText size={17} /><span>Chat</span></button>
         <button className="side-link" onClick={() => setSettingsOpen(true)}><Settings2 size={17} /><span>Agent settings</span></button>
