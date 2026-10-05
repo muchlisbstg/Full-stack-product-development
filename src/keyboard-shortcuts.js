@@ -25,3 +25,13 @@ export function createNewConversationShortcutHandler(onNewConversation) {
     return true;
   };
 }
+
+export function createEscapeShortcutHandler(onEscape) {
+  return (event) => {
+    if (event?.key !== 'Escape') return false;
+
+    event.preventDefault();
+    onEscape();
+    return true;
+  };
+}
