@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { createNewConversationShortcutHandler } from './keyboard-shortcuts.js';
+import { createEscapeShortcutHandler, createNewConversationShortcutHandler } from './keyboard-shortcuts.js';
 import { shouldSubmitMessageOnEnter } from './composer-keyboard.js';
 import {
   ArrowDown, ArrowUp, Bot, Check, ChevronDown, CircleHelp, Clipboard,
@@ -208,6 +208,13 @@ export default function App() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [startFresh]);
+
+  useEffect(() => {
+    if (!settingsOpen) return undefined;
+    const handleEscape = createEscapeShortcutHandler(() => setSettingsOpen(false));
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [settingsOpen]);
 
   const isReady = provider === 'ollama' || Boolean(apiKey.trim());
 

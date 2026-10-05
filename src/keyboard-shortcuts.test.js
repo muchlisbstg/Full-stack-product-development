@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createNewConversationShortcutHandler } from './keyboard-shortcuts.js';
+import { createEscapeShortcutHandler, createNewConversationShortcutHandler } from './keyboard-shortcuts.js';
 
 function makeEvent(overrides = {}) {
   let prevented = false;
@@ -71,4 +71,24 @@ test('does not hijack shortcuts while an editable field is focused', () => {
     assert.equal(wasPrevented(), false);
   }
   assert.equal(starts, 0);
+});
+
+test('closes the settings dialog and prevents the browser default on Escape', () => {
+  let closes = 0;
+  const handler = createEscapeShortcutHandler(() => { closes += 1; });
+  const { event, wasPrevented } = makeEvent({ key: 'Escape' });
+
+  assert.equal(handler(event), true);
+  assert.equal(closes, 1);
+  assert.equal(wasPrevented(), true);
+});
+
+test('does not close the settings dialog for other keys', () => {
+  let closes = 0;
+  const handler = createEscapeShortcutHandler(() => { closes += 1; });
+  const { event, wasPrevented } = makeEvent({ key: 'Enter' });
+
+  assert.equal(handler(event), false);
+  assert.equal(closes, 0);
+  assert.equal(wasPrevented(), false);
 });
