@@ -9,6 +9,7 @@ import { isConnectionSetupLocked, markProviderAsResponding, resetConnectionForPr
 import { parseJsonResponse } from './api-response.js';
 import { resetConversationView } from './conversation-reset.js';
 import { copyStatusLabel, copyTextToClipboard } from './clipboard.js';
+import { focusDialogFirstControl, restoreDialogFocus, trapDialogTabKey } from './dialog-focus.js';
 import {
   ArrowDown, ArrowUp, Bot, Check, ChevronDown, CircleHelp, Clipboard,
   Cpu, FileText, Gauge, Github, KeyRound, LockKeyhole, MessageSquareText,
@@ -99,11 +100,19 @@ export default function App() {
   const bottomRef = useRef(null);
   const transcriptRef = useRef(null);
   const textareaRef = useRef(null);
+  const settingsDialogRef = useRef(null);
   const connectionSetupLocked = isConnectionSetupLocked(busy, connection);
 
   useLayoutEffect(() => {
     resizeComposer(textareaRef.current);
   }, [draft]);
+
+  useLayoutEffect(() => {
+    if (!settingsOpen) return undefined;
+    const previousFocus = document.activeElement;
+    focusDialogFirstControl(settingsDialogRef.current);
+    return () => restoreDialogFocus(previousFocus);
+  }, [settingsOpen]);
 
   useEffect(() => {
     savePreferences({ provider, baseUrl, model });
@@ -315,7 +324,7 @@ export default function App() {
         </div>
       </main>
 
-      {settingsOpen && <div className="modal-scrim" onClick={() => setSettingsOpen(false)}><section className="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-title" onClick={(event) => event.stopPropagation()}><div className="modal-heading"><div className="modal-heading-icon"><Settings2 size={18} /></div><div><span className="panel-kicker">CUSTOMIZE</span><h2 id="settings-title">Agent behavior</h2></div><button className="modal-close" onClick={() => setSettingsOpen(false)} aria-label="Close settings"><X size={18} /></button></div><p className="modal-description">Set the role and response style for this conversation. These settings stay in memory and aren't saved.</p><label className="modal-label" htmlFor="system-prompt">SYSTEM INSTRUCTIONS</label><textarea id="system-prompt" className="system-prompt-field" value={systemPrompt} onChange={(event) => setSystemPrompt(event.target.value)} rows={5} placeholder="Describe how your assistant should behave…" /><div className="temperature-header"><div><label className="modal-label" htmlFor="temperature">CREATIVITY</label><p>Lower is focused. Higher is more varied.</p></div><span className="temperature-value">{Number(temperature).toFixed(1)}</span></div><input id="temperature" className="temperature-slider" type="range" min="0" max="2" step="0.1" value={temperature} onChange={(event) => setTemperature(Number(event.target.value))} /><div className="slider-labels"><span>Precise</span><span>Balanced</span><span>Creative</span></div><div className="modal-actions"><span><LockKeyhole size={13} /> Session only</span><button onClick={() => setSettingsOpen(false)}>Done <Check size={14} /></button></div></section></div>}
+      {settingsOpen && <div className="modal-scrim" onClick={() => setSettingsOpen(false)}><section ref={settingsDialogRef} className="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-title" tabIndex={-1} onKeyDown={trapDialogTabKey} onClick={(event) => event.stopPropagation()}><div className="modal-heading"><div className="modal-heading-icon"><Settings2 size={18} /></div><div><span className="panel-kicker">CUSTOMIZE</span><h2 id="settings-title">Agent behavior</h2></div><button className="modal-close" onClick={() => setSettingsOpen(false)} aria-label="Close settings"><X size={18} /></button></div><p className="modal-description">Set the role and response style for this conversation. These settings stay in memory and aren't saved.</p><label className="modal-label" htmlFor="system-prompt">SYSTEM INSTRUCTIONS</label><textarea id="system-prompt" className="system-prompt-field" value={systemPrompt} onChange={(event) => setSystemPrompt(event.target.value)} rows={5} placeholder="Describe how your assistant should behave…" /><div className="temperature-header"><div><label className="modal-label" htmlFor="temperature">CREATIVITY</label><p>Lower is focused. Higher is more varied.</p></div><span className="temperature-value">{Number(temperature).toFixed(1)}</span></div><input id="temperature" className="temperature-slider" type="range" min="0" max="2" step="0.1" value={temperature} onChange={(event) => setTemperature(Number(event.target.value))} /><div className="slider-labels"><span>Precise</span><span>Balanced</span><span>Creative</span></div><div className="modal-actions"><span><LockKeyhole size={13} /> Session only</span><button onClick={() => setSettingsOpen(false)}>Done <Check size={14} /></button></div></section></div>}
     </div>
   );
 }
