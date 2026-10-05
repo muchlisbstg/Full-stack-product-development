@@ -10,6 +10,7 @@ import { parseJsonResponse } from './api-response.js';
 import { resetConversationView } from './conversation-reset.js';
 import { copyStatusLabel, copyTextToClipboard } from './clipboard.js';
 import { focusDialogFirstControl, restoreDialogFocus, trapDialogTabKey } from './dialog-focus.js';
+import { getProviderTabIndex, handleProviderTabKey } from './provider-tabs.js';
 import {
   ArrowDown, ArrowUp, Bot, Check, ChevronDown, CircleHelp, Clipboard,
   Cpu, FileText, Gauge, Github, KeyRound, LockKeyhole, MessageSquareText,
@@ -302,9 +303,9 @@ export default function App() {
             <div className="control-panel">
               <div className="panel-heading"><div><span className="panel-kicker">YOUR AGENT</span><h2>Model setup</h2></div><div className="panel-heading-icon"><Settings2 size={17} /></div></div>
               <p className="panel-description">Choose a provider and model for this conversation.</p>
-              <div className="provider-toggle" role="tablist" aria-label="AI provider">
-                <button className={provider === 'openai' ? 'provider-tab selected' : 'provider-tab'} role="tab" aria-selected={provider === 'openai'} onClick={() => switchProvider('openai')} disabled={connectionSetupLocked}><span className="provider-symbol openai-symbol"><Sparkles size={15} /></span>OpenAI</button>
-                <button className={provider === 'ollama' ? 'provider-tab selected' : 'provider-tab'} role="tab" aria-selected={provider === 'ollama'} onClick={() => switchProvider('ollama')} disabled={connectionSetupLocked}><span className="provider-symbol ollama-symbol"><Cpu size={15} /></span>Ollama</button>
+              <div className="provider-toggle" role="tablist" aria-label="AI provider" aria-orientation="horizontal">
+                <button className={provider === 'openai' ? 'provider-tab selected' : 'provider-tab'} data-provider="openai" role="tab" tabIndex={getProviderTabIndex(provider, 'openai')} aria-selected={provider === 'openai'} onClick={() => switchProvider('openai')} onKeyDown={(event) => handleProviderTabKey(event, provider, switchProvider)} disabled={connectionSetupLocked}><span className="provider-symbol openai-symbol"><Sparkles size={15} /></span>OpenAI</button>
+                <button className={provider === 'ollama' ? 'provider-tab selected' : 'provider-tab'} data-provider="ollama" role="tab" tabIndex={getProviderTabIndex(provider, 'ollama')} aria-selected={provider === 'ollama'} onClick={() => switchProvider('ollama')} onKeyDown={(event) => handleProviderTabKey(event, provider, switchProvider)} disabled={connectionSetupLocked}><span className="provider-symbol ollama-symbol"><Cpu size={15} /></span>Ollama</button>
               </div>
               <div className="field-group">
                 <div className="field-label-row"><label htmlFor="model">MODEL</label><button className="field-action" onClick={testConnection} disabled={connectionSetupLocked} title="Load available models">{connection === 'checking' ? <span className="tiny-spinner" /> : <RotateCw size={13} />}<span>{connection === 'checking' ? 'Checking' : 'Load models'}</span></button></div>
