@@ -11,6 +11,7 @@ import { resetConversationView } from './conversation-reset.js';
 import { copyStatusLabel, copyTextToClipboard } from './clipboard.js';
 import { focusDialogFirstControl, restoreDialogFocus, trapDialogTabKey } from './dialog-focus.js';
 import { getProviderTabIndex, handleProviderTabKey } from './provider-tabs.js';
+import { getLiveRegionAttributes } from './live-regions.js';
 import {
   ArrowDown, ArrowUp, Bot, Check, ChevronDown, CircleHelp, Clipboard,
   Cpu, FileText, Gauge, Github, KeyRound, LockKeyhole, MessageSquareText,
@@ -283,7 +284,7 @@ export default function App() {
                 <div className="messages-list">
                   {messages.map((message, index) => <Message key={`${index}-${message.role}`} message={message} index={index} />)}
                   {busy && <div className="message-row"><div className="avatar avatar-assistant"><Sparkles size={16} /></div><div className="message-body"><div className="message-meta"><span>Switchboard</span><span className="meta-dot">Thinking with {PROVIDERS[provider].short}</span></div><div className="typing-indicator"><span /><span /><span /></div></div></div>}
-                  {error && <div className="error-banner"><span className="error-symbol">!</span><span>{error}</span><button onClick={() => requestAssistant(messages)}>Try again</button></div>}
+                  {error && <div {...getLiveRegionAttributes('alert')} className="error-banner"><span className="error-symbol">!</span><span>{error}</span><button onClick={() => requestAssistant(messages)}>Try again</button></div>}
                   <div ref={bottomRef} />
                 </div>
               )}
@@ -314,7 +315,7 @@ export default function App() {
               </div>
               {provider === 'openai' && <div className="field-group"><div className="field-label-row"><label htmlFor="api-key">API KEY</label><span className="field-safe"><LockKeyhole size={11} /> SESSION ONLY</span></div><div className="input-with-icon"><KeyRound size={15} /><input id="api-key" type="password" autoComplete="off" className="text-field" value={apiKey} onChange={(event) => { setApiKey(event.target.value); resetConnectionForProviderConfigChange({ setModels, setConnection, setConnectionMessage }); }} placeholder="sk-••••••••••••••••" disabled={connectionSetupLocked} /></div></div>}
               <div className="field-group"><div className="field-label-row"><label htmlFor="endpoint">{provider === 'openai' ? 'API BASE URL' : 'OLLAMA SERVER'}</label></div><input id="endpoint" className="text-field endpoint-field" value={baseUrl} onChange={(event) => { setBaseUrl(event.target.value); resetConnectionForProviderConfigChange({ setModels, setConnection, setConnectionMessage }); }} placeholder={PROVIDERS[provider].baseUrl} disabled={connectionSetupLocked} /></div>
-              <div className={`connection-status status-${connection}`}><span className="status-indicator">{connection === 'checking' ? <span className="tiny-spinner" /> : connection === 'connected' ? <Check size={12} /> : connection === 'error' ? <X size={11} /> : <span />}</span><span>{connectionMessage || (provider === 'ollama' ? 'Ready when Ollama is running.' : 'API key required to connect.')}</span></div>
+              <div {...getLiveRegionAttributes('status')} className={`connection-status status-${connection}`}><span className="status-indicator">{connection === 'checking' ? <span className="tiny-spinner" /> : connection === 'connected' ? <Check size={12} /> : connection === 'error' ? <X size={11} /> : <span />}</span><span>{connectionMessage || (provider === 'ollama' ? 'Ready when Ollama is running.' : 'API key required to connect.')}</span></div>
               <button className="test-button" onClick={testConnection} disabled={connectionSetupLocked}>{connection === 'checking' ? 'Connecting…' : 'Test connection'}<ArrowUp size={14} className="test-button-arrow" /></button>
               <div className="panel-divider" />
               <button className="advanced-row" onClick={() => setSettingsOpen(true)}><span className="advanced-icon"><Gauge size={15} /></span><span><strong>Agent behavior</strong><small>Instructions &amp; temperature</small></span><ArrowUp size={14} className="advanced-arrow" /></button>
