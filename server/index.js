@@ -4,6 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { callChatProvider, fetchProviderModels, validateChatRequest, validateModelRequest } from './provider.js';
 import { JSON_BODY_LIMIT, jsonBodyErrorHandler } from './json-body-errors.js';
+import { apiNotFoundHandler } from './api-errors.js';
 
 const app = express();
 const port = Number(process.env.PORT || 8787);
@@ -37,6 +38,8 @@ app.post('/api/chat', async (req, res) => {
     res.status(error.status || 502).json({ error: error.message || 'The model request failed.' });
   }
 });
+
+app.use(apiNotFoundHandler);
 
 const dist = path.resolve(here, '../dist');
 app.use(express.static(dist));
