@@ -5,6 +5,7 @@ import { createEscapeShortcutHandler, createNewConversationShortcutHandler } fro
 import { shouldSubmitMessageOnEnter } from './composer-keyboard.js';
 import { resizeComposer } from './composer-resize.js';
 import { savePreferences } from './preferences.js';
+import { isConnectionSetupLocked } from './provider-settings.js';
 import {
   ArrowDown, ArrowUp, Bot, Check, ChevronDown, CircleHelp, Clipboard,
   Cpu, FileText, Gauge, Github, KeyRound, LockKeyhole, MessageSquareText,
@@ -94,6 +95,7 @@ export default function App() {
   const bottomRef = useRef(null);
   const transcriptRef = useRef(null);
   const textareaRef = useRef(null);
+  const connectionSetupLocked = isConnectionSetupLocked(busy, connection);
 
   useLayoutEffect(() => {
     resizeComposer(textareaRef.current);
@@ -116,7 +118,7 @@ export default function App() {
   }, [messages.length]);
 
   function switchProvider(next) {
-    if (busy || next === provider) return;
+    if (connectionSetupLocked || next === provider) return;
     setProvider(next);
     setBaseUrl(PROVIDERS[next].baseUrl);
     setModel(PROVIDERS[next].model);
@@ -128,6 +130,7 @@ export default function App() {
   }
 
   async function testConnection() {
+    if (connectionSetupLocked) return;
     if (provider === 'openai' && !apiKey.trim()) {
       setConnection('error');
       setConnectionMessage('Add your API key to connect to OpenAI.');
@@ -292,18 +295,18 @@ export default function App() {
               <div className="panel-heading"><div><span className="panel-kicker">YOUR AGENT</span><h2>Model setup</h2></div><div className="panel-heading-icon"><Settings2 size={17} /></div></div>
               <p className="panel-description">Choose a provider and model for this conversation.</p>
               <div className="provider-toggle" role="tablist" aria-label="AI provider">
-                <button className={provider === 'openai' ? 'provider-tab selected' : 'provider-tab'} role="tab" aria-selected={provider === 'openai'} onClick={() => switchProvider('openai')} disabled={busy}><span className="provider-symbol openai-symbol"><Sparkles size={15} /></span>OpenAI</button>
-                <button className={provider === 'ollama' ? 'provider-tab selected' : 'provider-tab'} role="tab" aria-selected={provider === 'ollama'} onClick={() => switchProvider('ollama')} disabled={busy}><span className="provider-symbol ollama-symbol"><Cpu size={15} /></span>Ollama</button>
+                <button className={provider === 'openai' ? 'provider-tab selected' : 'provider-tab'} role="tab" aria-selected={provider === 'openai'} onClick={() => switchProvider('openai')} disabled={connectionSetupLocked}><span className="provider-symbol openai-symbol"><Sparkles size={15} /></span>OpenAI</button>
+                <button className={provider === 'ollama' ? 'provider-tab selected' : 'provider-tab'} role="tab" aria-selected={provider === 'ollama'} onClick={() => switchProvider('ollama')} disabled={connectionSetupLocked}><span className="provider-symbol ollama-symbol"><Cpu size={15} /></span>Ollama</button>
               </div>
               <div className="field-group">
-                <div className="field-label-row"><label htmlFor="model">MODEL</label><button className="field-action" onClick={testConnection} disabled={connection === 'checking'} title="Load available models">{connection === 'checking' ? <span className="tiny-spinner" /> : <RotateCw size={13} />}<span>{connection === 'checking' ? 'Checking' : 'Load models'}</span></button></div>
+                <div className="field-label-row"><label htmlFor="model">MODEL</label><button className="field-action" onClick={testConnection} disabled={connectionSetupLocked} title="Load available models">{connection === 'checking' ? <span className="tiny-spinner" /> : <RotateCw size={13} />}<span>{connection === 'checking' ? 'Checking' : 'Load models'}</span></button></div>
                 <input id="model" className="text-field model-field" list="available-models" value={model} onChange={(event) => setModel(event.target.value)} placeholder="e.g. llama3.2" disabled={busy} />
                 <datalist id="available-models">{models.map((name) => <option key={name} value={name} />)}</datalist>
               </div>
-              {provider === 'openai' && <div className="field-group"><div className="field-label-row"><label htmlFor="api-key">API KEY</label><span className="field-safe"><LockKeyhole size={11} /> SESSION ONLY</span></div><div className="input-with-icon"><KeyRound size={15} /><input id="api-key" type="password" autoComplete="off" className="text-field" value={apiKey} onChange={(event) => { setApiKey(event.target.value); setConnection('idle'); setConnectionMessage(''); }} placeholder="sk-••••••••••••••••" disabled={busy} /></div></div>}
-              <div className="field-group"><div className="field-label-row"><label htmlFor="endpoint">{provider === 'openai' ? 'API BASE URL' : 'OLLAMA SERVER'}</label></div><input id="endpoint" className="text-field endpoint-field" value={baseUrl} onChange={(event) => { setBaseUrl(event.target.value); setConnection('idle'); setConnectionMessage(''); }} placeholder={PROVIDERS[provider].baseUrl} disabled={busy} /></div>
+              {provider === 'openai' && <div className="field-group"><div className="field-label-row"><label htmlFor="api-key">API KEY</label><span className="field-safe"><LockKeyhole size={11} /> SESSION ONLY</span></div><div className="input-with-icon"><KeyRound size={15} /><input id="api-key" type="password" autoComplete="off" className="text-field" value={apiKey} onChange={(event) => { setApiKey(event.target.value); setConnection('idle'); setConnectionMessage(''); }} placeholder="sk-••••••••••••••••" disabled={connectionSetupLocked} /></div></div>}
+              <div className="field-group"><div className="field-label-row"><label htmlFor="endpoint">{provider === 'openai' ? 'API BASE URL' : 'OLLAMA SERVER'}</label></div><input id="endpoint" className="text-field endpoint-field" value={baseUrl} onChange={(event) => { setBaseUrl(event.target.value); setConnection('idle'); setConnectionMessage(''); }} placeholder={PROVIDERS[provider].baseUrl} disabled={connectionSetupLocked} /></div>
               <div className={`connection-status status-${connection}`}><span className="status-indicator">{connection === 'checking' ? <span className="tiny-spinner" /> : connection === 'connected' ? <Check size={12} /> : connection === 'error' ? <X size={11} /> : <span />}</span><span>{connectionMessage || (provider === 'ollama' ? 'Ready when Ollama is running.' : 'API key required to connect.')}</span></div>
-              <button className="test-button" onClick={testConnection} disabled={connection === 'checking'}>{connection === 'checking' ? 'Connecting…' : 'Test connection'}<ArrowUp size={14} className="test-button-arrow" /></button>
+              <button className="test-button" onClick={testConnection} disabled={connectionSetupLocked}>{connection === 'checking' ? 'Connecting…' : 'Test connection'}<ArrowUp size={14} className="test-button-arrow" /></button>
               <div className="panel-divider" />
               <button className="advanced-row" onClick={() => setSettingsOpen(true)}><span className="advanced-icon"><Gauge size={15} /></span><span><strong>Agent behavior</strong><small>Instructions &amp; temperature</small></span><ArrowUp size={14} className="advanced-arrow" /></button>
             </div>
