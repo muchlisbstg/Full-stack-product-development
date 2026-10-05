@@ -11,3 +11,8 @@ export function resetConnectionForProviderConfigChange({
   setConnection('idle');
   setConnectionMessage('');
 }
+
+export function markProviderAsResponding({ setConnection, setConnectionMessage }) {
+  setConnection('connected');
+  setConnectionMessage('Connected and responding.');
+}

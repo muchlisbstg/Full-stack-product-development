@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { isConnectionSetupLocked, resetConnectionForProviderConfigChange } from './provider-settings.js';
+import { isConnectionSetupLocked, markProviderAsResponding, resetConnectionForProviderConfigChange } from './provider-settings.js';
 
 test('locks connection settings while a chat request is active', () => {
   assert.equal(isConnectionSetupLocked(true, 'idle'), true);
@@ -28,5 +28,18 @@ test('clears cached model suggestions and connection status after provider confi
     ['models', []],
     ['connection', 'idle'],
     ['connectionMessage', ''],
+  ]);
+});
+
+test('replaces stale connection text after a successful chat response', () => {
+  const updates = [];
+  markProviderAsResponding({
+    setConnection: (value) => updates.push(['connection', value]),
+    setConnectionMessage: (value) => updates.push(['connectionMessage', value]),
+  });
+
+  assert.deepEqual(updates, [
+    ['connection', 'connected'],
+    ['connectionMessage', 'Connected and responding.'],
   ]);
 });
