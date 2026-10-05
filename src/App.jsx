@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { createEscapeShortcutHandler, createNewConversationShortcutHandler } from './keyboard-shortcuts.js';
 import { shouldSubmitMessageOnEnter } from './composer-keyboard.js';
+import { resizeComposer } from './composer-resize.js';
 import { savePreferences } from './preferences.js';
 import {
   ArrowDown, ArrowUp, Bot, Check, ChevronDown, CircleHelp, Clipboard,
@@ -94,6 +95,10 @@ export default function App() {
   const transcriptRef = useRef(null);
   const textareaRef = useRef(null);
 
+  useLayoutEffect(() => {
+    resizeComposer(textareaRef.current);
+  }, [draft]);
+
   useEffect(() => {
     savePreferences({ provider, baseUrl, model });
   }, [provider, baseUrl, model]);
@@ -155,7 +160,6 @@ export default function App() {
     const conversation = [...messages, { role: 'user', content }];
     setMessages(conversation);
     setDraft('');
-    if (textareaRef.current) textareaRef.current.style.height = '54px';
     await requestAssistant(conversation);
   }
 
@@ -191,8 +195,6 @@ export default function App() {
 
   function onDraftChange(event) {
     setDraft(event.target.value);
-    event.target.style.height = '54px';
-    event.target.style.height = `${Math.min(event.target.scrollHeight, 180)}px`;
   }
 
   const startFresh = useCallback(() => {
