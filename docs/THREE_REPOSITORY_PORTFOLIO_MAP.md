@@ -33,6 +33,6 @@ This portfolio uses three repositories with distinct responsibilities. Treat imp
 
 - Portfolio and cross-repository evidence map: documentation merged; this map is not a live CI dashboard.
 - Business automation coordination: release process and human-approval expectations documented; no claim that cross-repository automation is deployed.
-- Export platform: OIDC verifier, active-membership principal resolution, seeded system role templates, and transactional order transition endpoints are merged. PR #14's PostgreSQL integration test covers submit/replay, self-approval denial, independent approval, and audit fields. A separate signed-JWT positive/negative test is being validated in [PR #15](https://github.com/muchlisbstg/enterprise-export-platform-usa/pull/15). No deployment or export-law compliance is claimed.
+- Export platform: OIDC verifier, active-membership principal resolution, seeded system role templates, and transactional order transition endpoints are merged. PR #14's PostgreSQL integration test covers submit/replay, self-approval denial, independent approval, and audit fields. A signed-JWT positive/negative test suite was merged in [PR #15](https://github.com/muchlisbstg/enterprise-export-platform-usa/pull/15) after CI passed. No deployment or export-law compliance is claimed.
 
 Check each repository's Actions and pull requests for current run status before reporting a release as green.
