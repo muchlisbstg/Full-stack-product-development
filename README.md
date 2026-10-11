@@ -1,4 +1,8 @@
-# Switchboard — AI workspace
+# Full-stack Product Development — Switchboard Case Study
+
+This repository is part of a full-stack product development portfolio. Its current concrete project is **Switchboard**, a local-first AI workspace described below. The repository name represents the portfolio area; it does not imply that every web, mobile, backend, QA, or DevOps capability is already implemented here.
+
+## Switchboard — AI workspace
 
 A local-first AI agent workspace where you can switch between the OpenAI API and an Ollama model in the same app. The React chat UI talks to a small Node/Express API, which keeps provider requests server-side and avoids exposing your OpenAI key to the browser's network requests.
 
