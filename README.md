@@ -63,4 +63,6 @@ The production server serves the built client and API from `http://127.0.0.1:878
 - The OpenAI API key is sent from the browser to the local API only when needed; it is not persisted or logged by this app.
 - The app is intended for local development. The API binds to loopback (`127.0.0.1`) and does not include user authentication.
 - A custom provider URL is sent the same chat content as the selected provider. Only use endpoints you trust.
+- Provider origins are restricted: OpenAI defaults to `https://api.openai.com`, and Ollama defaults to loopback port `11434`. Custom provider origins must be explicitly configured by the operator in `PROVIDER_URL_ALLOWLIST` as comma-separated exact origins (scheme + hostname + port, with no path), for example `https://api.example.com,http://localhost:1234`.
+- URL origin allowlisting is not a complete SSRF defense: DNS rebinding and unsafe network routes still require connection-time validation and outbound network/egress controls. Keep this app bound to loopback and do not expose it to untrusted networks.
 - Ollama must be reachable from the computer running this app's API server.
