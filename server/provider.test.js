@@ -73,6 +73,18 @@ test('returns sorted valid model names from a mocked Ollama response', async () 
   });
 });
 
+test('disables automatic redirects for provider requests', async () => {
+  let requestOptions;
+  await withStubbedFetch(async (_url, options) => {
+    requestOptions = options;
+    return { ok: true, json: async () => ({ models: [] }) };
+  }, async () => {
+    const models = await fetchProviderModels({ provider: 'ollama', baseUrl: 'http://localhost:11434' });
+    assert.deepEqual(models, []);
+  });
+  assert.equal(requestOptions.redirect, 'error');
+});
+
 test('rejects malformed JSON from a successful provider response', async () => {
   await withStubbedFetch({
     ok: true,

@@ -124,7 +124,7 @@ function responseErrorMessage(payload, fallback) {
 async function fetchJson(url, options, fallbackMessage) {
   let response;
   try {
-    response = await fetch(url, { ...options, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
+    response = await fetch(url, { ...options, redirect: 'error', signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
   } catch (error) {
     if (isTimeoutError(error)) throw timeoutRequestError();
     throw new RequestError(`Could not reach the provider: ${error.message}`, 502);
