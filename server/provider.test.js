@@ -34,8 +34,34 @@ test('adds /v1 to a root OpenAI API URL', () => {
   assert.equal(normalizeBaseUrl('openai', 'https://api.openai.com'), 'https://api.openai.com/v1');
 });
 
-test('preserves a configured OpenAI API path', () => {
-  assert.equal(normalizeBaseUrl('openai', 'http://localhost:1234/v1/'), 'http://localhost:1234/v1');
+test('allows a custom compatible provider only when its exact origin is operator-allowlisted', () => {
+  const previous = process.env.PROVIDER_URL_ALLOWLIST;
+  process.env.PROVIDER_URL_ALLOWLIST = 'http://localhost:1234';
+  try {
+    assert.equal(normalizeBaseUrl('openai', 'http://localhost:1234/v1/'), 'http://localhost:1234/v1');
+  } finally {
+    if (previous === undefined) delete process.env.PROVIDER_URL_ALLOWLIST;
+    else process.env.PROVIDER_URL_ALLOWLIST = previous;
+  }
+});
+
+test('rejects a custom provider origin that is not operator-allowlisted', () => {
+  assert.throws(
+    () => normalizeBaseUrl('openai', 'http://localhost:1234/v1'),
+    /origin is not allowed/,
+  );
+});
+
+test('rejects fragments and malformed allowlist entries', () => {
+  assert.throws(() => normalizeBaseUrl('ollama', 'http://localhost:11434/#fragment'), /cannot contain fragments/);
+  const previous = process.env.PROVIDER_URL_ALLOWLIST;
+  process.env.PROVIDER_URL_ALLOWLIST = 'not a URL,https://user:pass@example.com';
+  try {
+    assert.throws(() => normalizeBaseUrl('openai', 'https://example.com/v1'), /origin is not allowed/);
+  } finally {
+    if (previous === undefined) delete process.env.PROVIDER_URL_ALLOWLIST;
+    else process.env.PROVIDER_URL_ALLOWLIST = previous;
+  }
 });
 
 test('normalizes an Ollama root URL without adding a route', () => {
