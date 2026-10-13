@@ -32,6 +32,39 @@ function providerName(value) {
   return value;
 }
 
+function configuredProviderOrigins() {
+  const configured = String(process.env.PROVIDER_URL_ALLOWLIST || '')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+  const origins = new Set();
+  for (const item of configured) {
+    try {
+      const parsed = new URL(item);
+      if (!['http:', 'https:'].includes(parsed.protocol)
+        || parsed.username || parsed.password
+        || parsed.pathname !== '/' || parsed.search || parsed.hash) {
+        continue;
+      }
+      origins.add(parsed.origin);
+    } catch {
+      // Ignore malformed operator configuration; it must never widen the allowlist.
+    }
+  }
+  return origins;
+}
+
+function isAllowedProviderOrigin(provider, parsed) {
+  const allowed = configuredProviderOrigins();
+  if (provider === 'openai') allowed.add('https://api.openai.com');
+  if (provider === 'ollama') {
+    allowed.add('http://localhost:11434');
+    allowed.add('http://127.0.0.1:11434');
+    allowed.add('http://[::1]:11434');
+  }
+  return allowed.has(parsed.origin);
+}
+
 export function normalizeBaseUrl(provider, value) {
   const name = providerName(provider);
   const fallback = name === 'openai' ? OPENAI_DEFAULT : OLLAMA_DEFAULT;
@@ -45,7 +78,12 @@ export function normalizeBaseUrl(provider, value) {
   if (!['http:', 'https:'].includes(parsed.protocol) || parsed.username || parsed.password) {
     throw new RequestError('Provider URLs must use HTTP or HTTPS and cannot contain credentials.');
   }
-  parsed.hash = '';
+  if (parsed.hash) {
+    throw new RequestError('Provider URLs cannot contain fragments.');
+  }
+  if (!isAllowedProviderOrigin(name, parsed)) {
+    throw new RequestError('This provider origin is not allowed. Configure its exact origin in PROVIDER_URL_ALLOWLIST.');
+  }
   parsed.search = '';
   let base = parsed.toString().replace(/\/+$/, '');
   if (name === 'openai' && (parsed.pathname === '/' || parsed.pathname === '')) {
