@@ -52,6 +52,27 @@ test('rejects a custom provider origin that is not operator-allowlisted', () => 
   );
 });
 
+test('matches allowlisted origins exactly, including scheme and port', () => {
+  const previous = process.env.PROVIDER_URL_ALLOWLIST;
+  process.env.PROVIDER_URL_ALLOWLIST = 'https://api.example.com';
+  try {
+    assert.equal(normalizeBaseUrl('openai', 'https://api.example.com/v1'), 'https://api.example.com/v1');
+    assert.throws(() => normalizeBaseUrl('openai', 'http://api.example.com/v1'), /origin is not allowed/);
+    assert.throws(() => normalizeBaseUrl('openai', 'https://api.example.com:8443/v1'), /origin is not allowed/);
+    assert.throws(() => normalizeBaseUrl('openai', 'https://api.example.com.attacker.invalid/v1'), /origin is not allowed/);
+  } finally {
+    if (previous === undefined) delete process.env.PROVIDER_URL_ALLOWLIST;
+    else process.env.PROVIDER_URL_ALLOWLIST = previous;
+  }
+});
+
+test('rejects a metadata IP URL before any provider request can be made', () => {
+  assert.throws(
+    () => validateModelRequest({ provider: 'openai', baseUrl: 'http://169.254.169.254/latest/meta-data', apiKey: 'test' }),
+    /origin is not allowed/,
+  );
+});
+
 test('rejects fragments and malformed allowlist entries', () => {
   assert.throws(() => normalizeBaseUrl('ollama', 'http://localhost:11434/#fragment'), /cannot contain fragments/);
   const previous = process.env.PROVIDER_URL_ALLOWLIST;
