@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4f6f3" />
+    <title>Northstar | Fleet operations</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: #172b32;
+        background: #f4f6f3;
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+        --ink: #172b32;
+        --muted: #74838a;
+        --line: #e6ebe7;
+        --paper: #ffffff;
+        --canvas: #f4f6f3;
+        --navy: #102c35;
+        --teal: #107d78;
+        --teal-soft: #e5f3ef;
+        --amber: #bd7d25;
+        --amber-soft: #fff3de;
+        --red: #c75c50;
+        --red-soft: #fff0ed;
+        --shadow: 0 12px 32px rgb(24 46 49 / 5%);
+      }
+
+      * { box-sizing: border-box; }
+      body { margin: 0; min-width: 320px; }
+      button { font: inherit; }
+      button:focus-visible { outline: 3px solid #66bdb1; outline-offset: 3px; }
+      .app { min-height: 100vh; }
+      .sidebar {
+        position: fixed;
+        inset: 0 auto 0 0;
+        z-index: 2;
+        display: flex;
+        width: 244px;
+        flex-direction: column;
+        padding: 25px 16px 17px;
+        color: #dce6e4;
+        background: var(--navy);
+      }
+      .brand { display: flex; align-items: center; gap: 11px; padding: 0 9px 28px; }
+      .brand-mark {
+        display: grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border-radius: 11px;
+        color: #b9ece0;
+        background: #1c4b52;
+      }
+      .brand-name { color: #f8fbf8; font-size: 15px; font-weight: 720; letter-spacing: -.02em; }
+      .brand-sub { margin-top: 3px; color: #8da9a9; font-size: 10px; letter-spacing: .13em; text-transform: uppercase; }
+      .fleet-select {
+        margin: 0 3px 22px;
+        padding: 12px;
+        border: 1px solid #31515a;
+        border-radius: 11px;
+        background: #183740;
+      }
+      .fleet-select small { display: block; margin-bottom: 6px; color: #91aead; font-size: 10px; letter-spacing: .09em; text-transform: uppercase; }
+      .fleet-select strong { display: flex; align-items: center; justify-content: space-between; color: white; font-size: 12px; font-weight: 620; }
+      .nav-label { padding: 0 11px 9px; color: #799396; font-size: 10px; font-weight: 650; letter-spacing: .13em; text-transform: uppercase; }
+      .nav { display: grid; gap: 4px; }
+      .nav button {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 11px;
+        border: 0;
+        border-radius: 9px;
+        color: #a9bfbd;
+        background: transparent;
+        cursor: pointer;
+        text-align: left;
+        transition: background .18s, color .18s;
+      }
+      .nav button:hover, .nav button.active { color: #fff; background: #214951; }
+      .nav button.active { box-shadow: inset 2px 0 #67c6b1; }
+      .nav button span { font-size: 12px; font-weight: 540; }
+      .nav svg { width: 17px; height: 17px; flex: none; stroke: currentColor; }
+      .sidebar-bottom { margin-top: auto; }
+      .vessel-card { margin: 0 3px 14px; padding: 13px; border: 1px solid #31515a; border-radius: 11px; background: #183740; }
+      .vessel-top { display: flex; align-items: center; justify-content: space-between; font-size: 11px; font-weight: 620; }
+      .vessel-state { display: flex; align-items: center; gap: 6px; color: #a9d8ca; font-size: 10px; font-weight: 550; }
+      .dot { width: 7px; height: 7px; border-radius: 50%; background: #52c59f; box-shadow: 0 0 0 3px rgb(82 197 159 / 14%); }
+      .vessel-meta { margin-top: 8px; color: #8ea8a9; font-size: 10px; }
+      .profile { display: flex; align-items: center; gap: 10px; padding: 10px 9px 0; border-top: 1px solid #29464e; }
+      .avatar { display: grid; width: 30px; height: 30px; place-items: center; border-radius: 50%; color: #dff2e9; background: #41645e; font-size: 10px; font-weight: 700; }
+      .profile strong { display: block; color: #eef4f0; font-size: 11px; font-weight: 600; }
+      .profile small { display: block; margin-top: 3px; color: #8da5a5; font-size: 10px; }
+
+      .main { min-height: 100vh; margin-left: 244px; }
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        display: flex;
+        min-height: 67px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 35px;
+        border-bottom: 1px solid var(--line);
+        background: rgb(255 255 255 / 92%);
+        backdrop-filter: blur(12px);
+      }
+      .crumb { display: flex; align-items: center; gap: 9px; color: #9aa5a5; font-size: 11px; }
+      .crumb b { color: #30464b; font-weight: 620; }
+      .top-actions { display: flex; align-items: center; gap: 11px; }
+      .sync { display: flex; align-items: center; gap: 8px; color: #6e807f; font-size: 10px; }
+      .sync .dot { width: 6px; height: 6px; }
+      .icon-button {
+        position: relative;
+        display: grid;
+        width: 33px;
+        height: 33px;
+        place-items: center;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        color: #506467;
+        background: white;
+        cursor: pointer;
+      }
+      .icon-button svg { width: 16px; height: 16px; stroke: currentColor; }
+      .notification-count {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        display: grid;
+        min-width: 15px;
+        height: 15px;
+        place-items: center;
+        padding: 0 3px;
+        border: 2px solid white;
+        border-radius: 99px;
+        color: white;
+        background: var(--red);
+        font-size: 8px;
+        font-weight: 700;
+      }
+      main.content { max-width: 1500px; margin: 0 auto; padding: 29px 35px 40px; }
+      .page-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; margin-bottom: 22px; }
+      .eyebrow { margin: 0 0 7px; color: #81918f; font-size: 10px; font-weight: 650; letter-spacing: .13em; text-transform: uppercase; }
+      h1 { margin: 0; color: #183039; font-size: clamp(24px, 3vw, 30px); font-weight: 650; letter-spacing: -.045em; }
+      .subtitle { margin: 7px 0 0; color: #788785; font-size: 12px; }
+      .heading-actions { display: flex; align-items: center; gap: 9px; }
+      .period-switch { display: flex; padding: 3px; border: 1px solid var(--line); border-radius: 9px; background: white; }
+      .period-switch button { padding: 7px 10px; border: 0; border-radius: 6px; color: #7b8988; background: transparent; cursor: pointer; font-size: 10px; }
+      .period-switch button.active { color: #21423f; background: #eaf3ef; font-weight: 650; }
+      .export-button { display: flex; align-items: center; gap: 7px; padding: 9px 11px; border: 1px solid #dae2de; border-radius: 9px; color: #304b4b; background: white; cursor: pointer; font-size: 10px; font-weight: 600; }
+      .export-button svg { width: 14px; height: 14px; stroke: currentColor; }
+      .grid { display: grid; gap: 15px; }
+      .stats-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-bottom: 15px; }
+      .card { border: 1px solid var(--line); border-radius: 12px; background: var(--paper); box-shadow: var(--shadow); }
+      .stat-card { min-height: 126px; padding: 17px 18px 15px; }
+      .stat-head { display: flex; align-items: center; justify-content: space-between; color: #788785; font-size: 10px; font-weight: 550; }
+      .stat-icon { display: grid; width: 28px; height: 28px; place-items: center; border-radius: 8px; color: var(--teal); background: var(--teal-soft); }
+      .stat-icon.amber { color: var(--amber); background: var(--amber-soft); }
+      .stat-icon svg { width: 15px; height: 15px; stroke: currentColor; }
+      .stat-value { display: flex; align-items: baseline; gap: 6px; margin-top: 12px; color: #1c343b; font-size: 27px; font-weight: 670; letter-spacing: -.05em; }
+      .stat-value small { color: #83918e; font-size: 11px; font-weight: 500; letter-spacing: 0; }
+      .stat-foot { display: flex; align-items: center; gap: 6px; margin-top: 7px; color: #82908e; font-size: 9px; }
+      .trend { color: #168b73; font-weight: 680; }
+      .trend.down { color: #bf7c34; }
+      .middle-grid { grid-template-columns: minmax(0, 1.45fr) minmax(275px, .88fr); margin-bottom: 15px; }
+      .card-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 17px 18px 0; }
+      .card-title { margin: 0; color: #243d43; font-size: 12px; font-weight: 650; letter-spacing: -.01em; }
+      .card-subtitle { margin: 5px 0 0; color: #899491; font-size: 9px; }
+      .select-chip { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border: 1px solid #e8ede9; border-radius: 7px; color: #667675; background: #fff; font-size: 9px; }
+      .chart-card { min-height: 250px; }
+      .chart-summary { display: flex; align-items: baseline; gap: 8px; padding: 15px 18px 0; }
+      .chart-summary strong { color: #1d353b; font-size: 22px; letter-spacing: -.04em; }
+      .chart-summary span { color: #168b73; font-size: 9px; font-weight: 650; }
+      .chart { position: relative; display: flex; height: 130px; align-items: flex-end; justify-content: space-between; gap: 8px; margin: 4px 18px 0; padding: 0 2px 22px; border-bottom: 1px solid #e9eeeb; }
+      .chart::before, .chart::after { position: absolute; right: 0; left: 0; border-top: 1px dashed #edf1ee; content: ""; }
+      .chart::before { top: 33%; }
+      .chart::after { top: 66%; }
+      .bar-group { position: relative; z-index: 0; display: flex; height: 100%; flex: 1; align-items: flex-end; justify-content: center; gap: 4px; }
+      .bar { width: min(14px, 40%); min-width: 5px; border-radius: 4px 4px 1px 1px; background: #b7d9cd; transition: height .3s; }
+      .bar.primary { background: #278a7e; }
+      .bar-group span { position: absolute; bottom: -18px; color: #99a39f; font-size: 8px; }
+      .chart-legend { display: flex; gap: 14px; padding: 12px 18px 13px; color: #899491; font-size: 9px; }
+      .legend-dot { display: inline-block; width: 7px; height: 7px; margin-right: 5px; border-radius: 2px; background: #278a7e; }
+      .legend-dot.light { background: #b7d9cd; }
+      .process-card { min-height: 250px; }
+      .process-body { display: grid; gap: 15px; padding: 17px 18px; }
+      .process-overview { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-radius: 9px; background: #f4f8f5; }
+      .process-overview strong { display: block; color: #213b40; font-size: 17px; letter-spacing: -.04em; }
+      .process-overview span { display: block; margin-top: 3px; color: #86928f; font-size: 9px; }
+      .capacity { display: flex; align-items: center; gap: 7px; color: #138471; font-size: 10px; font-weight: 650; }
+      .capacity::before { width: 6px; height: 6px; border-radius: 50%; background: #43b28c; content: ""; }
+      .line-label { display: flex; justify-content: space-between; color: #637572; font-size: 9px; }
+      .line-label b { color: #405654; font-weight: 600; }
+      .progress { height: 6px; margin-top: 7px; overflow: hidden; border-radius: 99px; background: #eaf0ec; }
+      .progress i { display: block; height: 100%; border-radius: inherit; background: #24887a; }
+      .process-flow { display: flex; align-items: center; justify-content: space-between; gap: 4px; padding-top: 2px; }
+      .flow-step { display: grid; justify-items: center; gap: 6px; color: #86918d; font-size: 8px; text-align: center; }
+      .flow-step i { display: grid; width: 24px; height: 24px; place-items: center; border: 1px solid #dce9e2; border-radius: 50%; color: #167b6f; background: #edf7f2; font-style: normal; font-size: 9px; }
+      .flow-step.warn i { border-color: #f3dfbd; color: #b37b2a; background: #fff7e8; }
+      .flow-arrow { color: #b5c0bc; font-size: 10px; }
+      .bottom-grid { grid-template-columns: minmax(0, 1.45fr) minmax(275px, .88fr); }
+      .table-card { overflow: hidden; }
+      .table-wrap { overflow-x: auto; padding: 11px 18px 7px; }
+      table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+      th { padding: 8px 9px; border-bottom: 1px solid #edf0ed; color: #9aa39f; font-size: 8px; font-weight: 600; text-align: left; text-transform: uppercase; letter-spacing: .07em; }
+      td { padding: 11px 9px; border-bottom: 1px solid #f0f2f0; color: #61716e; font-size: 9px; }
+      tbody tr:last-child td { border-bottom: 0; }
+      .lot-id { color: #27434a; font-weight: 650; }
+      .species { color: #465c5b; font-weight: 550; }
+      .badge { display: inline-flex; align-items: center; gap: 5px; padding: 5px 7px; border-radius: 99px; color: #187761; background: #e9f6ef; font-size: 8px; font-weight: 650; }
+      .badge::before { width: 5px; height: 5px; border-radius: 50%; background: currentColor; content: ""; }
+      .badge.processing { color: #a97622; background: #fff4df; }
+      .text-link { display: inline-flex; margin: 2px 18px 14px; padding: 0; border: 0; color: #147a70; background: none; cursor: pointer; font-size: 9px; font-weight: 620; }
+      .alerts-card { min-height: 219px; }
+      .alert-list { display: grid; gap: 9px; padding: 14px 18px 9px; }
+      .alert-item { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto auto; align-items: start; gap: 9px; padding: 9px; border: 1px solid #f1e8d8; border-radius: 9px; background: #fffaf1; }
+      .alert-item.critical { border-color: #f2e1de; background: #fff7f5; }
+      .alert-icon { display: grid; width: 25px; height: 25px; place-items: center; border-radius: 7px; color: var(--amber); background: #fff0d8; }
+      .critical .alert-icon { color: var(--red); background: #ffebe7; }
+      .alert-icon svg { width: 13px; height: 13px; stroke: currentColor; }
+      .alert-copy strong { display: block; color: #455653; font-size: 9px; font-weight: 650; }
+      .alert-copy small { display: block; margin-top: 4px; color: #999d91; font-size: 8px; }
+      .alert-time { color: #9a9e93; font-size: 8px; white-space: nowrap; }
+      .alert-item.resolved { opacity: .48; }
+      .alert-item.resolved .alert-copy strong { text-decoration: line-through; }
+      .resolve-button { padding: 4px 5px; border: 0; color: #8a7660; background: transparent; cursor: pointer; font-size: 8px; }
+      .resolve-button:hover { color: #187761; }
+      .empty-alerts { padding: 12px 5px; color: #74837d; font-size: 10px; text-align: center; }
+      .toast {
+        position: fixed;
+        right: 22px;
+        bottom: 22px;
+        z-index: 5;
+        max-width: min(360px, calc(100vw - 40px));
+        padding: 11px 15px;
+        border: 1px solid #cfe4db;
+        border-radius: 10px;
+        color: #26453f;
+        background: #f1faf5;
+        box-shadow: 0 12px 30px rgb(22 50 48 / 13%);
+        font-size: 11px;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(8px);
+        transition: opacity .18s, transform .18s;
+      }
+      .toast.visible { opacity: 1; transform: translateY(0); }
+      .mobile-menu { display: none; }
+
+      @media (max-width: 1100px) {
+        .sidebar { width: 210px; }
+        .main { margin-left: 210px; }
+        .topbar { padding: 0 24px; }
+        main.content { padding: 24px; }
+        .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .middle-grid, .bottom-grid { grid-template-columns: minmax(0, 1.15fr) minmax(250px, .85fr); }
+      }
+      @media (max-width: 760px) {
+        .sidebar { position: sticky; inset: 0 0 auto; width: 100%; height: auto; padding: 12px 15px; }
+        .brand { padding: 0; }
+        .brand-mark { width: 32px; height: 32px; }
+        .fleet-select, .nav-label, .nav, .sidebar-bottom { display: none; }
+        .main { margin-left: 0; }
+        .topbar { position: static; min-height: 52px; padding: 0 16px; }
+        .crumb { font-size: 10px; }
+        .sync { font-size: 0; }
+        main.content { padding: 22px 15px 30px; }
+        .page-heading { align-items: flex-start; flex-direction: column; margin-bottom: 17px; }
+        .heading-actions { width: 100%; justify-content: space-between; }
+        .stats-grid { gap: 10px; }
+        .stat-card { min-height: 116px; padding: 13px; }
+        .stat-value { font-size: 23px; }
+        .middle-grid, .bottom-grid { grid-template-columns: 1fr; gap: 11px; }
+        .chart-card, .process-card { min-height: auto; }
+        .chart { height: 118px; }
+      }
+      @media (max-width: 390px) {
+        main.content { padding-right: 11px; padding-left: 11px; }
+        .stats-grid { gap: 8px; }
+        .stat-card { padding: 11px; }
+        .stat-head { font-size: 9px; }
+        .stat-value { font-size: 21px; }
+        .export-button { padding: 8px; }
+        .period-switch button { padding: 7px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar" aria-label="Primary navigation">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16.5 5.5 8l4 4.5L12 5l3.5 8L18 9l3 7.5"/><path d="M4 19h16"/></svg>
+          </div>
+          <div><div class="brand-name">Northstar</div><div class="brand-sub">Fleet intelligence</div></div>
+        </div>
+        <div class="fleet-select"><small>Active vessel</small><strong>Arctic Meridian <span aria-hidden="true">⌄</span></strong></div>
+        <div class="nav-label">Operations</div>
+        <nav class="nav">
+          <button class="active" data-section="Fleet overview" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="11" width="7" height="10" rx="1.5"/><rect x="3" y="14" width="8" height="7" rx="1.5"/></svg><span>Fleet overview</span></button>
+          <button data-section="Catch & traceability"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12s3.2-6 10-6c4.2 0 6.8 2.2 8 6-1.2 3.8-3.8 6-8 6-6.8 0-10-6-10-6Z"/><circle cx="13" cy="12" r="2.2"/><path d="m4 9-2-2m2 8-2 2"/></svg><span>Catch & traceability</span></button>
+          <button data-section="Processing lines"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V8l4 3V8l4 3V5h8v14H4Z"/><path d="M8 15h2m3 0h2m3-6h1"/></svg><span>Processing lines</span></button>
+          <button data-section="Quality & cold chain"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M6 6l12 12M18 6 6 18M4 12h16"/><circle cx="12" cy="12" r="3"/></svg><span>Quality & cold chain</span></button>
+          <button data-section="Energy & fuel"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 10-13h-7l1-7Z"/></svg><span>Energy & fuel</span></button>
+          <button data-section="Maintenance"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m14.5 6.5 3 3M4 20l6.7-6.7m2-7.8a5 5 0 0 0 6.7 6.7l-8.5 8.5a2.1 2.1 0 0 1-3-3l8.5-8.5A5 5 0 0 0 13.7 3"/></svg><span>Maintenance</span></button>
+          <button data-section="Reports"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5m-9 4h6m-6 4h6"/></svg><span>Reports</span></button>
+        </nav>
+        <div class="sidebar-bottom">
+          <div class="vessel-card">
+            <div class="vessel-top"><span>Demo vessel status</span><span class="vessel-state">Preview</span></div>
+            <div class="vessel-meta">Sample telemetry · not connected</div>
+          </div>
+          <div class="profile"><div class="avatar">JM</div><div><strong>Jordan Mitchell</strong><small>Fleet operations</small></div></div>
+        </div>
+      </aside>
+
+      <div class="main">
+        <header class="topbar">
+          <div class="crumb"><span>Fleet</span><span>/</span><b id="breadcrumb">Overview</b></div>
+          <div class="top-actions">
+            <span class="sync"><strong style="padding:4px 6px;border-radius:5px;color:#8a6629;background:#fff4df;font-size:8px;letter-spacing:.06em">SAMPLE DATA</strong> Preview only · no vessel connection</span>
+            <button class="icon-button" id="notifications" aria-label="View notifications">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-8 12h4"/></svg><span class="notification-count" id="notification-count">2</span>
+            </button>
+            <button class="icon-button" id="help" aria-label="Help">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.6 9a2.5 2.5 0 1 1 4.3 1.8c-1.1 1-1.9 1.4-1.9 3m0 3h.01"/></svg>
+            </button>
+          </div>
+        </header>
+
+        <main class="content">
+          <section class="page-heading">
+            <div><p class="eyebrow">Wednesday, 18 September 2024 · Trip 08</p><h1>Fleet overview</h1><p class="subtitle">A clear view of today's catch, processing performance, and vessel health.</p></div>
+            <div class="heading-actions">
+              <div class="period-switch" aria-label="Reporting period">
+                <button class="active" data-period="24 hours">24 hours</button>
+                <button data-period="7 days">7 days</button>
+                <button data-period="30 days">30 days</button>
+              </div>
+              <button class="export-button" id="export">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-4-4 4 4 4-4M5 17v4h14v-4"/></svg> Export
+              </button>
+            </div>
+          </section>
+
+          <section class="grid stats-grid" aria-label="Key performance indicators">
+            <article class="card stat-card">
+              <div class="stat-head"><span>Catch landed today</span><span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12s3.2-6 10-6c4.2 0 6.8 2.2 8 6-1.2 3.8-3.8 6-8 6-6.8 0-10-6-10-6Z"/><circle cx="13" cy="12" r="2"/></svg></span></div>
+              <div class="stat-value">184.6 <small>tonnes</small></div><div class="stat-foot"><span class="trend">↑ 12.8%</span><span>vs. previous trip average</span></div>
+            </article>
+            <article class="card stat-card">
+              <div class="stat-head"><span>Processing throughput</span><span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V8l4 3V8l4 3V5h8v14H4Z"/><path d="M8 15h2m3 0h2"/></svg></span></div>
+              <div class="stat-value">8.2 <small>t / hour</small></div><div class="stat-foot"><span class="trend">↑ 4.2%</span><span>target 8.0 t / hour</span></div>
+            </article>
+            <article class="card stat-card">
+              <div class="stat-head"><span>Line utilization</span><span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5m0 14h16M8 15l3-4 3 2 5-7"/><path d="M16 6h3v3"/></svg></span></div>
+              <div class="stat-value">87 <small>%</small></div><div class="stat-foot"><span class="trend">↑ 3.1 pts</span><span>across 3 active lines</span></div>
+            </article>
+            <article class="card stat-card">
+              <div class="stat-head"><span>Energy intensity</span><span class="stat-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 10-13h-7l1-7Z"/></svg></span></div>
+              <div class="stat-value">142 <small>kWh / tonne</small></div><div class="stat-foot"><span class="trend down">↓ 2.4%</span><span>below trip target</span></div>
+            </article>
+          </section>
+
+          <section class="grid middle-grid">
+            <article class="card chart-card">
+              <div class="card-heading"><div><h2 class="card-title">Catch & processing volume</h2><p class="card-subtitle">Hourly catch intake compared to processed volume</p></div><span class="select-chip">Today <span aria-hidden="true">⌄</span></span></div>
+              <div class="chart-summary"><strong>184.6 t</strong><span>+12.8% vs average</span></div>
+              <div class="chart" role="img" aria-label="Bar chart showing hourly catch and processing volumes">
+                <div class="bar-group"><i class="bar" style="height:34%"></i><i class="bar primary" style="height:27%"></i><span>06:00</span></div>
+                <div class="bar-group"><i class="bar" style="height:45%"></i><i class="bar primary" style="height:39%"></i><span>08:00</span></div>
+                <div class="bar-group"><i class="bar" style="height:57%"></i><i class="bar primary" style="height:48%"></i><span>10:00</span></div>
+                <div class="bar-group"><i class="bar" style="height:75%"></i><i class="bar primary" style="height:65%"></i><span>12:00</span></div>
+                <div class="bar-group"><i class="bar" style="height:61%"></i><i class="bar primary" style="height:57%"></i><span>14:00</span></div>
+                <div class="bar-group"><i class="bar" style="height:91%"></i><i class="bar primary" style="height:77%"></i><span>16:00</span></div>
+                <div class="bar-group"><i class="bar" style="height:73%"></i><i class="bar primary" style="height:61%"></i><span>18:00</span></div>
+                <div class="bar-group"><i class="bar" style="height:48%"></i><i class="bar primary" style="height:43%"></i><span>20:00</span></div>
+                <div class="bar-group"><i class="bar" style="height:35%"></i><i class="bar primary" style="height:31%"></i><span>22:00</span></div>
+              </div>
+              <div class="chart-legend"><span><i class="legend-dot"></i>Processed</span><span><i class="legend-dot light"></i>Catch intake</span><span style="margin-left:auto">Hourly · tonnes</span></div>
+            </article>
+
+            <article class="card process-card">
+              <div class="card-heading"><div><h2 class="card-title">Processing line status</h2><p class="card-subtitle">Live capacity across onboard lines</p></div><span class="select-chip">3 lines</span></div>
+              <div class="process-body">
+                <div class="process-overview"><div><strong>8.2 t / hour</strong><span>Combined throughput</span></div><div class="capacity">On target</div></div>
+                <div><div class="line-label"><span>Line 01 · Fillet</span><b>92%</b></div><div class="progress"><i style="width:92%"></i></div></div>
+                <div><div class="line-label"><span>Line 02 · Whole fish</span><b>78%</b></div><div class="progress"><i style="width:78%"></i></div></div>
+                <div><div class="line-label"><span>Line 03 · Freezing</span><b>91%</b></div><div class="progress"><i style="width:91%"></i></div></div>
+                <div class="process-flow" aria-label="Process stages">
+                  <span class="flow-step"><i>01</i>Intake</span><span class="flow-arrow">›</span><span class="flow-step"><i>02</i>Sort</span><span class="flow-arrow">›</span><span class="flow-step warn"><i>03</i>Process</span><span class="flow-arrow">›</span><span class="flow-step"><i>04</i>Freeze</span><span class="flow-arrow">›</span><span class="flow-step"><i>05</i>Store</span>
+                </div>
+              </div>
+            </article>
+          </section>
+
+          <section class="grid bottom-grid">
+            <article class="card table-card">
+              <div class="card-heading"><div><h2 class="card-title">Recent catch lots</h2><p class="card-subtitle">Traceable from catch intake through cold storage</p></div><span class="select-chip">View all ↗</span></div>
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>Lot ID</th><th>Species</th><th>Catch area</th><th>Weight</th><th>Received</th><th>Status</th></tr></thead>
+                  <tbody>
+                    <tr><td class="lot-id">AM-240918-08</td><td class="species">Atlantic cod</td><td>Barents Sea</td><td>12,480 kg</td><td>16:42 UTC</td><td><span class="badge">In cold store</span></td></tr>
+                    <tr><td class="lot-id">AM-240918-07</td><td class="species">Haddock</td><td>Barents Sea</td><td>8,215 kg</td><td>15:18 UTC</td><td><span class="badge">Quality passed</span></td></tr>
+                    <tr><td class="lot-id">AM-240918-06</td><td class="species">Atlantic cod</td><td>Norwegian Sea</td><td>15,040 kg</td><td>14:06 UTC</td><td><span class="badge processing">Processing</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <button class="text-link" id="lots-link">Open traceability log <span aria-hidden="true">↗</span></button>
+            </article>
+
+            <article class="card alerts-card">
+              <div class="card-heading"><div><h2 class="card-title">Attention required</h2><p class="card-subtitle"><span id="open-alert-count">2 active</span> · Latest vessel alerts</p></div><span class="select-chip">All alerts</span></div>
+              <div class="alert-list" id="alert-list">
+                <div class="alert-item critical" data-alert>
+                  <span class="alert-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m10.3 4.4-7.1 12.3A2 2 0 0 0 5 19.7h14a2 2 0 0 0 1.8-3l-7.1-12.3a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4m0 3h.01"/></svg></span>
+                  <span class="alert-copy"><strong>Freezer 2 temperature high</strong><small>Cold storage · −16.8°C (target −18°C)</small></span>
+                  <span class="alert-time">12 min</span>
+                  <button class="resolve-button" aria-label="Acknowledge freezer temperature alert">Acknowledge</button>
+                </div>
+                <div class="alert-item" data-alert>
+                  <span class="alert-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+                  <span class="alert-copy"><strong>Line 2 downtime above threshold</strong><small>Whole fish line · 18 min downtime today</small></span>
+                  <span class="alert-time">38 min</span>
+                  <button class="resolve-button" aria-label="Acknowledge line downtime alert">Acknowledge</button>
+                </div>
+              </div>
+            </article>
+          </section>
+        </main>
+      </div>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script>
+      const toast = document.querySelector("#toast");
+      let toastTimer;
+
+      function announce(message) {
+        toast.textContent = message;
+        toast.classList.add("visible");
+        window.clearTimeout(toastTimer);
+        toastTimer = window.setTimeout(() => toast.classList.remove("visible"), 2600);
+      }
+
+      document.querySelectorAll(".nav button").forEach((button) => {
+        button.addEventListener("click", () => {
+          document.querySelector(".nav button.active")?.classList.remove("active");
+          document.querySelector(".nav button[aria-current='page']")?.removeAttribute("aria-current");
+          button.classList.add("active");
+          button.setAttribute("aria-current", "page");
+          const section = button.dataset.section;
+          document.querySelector("#breadcrumb").textContent = section;
+          document.querySelector("h1").textContent = section;
+          announce(`${section} selected · demo preview`);
+        });
+      });
+
+      document.querySelectorAll("[data-period]").forEach((button) => {
+        button.addEventListener("click", () => {
+          document.querySelector("[data-period].active")?.classList.remove("active");
+          button.classList.add("active");
+          announce(`Showing ${button.dataset.period} · sample data`);
+        });
+      });
+
+      document.querySelectorAll(".resolve-button").forEach((button) => {
+        button.addEventListener("click", () => {
+          const item = button.closest("[data-alert]");
+          item.classList.add("resolved");
+          button.textContent = "Acknowledged";
+          button.disabled = true;
+          const remaining = document.querySelectorAll("[data-alert]:not(.resolved)").length;
+          document.querySelector("#open-alert-count").textContent = `${remaining} active`;
+          document.querySelector("#notification-count").textContent = remaining;
+          if (remaining === 0) {
+            document.querySelector("#notification-count").hidden = true;
+            document.querySelector("#alert-list").insertAdjacentHTML("beforeend", '<p class="empty-alerts">All clear. No active alerts.</p>');
+          }
+          announce("Alert acknowledged · recorded in this demo");
+        });
+      });
+
+      document.querySelector("#export").addEventListener("click", () => announce("Report export is a demo interaction."));
+      document.querySelector("#notifications").addEventListener("click", () => announce("You have 2 active vessel alerts."));
+      document.querySelector("#help").addEventListener("click", () => announce("Fleet operations demo · sample data only."));
+      document.querySelector("#lots-link").addEventListener("click", () => announce("Opening traceability log · demo preview."));
+    </script>
+  </body>
+</html>
