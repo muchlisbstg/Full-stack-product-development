@@ -40,6 +40,10 @@ ollama pull llama3.2
 
 Then select **Ollama**, leave the server URL as `http://localhost:11434`, choose `llama3.2`, and use **Test connection** to load installed models. For OpenAI, select **OpenAI**, enter your API key, and load models or type a model ID. Your key is held in memory for the current page session only and must be entered again after a refresh.
 
+## Factory trawler dashboard preview
+
+A standalone, responsive UI concept for factory-trawler fleet operations is available at `/factory-trawler-preview.html` while the Vite development server is running. The dashboard uses illustrative sample data and demo-only interactions; it does not connect to vessel systems or control equipment.
+
 ## Production build
 
 ```bash
@@ -47,7 +51,7 @@ npm run build
 npm start
 ```
 
-The production server serves the built client and API from `http://127.0.0.1:8787` by default. Set `PORT` in `.env` to change the API port.
+The production server serves the built client and API from `http://127.0.0.1:8787` by default. The standalone dashboard preview is also available at `/factory-trawler-preview.html`. Set `PORT` in `.env` to change the API port.
 
 ## Scripts
 
