@@ -127,4 +127,60 @@ No separate source file for GDES AI Governance v1.0 or the Frontend, Cybersecuri
 
 **HOLD — Wider Rollout.** This reconciliation is an initial draft based on the files and governance decisions currently verified in the pilot context. It does not assert that the domain registers are complete, that security tests passed, that CI passed, or that independent review/approval occurred.
 
+## 10. Infrastructure and Hosting Register — initial baseline
+
+This section establishes the infrastructure register baseline from the Export Client RT-03 evidence already recorded in `muchlisbstg/export-client-mobile-sync`. It does not imply that the GDES Infrastructure Register existed previously as an approved Google Sheet or standalone source file. Provider/account access, funding, and runtime authority remain distinct facts.
+
+| ID | Service / asset | Function and environment | Classification | Funding / provisioning | Region | Evidence and current assessment | Reviewer / approval |
+|---|---|---|---|---|---|---|---|
+| GDES-INF-001 | Hostinger | Intended future hosting target for Export Client | Planned target | **PLANNED — UNFUNDED**; no service plan or provisioned runtime evidenced | Not assigned | RT-03B records target intent only; no VPS, IP/SSH, API process, database, or deployment evidence | Reviewer pending; not approved |
+| GDES-INF-002 | Vercel project `export-client-mobile-sync` | Existing project/deployment record; API authority unverified | Existing supporting platform | Project exists; no project environment variables were inventoried | Deployment record region iad1 | Production-target deployment is READY at recorded SHA, but no evidence establishes it as the authoritative Express API runtime; do not infer API health from deployment state | Technical review pending; not approved as API runtime |
+| GDES-INF-003 | Supabase `export-client-staging` | PostgreSQL staging inventory only | Existing staging service | Active/healthy staging project; no production role inferred | ap-south-1 (Mumbai) | PostgreSQL 17.11 catalog inspection recorded 2026-11-11; 0 application relations, 0 app migrations and 0 RLS policies in the inspected snapshot. Staging only; catalog inventory is not runtime integrity proof | Independent Database review pending |
+| GDES-INF-004 | Authoritative API runtime | Export Client API runtime | Required capability / not verified | Blocked pending funded hosting and connection evidence | Not established | RT-03D NOT STARTED; repository configuration and Vercel deployment metadata do not prove effective runtime configuration | Security/technical review pending |
+| GDES-INF-005 | Actual application database integrity | Connected application database | Required verification / not verified | Blocked pending confirmed actual DB connection | Not established | RT-03E NOT STARTED; no full integrity check or app-data verification claimed | Independent Database review pending |
+
+**Required register fields:** repository/service reference, function, license or vendor terms (where applicable), Web/Mobile/Desktop/backend compatibility, priority, audit status, acceptance criteria, evidence, owner, reviewer, approval, funding status, environment, region, and review date. Unknown values MUST remain `NOT VERIFIED`; do not infer licenses, compatibility, provisioning, or approval.
+
+**RT-03 linkage:** RT-03A Source Inventory = RECORDED; RT-03B Infrastructure Target = RECORDED; RT-03C Staging Inventory = RECORDED; RT-03D Runtime Verification = NOT STARTED; RT-03E Database Integrity = NOT STARTED. RT-03 overall remains IN PROGRESS and P0 Release Readiness remains BLOCKED. The two historical Supabase catalog fingerprints (26 versus 27 RLS-enabled relations) are separate snapshots and require provenance/scope reconciliation before comparison.
+
+## 11. Cross-register reconciliation status and source gaps
+
+| Register | Current reconciled baseline | Source completeness | Outstanding work | Status |
+|---|---|---|---|---|
+| AI Governance | Root `AGENTS.md`, pilot validation plan, and governance decisions mapped to master sections 5, 6, 12–15 | No standalone AI Governance v1.0 source file verified | Run GAI-01–GAI-10; preserve NOT TESTED until runtime evidence; independent review | Draft / NOT TESTED |
+| Frontend Design | GDES-UX-001–012 baseline; Impeccable Recommended Practice; UI/UX Pro Max and Taste experimental; HUE Recommended Practice | Original source register / Google Sheet not retrieved | Populate exact repository, function, license, Web/Mobile/Desktop compatibility, priority, audit status, acceptance criteria, evidence, reviewer, approval; compare experiment results | Initial baseline only |
+| Cybersecurity | GDES-SEC-001–011 baseline | Original source register / Google Sheet not retrieved | Map controls to threat model and accepted framework; attach test evidence; independent Security review | Initial baseline only |
+| SDLC | GDES-SDLC-001–008 baseline; six approval gates | Original source register / Google Sheet not retrieved | Assign gate owners and project-specific exit artifacts; verify approval workflow | Initial baseline only |
+| Infrastructure | GDES-INF-001–005 baseline in section 10 | No prior official GDES Infrastructure Register / Google Sheet verified | Link canonical source if it exists; otherwise approve this repository register as the controlled baseline; update only with verified evidence | Initial baseline only |
+| Technology / Repository Evaluation | Classification rules established in master section 9 | Detailed tool inventory not reconciled in this pass | Link source catalog; validate licenses, versions, compatibility, cost, and risk | Pending |
+
+### 11.1 Reconciliation completeness rules
+
+- This pass reconciles the available pilot artifacts and recorded decisions; it does not claim to have retrieved missing external sheets or unlinked source registers.
+- No row may be marked PASS or APPROVED without test evidence or explicit human approval, respectively.
+- Tool/repository metadata (license, version, compatibility, maintenance, cost) must be verified against the actual upstream source before a recommendation is finalized.
+- The canonical Google Sheets source remains unresolved because the connected Google Drive/Sheets access is unavailable in this workspace. A supplied file/link or later authorized connector access is required to reconcile external workbook rows.
+- Until source artifacts are linked and domain reviewers sign off, the register is an initial normalized baseline, not a complete audit of all historical registers.
+
+## 12. Updated action register
+
+| ID | Action | Owner | Exit criteria | Status |
+|---|---|---|---|---|
+| RECON-001 | Review and approve GDES Master Standard v1.0 | Standards Owner | Explicit decision and approval evidence | Pending |
+| RECON-002 | Identify/link official source Google Sheets and domain registers | Standards Owner | Canonical source link, owner, version and access confirmed | Blocked — source not available |
+| RECON-003 | Complete Frontend Register metadata and source validation | Frontend/Design reviewer | Repository, function, license, compatibility, priority, audit, acceptance, evidence, reviewer and approval fields verified | Pending |
+| RECON-004 | Validate Cybersecurity Register against threat model and control framework | Independent Security Reviewer | Coverage, tests, findings and sign-off | Pending |
+| RECON-005 | Validate SDLC Register with project owners | QA/Delivery owner | Gate owners, required artifacts and approval workflow | Pending |
+| RECON-006 | Update root `AGENTS.md` to reference approved master version | Repository maintainer | Master approved; implementation copy reviewed and aligned | Blocked pending approval |
+| RECON-007 | Run GAI-01 to GAI-10 and SEC-GDES tests in isolated fixtures | Test operator + reviewers | Reproducible evidence per test | NOT TESTED |
+| RECON-008 | Run pilot CI and retain logs/artifacts tied to commit SHA | Repository maintainer | Relevant workflow logs and artifact links | NOT TESTED |
+| RECON-009 | Independent review and rollout decision | Independent reviewers + Standards Owner | Findings dispositioned and explicit approval | Pending |
+| RECON-010 | Reconcile GDES Infrastructure Register with canonical workbook/source | Standards Owner / Infrastructure owner | Source linked or repository register explicitly adopted; Hostinger remains PLANNED — UNFUNDED until provisioned | Pending |
+| RECON-011 | Keep Export Client PR #145 Draft and unmerged | Repository maintainer | Draft state and no merge/deploy action | Ongoing constraint |
+
+## 13. Current decision
+
+**HOLD — Wider Rollout.** The Master Standard now includes an infrastructure governance baseline. The reconciliation register contains initial normalized baselines for AI Governance, Frontend, Cybersecurity, SDLC, and Infrastructure. However, source workbook completeness, repository/license metadata, runtime tests, independent reviews, and formal approval remain outstanding. This is not a declaration that all registers are fully audited or approved.
+
 **End of GDES Master Reconciliation Register v1.0 — Draft for Review.**
+
