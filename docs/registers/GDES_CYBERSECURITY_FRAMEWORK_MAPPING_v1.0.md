@@ -216,7 +216,7 @@ The intended generated catalogs are:
 - `GDES_UPSTREAM_LICENSE_SNAPSHOT_REGISTER_v1.0.csv`
 - `GDES_SOURCE_EXTRACTION_MANIFEST_v1.0.json`
 
-The extraction workflow has not yet produced a verified successful run. The first two observed workflow attempts failed during checkout due to an incorrect ref value; the workflow has since been corrected to use the branch name. Do not claim the catalogs above have been generated or verified until a successful Actions run and remote artifact/file read-back are recorded.
+The corrected branch-scoped extraction workflow completed successfully in GitHub Actions run [42972384713](https://github.com/muchlisbstg/Full-stack-product-development/actions/runs/42972384713). Generated catalogs were committed to the pilot branch at commit `7e06abbe46960e02c0bdd583111575eb96116207` and read back from GitHub. Earlier checkout and push-race failures are retained in Actions history; they do not supersede the successful final run.
 
 ### 9.5 Mapping disposition
 
@@ -227,3 +227,72 @@ The extraction workflow has not yet produced a verified successful run. The firs
 - All candidate mappings require independent Security Reviewer disposition. Database mappings and database-engine assurance remain within the separate GDES-DB supplement and Independent Database Reviewer scope.
 
 **Status: SOURCE COMMIT AND LICENSE SNAPSHOTS VERIFIED — AUTOMATED CATALOG GENERATION NOT YET VERIFIED — MAPPING REVIEW REQUIRED — NOT APPROVED.**
+
+
+## 10. Generated metadata catalogs and traceability results — 2026-11-11
+
+<badge>Source extraction successful — mapping review still required</badge>
+
+**Execution evidence**
+- GitHub Actions: [GDES Cybersecurity Source Reconciliation — run 42972384713](https://github.com/muchlisbstg/Full-stack-product-development/actions/runs/42972384713)
+- Generated commit: `7e06abbe46960e02c0bdd583111575eb96116207`
+- Branch: `gdes/ai-governance-v1-pilot`
+- All generated files listed below were fetched again from the branch after the successful run.
+
+### 10.1 Verified source extraction counts
+
+| Catalog | Source records | Extraction result |
+|---|---:|---|
+| MASVS controls | 24 | All 24 controls extracted |
+| MASWE v1.0.0 | 78 | All IDs and titles present |
+| MASWE beta alias crosswalk | 118 beta IDs | Official release asset mapping |
+| MASTG test paths | 292 | 200 structured weakness-linked tests; 92 legacy paths |
+| MASWE–MASTG traceability | 236 rows | Includes source-linked rows and explicit no-test rows |
+| ASVS v5.0.0 | 345 requirements | 345 candidate-mapped; zero unmapped |
+| TCASVS v5.0.0 | 132 requirements | All 132 have chapter-based candidate links |
+| SAMM v2.2.0 | 90 activities | Activity GUID and practice mapping extracted |
+| SAMM v2.2.0 | 90 questions | All 90 questions linked to activity GUIDs |
+| Upstream licenses | 6 snapshots | All six identify CC BY-SA 4.0 |
+
+### 10.2 MASWE–MASTG source mapping exceptions
+
+The official release asset `OWASP_MASWE.yaml` was downloaded in the successful Actions run and preserved as `OWASP_MASWE_v1.0.0_BETA_MAPPING_SOURCE.yaml`.
+
+- Asset SHA-256: `55288b0ff60003691a877a693f28f07455a5352d5c0f9163b434b5a9e4b563d7`.
+- The asset contains 78 stable weaknesses and 118 beta alias IDs.
+- Seven beta IDs map to multiple stable targets. These are preserved exactly as the release asset defines them; the GDES mapping does not collapse them.
+- `MASWE-0097` is referenced by four MASTG tests but has no stable target in the official v1.0.0 mapping asset. `MASWE-0051` is a semantic candidate because its stable title is Root/Jailbreak Detection Not Implemented, but the source asset does not provide this alias. It remains **UNRESOLVED — NOT SOURCE-MAPPED** pending reviewer disposition.
+- The catalog contains 38 stable MASWE weaknesses with no MASTG test link. The MASWE release article reports 36. The +2 discrepancy remains open for reconciliation.
+
+### 10.3 MASTG source count discrepancy
+
+The pinned MASTG v2.0.0 tree contains 292 unique test Markdown paths: 200 in `tests-beta/` with structured weakness metadata and 92 in legacy `tests/`. The official release announcement reports 285 tests. The counts are not treated as equivalent; retain the complete tree inventory and require reviewer disposition of the seven-path discrepancy.
+
+### 10.4 Individual mapping method and limitations
+
+- **ASVS:** all 345 requirement IDs are emitted individually. Existing explicit section ranges are used first; remaining requirements receive chapter-level candidate controls. Every row remains `CANDIDATE — REVIEW REQUIRED`; a complete row inventory does not mean semantic approval.
+- **TCASVS:** all 132 requirements are emitted individually with chapter-based candidate GDES controls. Requirement-level semantic review remains required.
+- **SAMM:** all 90 activity GUIDs are emitted with practice-code candidate controls and linked question IDs/text. All 90 question records link to an activity GUID. These are traceability candidates, not a SAMM maturity score or an assertion of GDES compliance.
+- **MASVS/MASWE/MASTG:** MASWE controls are read from `mappings.masvs-v2`; MASTG weakness references are translated through the official MASWE v1.0.0 `mappings.maswe-beta` asset. Unknown IDs are reported separately rather than guessed.
+
+### 10.5 Generated files — remote read-back verified
+
+Under `docs/registers/data/`:
+
+1. `GDES_MASVS_CONTROL_CATALOG_v1.0.csv`
+2. `GDES_MASWE_CATALOG_v1.0.0.csv`
+3. `GDES_MASWE_BETA_ALIAS_CROSSWALK_v1.0.0.csv`
+4. `GDES_MASWE_BETA_ALIAS_FINDINGS_v1.0.0.csv`
+5. `GDES_MASTG_TEST_CATALOG_v2.0.0.csv`
+6. `GDES_MASWE_MASTG_TRACEABILITY_v1.0.0.csv`
+7. `GDES_ASVS_REQUIREMENT_CATALOG_v5.0.0.csv`
+8. `GDES_TCASVS_REQUIREMENT_CATALOG_v5.0.0.csv`
+9. `GDES_SAMM_ACTIVITY_CATALOG_v2.2.0.csv`
+10. `GDES_SAMM_QUESTION_CATALOG_v2.2.0.csv`
+11. `GDES_UPSTREAM_LICENSE_SNAPSHOT_REGISTER_v1.0.csv`
+12. `GDES_SOURCE_EXTRACTION_MANIFEST_v1.0.json`
+13. `OWASP_MASWE_v1.0.0_BETA_MAPPING_SOURCE.yaml`
+
+### 10.6 Current disposition
+
+**EXTRACTION COMPLETE AND REMOTE-VERIFIED — SOURCE MAPPING PARTIAL DUE TO EXPLICIT FINDINGS — LICENSE SNAPSHOTS VERIFIED — INDEPENDENT REVIEW NOT STARTED — NOT APPROVED.**
