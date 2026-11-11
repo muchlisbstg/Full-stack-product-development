@@ -336,3 +336,18 @@ The crosswalks retain unresolved rows and identify SEC-012 only as a non-canonic
 - Standards Owner approval: NOT RECORDED.
 - SEC-012: PROPOSED ONLY; NOT CANONICAL.
 - GDES: DRAFT — NOT APPROVED.
+
+
+## 18. Adjudication follow-up — 2026-11-11
+
+A source-based AI-assisted proposal register has been created for all 45 GAP/context rows:
+`data/GDES_CYBERSECURITY_45_GAP_ADJUDICATION_v0.1.csv`.
+
+Initial row-level primary/supporting QA findings have also been recorded:
+- `data/GDES_ASVS_MAPPING_QA_FINDINGS_v0.1.csv` — 26 candidate corrections.
+- `data/GDES_TCASVS_MAPPING_QA_FINDINGS_v0.1.csv` — 34 candidate corrections.
+- `data/GDES_SAMM_MAPPING_QA_FINDINGS_v0.1.csv` — 47 candidate corrections.
+
+These 107 findings are candidate corrections, not yet applied to the v0.1 crosswalks. They reveal over-broad multi-primary mappings, incorrect primary owners and irrelevant supporting links. The 567-row inventory is complete, but every remaining primary and supporting mapping has not yet been individually adjudicated. See `GDES_CYBERSECURITY_MAPPING_ADJUDICATION_STATUS_v0.1.md` for exact completion boundaries and closure sequence.
+
+Status remains AI-assisted working review; Standards Owner validation pending; GDES DRAFT — NOT APPROVED.
