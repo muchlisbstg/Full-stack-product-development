@@ -61,6 +61,20 @@ ASVS_RANGES = {
     "GDES-SEC-010": ["2.3.1-2.3.5", "15.1.1-15.2.5", "15.3.1-15.3.7", "15.4.1-15.4.4", "16.3.1-16.3.4"],
     "GDES-SEC-011": ["15.3.1-15.3.7", "16.3.1-16.3.4"],
 }
+ASVS_CHAPTER_TO_GDES = {
+    "V1": ["GDES-SEC-004"],
+    "V2": ["GDES-SEC-003", "GDES-SEC-004"],
+    "V3": ["GDES-SEC-004", "GDES-SEC-005", "GDES-SEC-006", "GDES-SEC-009"],
+    "V4": ["GDES-SEC-002", "GDES-SEC-003", "GDES-SEC-005"],
+    "V5": ["GDES-SEC-004", "GDES-SEC-006", "GDES-SEC-008"],
+    "V6": ["GDES-SEC-002"], "V7": ["GDES-SEC-002"], "V8": ["GDES-SEC-003"],
+    "V9": ["GDES-SEC-002", "GDES-SEC-003"], "V10": ["GDES-SEC-002", "GDES-SEC-003", "GDES-SEC-005"],
+    "V11": ["GDES-SEC-006"], "V12": ["GDES-SEC-005"],
+    "V13": ["GDES-SEC-007", "GDES-SEC-008", "GDES-SEC-009"],
+    "V14": ["GDES-SEC-006", "GDES-SEC-009"],
+    "V15": ["GDES-SEC-001", "GDES-SEC-004", "GDES-SEC-008", "GDES-SEC-010"],
+    "V16": ["GDES-SEC-009", "GDES-SEC-011"], "V17": ["GDES-SEC-005", "GDES-SEC-006"],
+}
 MASVS_TO_GDES = {
     "MASVS-STORAGE": ["GDES-SEC-006", "GDES-SEC-009"],
     "MASVS-CRYPTO": ["GDES-SEC-006"],
@@ -174,11 +188,16 @@ def main() -> None:
                            "profiles": d.get("profiles", []), "threat": d.get("threat", ""),
                            "attacks": d.get("attacks", []), "masvs_group": group, "masvs_v2_controls": masvs_ids,
                            "candidate_gdes_controls": MASVS_TO_GDES.get(group, []), "cwe": (d.get("mappings") or {}).get("cwe", []),
+                           "maswe_beta_ids": norm_list((d.get("mappings") or {}).get("maswe-beta")),
                            "source_path": f["path"], "source_blob_sha": f["sha"]})
     maswe_by_id = {r["id"]: r for r in maswe_rows}
+    beta_to_stable = defaultdict(list)
+    for weakness in maswe_rows:
+        for beta_id in weakness["maswe_beta_ids"]:
+            beta_to_stable[str(beta_id)].append(weakness["id"])
     write_csv("GDES_MASWE_CATALOG_v1.0.0.csv",
               ["id", "title", "alias", "requirement", "platforms", "profiles", "threat", "attacks", "masvs_group",
-               "masvs_v2_controls", "candidate_gdes_controls", "cwe", "source_path", "source_blob_sha"], maswe_rows)
+               "masvs_v2_controls", "candidate_gdes_controls", "cwe", "maswe_beta_ids", "source_path", "source_blob_sha"], maswe_rows)
 
     # MASTG: retain both structured v2 tests and legacy test files; never silently drop old paths.
     mastg_files = [x for x in trees["MASTG"] if x["type"] == "blob" and re.search(r"MASTG-TEST-\d+\.md$", x["path"])]
@@ -189,18 +208,30 @@ def main() -> None:
         platform = d.get("platform") or (parts[1] if len(parts) > 2 and parts[0] in ("tests", "tests-beta") else "")
         test_id = d.get("id") or Path(f["path"]).stem
         weakness = d.get("weakness", "")
+        source_weakness_ids = [str(x) for x in norm_list(weakness) if str(x).strip()]
+        stable_ids = []
+        unmapped_beta_ids = []
+        for source_id in source_weakness_ids:
+            targets = [source_id] if source_id in maswe_by_id else beta_to_stable.get(source_id, [])
+            if targets:
+                stable_ids.extend(targets)
+            else:
+                unmapped_beta_ids.append(source_id)
+        has_frontmatter = bool(d)
         test_rows.append({"test_id": test_id, "title": d.get("title", ""), "platform": platform,
-                          "test_type": d.get("type", []), "weakness_id": weakness, "profiles": d.get("profiles", []),
-                          "apis": d.get("apis", []), "knowledge_ids": d.get("knowledge", []),
-                          "best_practice_ids": d.get("best-practices", []), "metadata_status": "STRUCTURED" if weakness else "LEGACY_OR_NO_WEAKNESS_METADATA",
+                          "test_type": d.get("type", []), "source_weakness_ids": source_weakness_ids,
+                          "stable_maswe_ids": sorted(set(stable_ids)), "unmapped_beta_ids": sorted(set(unmapped_beta_ids)),
+                          "profiles": d.get("profiles", []), "apis": d.get("apis", []), "knowledge_ids": d.get("knowledge", []),
+                          "best_practice_ids": d.get("best-practices", []),
+                          "metadata_status": "STRUCTURED_WEAKNESS_LINK" if source_weakness_ids else ("STRUCTURED_NO_WEAKNESS_LINK" if has_frontmatter else "LEGACY_NO_FRONTMATTER"),
                           "source_path": f["path"], "source_blob_sha": f["sha"]})
     tests_by_weakness = defaultdict(list)
     for row in test_rows:
-        for wid in norm_list(row["weakness_id"]):
+        for wid in row["stable_maswe_ids"]:
             tests_by_weakness[str(wid)].append(row)
     write_csv("GDES_MASTG_TEST_CATALOG_v2.0.0.csv",
-              ["test_id", "title", "platform", "test_type", "weakness_id", "profiles", "apis", "knowledge_ids",
-               "best_practice_ids", "metadata_status", "source_path", "source_blob_sha"], test_rows)
+              ["test_id", "title", "platform", "test_type", "source_weakness_ids", "stable_maswe_ids", "unmapped_beta_ids",
+               "profiles", "apis", "knowledge_ids", "best_practice_ids", "metadata_status", "source_path", "source_blob_sha"], test_rows)
 
     relation_rows = []
     for wid, w in sorted(maswe_by_id.items()):
@@ -211,14 +242,18 @@ def main() -> None:
                                   "platform": "", "profiles": [], "test_type": [], "relation": "NO_MASTG_TEST_LINK_IN_PINNED_TREE",
                                   "gdes_controls_candidate": w["candidate_gdes_controls"]})
         for t in linked:
-            relation_rows.append({"maswe_id": wid, "maswe_title": w["title"], "masvs_group": w["masvs_group"],
-                                  "masvs_controls": w["masvs_v2_controls"], "mastg_test_id": t["test_id"],
+            source_refs = [source_id for source_id in t["source_weakness_ids"]
+                           if wid in ([source_id] if source_id in maswe_by_id else beta_to_stable.get(source_id, []))]
+            relation_rows.append({"maswe_id": wid, "maswe_title": w["title"], "maswe_beta_ids": w["maswe_beta_ids"],
+                                  "masvs_group": w["masvs_group"], "masvs_controls": w["masvs_v2_controls"],
+                                  "mastg_test_id": t["test_id"], "mastg_source_weakness_ids": source_refs,
                                   "platform": t["platform"], "profiles": t["profiles"], "test_type": t["test_type"],
-                                  "relation": "SOURCE_METADATA_WEAKNESS_FIELD", "gdes_controls_candidate": w["candidate_gdes_controls"]})
-    unknown_weaknesses = sorted({str(w) for t in test_rows for w in norm_list(t["weakness_id"]) if str(w) not in maswe_by_id})
+                                  "relation": "MASTG_WEAKNESS_METADATA_RESOLVED_THROUGH_MASWE_V1_BETA_ALIAS",
+                                  "gdes_controls_candidate": w["candidate_gdes_controls"]})
+    unknown_weaknesses = sorted({str(w) for t in test_rows for w in t["unmapped_beta_ids"] if str(w).strip()})
     write_csv("GDES_MASWE_MASTG_TRACEABILITY_v1.0.0.csv",
-              ["maswe_id", "maswe_title", "masvs_group", "masvs_controls", "mastg_test_id", "platform", "profiles",
-               "test_type", "relation", "gdes_controls_candidate"], relation_rows)
+              ["maswe_id", "maswe_title", "maswe_beta_ids", "masvs_group", "masvs_controls", "mastg_test_id",
+               "mastg_source_weakness_ids", "platform", "profiles", "test_type", "relation", "gdes_controls_candidate"], relation_rows)
 
     # ASVS requirement-level catalogue and candidate mapping based on existing explicit section ranges.
     asvs_text = text_of(SOURCES["ASVS"]["repo"], SOURCES["ASVS"]["ref"], SOURCES["ASVS"]["data"])
@@ -226,15 +261,20 @@ def main() -> None:
     for row in csv.DictReader(io.StringIO(asvs_text)):
         rid = row.get("req_id", "")
         candidates = [gid for gid, ranges in ASVS_RANGES.items() if in_ranges(rid, ranges)]
+        mapping_method = "SECTION_RANGE_CANDIDATE"
+        if not candidates:
+            candidates = ASVS_CHAPTER_TO_GDES.get(row.get("chapter_id", ""), [])
+            mapping_method = "CHAPTER_CANDIDATE"
         asvs_rows.append({"requirement_id": "v5.0.0-" + rid, "chapter_id": row.get("chapter_id", ""),
                           "chapter_name": row.get("chapter_name", ""), "section_id": row.get("section_id", ""),
                           "section_name": row.get("section_name", ""), "requirement": row.get("req_description", ""),
                           "verification_level": row.get("L", ""), "candidate_gdes_controls": candidates,
+                          "mapping_method": mapping_method,
                           "mapping_status": "CANDIDATE — REVIEW REQUIRED" if candidates else "UNMAPPED — REVIEW REQUIRED",
                           "source_path": SOURCES["ASVS"]["data"]})
     write_csv("GDES_ASVS_REQUIREMENT_CATALOG_v5.0.0.csv",
               ["requirement_id", "chapter_id", "chapter_name", "section_id", "section_name", "requirement",
-               "verification_level", "candidate_gdes_controls", "mapping_status", "source_path"], asvs_rows)
+               "verification_level", "candidate_gdes_controls", "mapping_method", "mapping_status", "source_path"], asvs_rows)
 
     # TCASVS requirement-level catalogue from all six tagged chapter source files.
     tcasvs_rows = []
@@ -306,12 +346,14 @@ def main() -> None:
     duplicate_test_ids = [k for k, v in Counter(x["test_id"] for x in test_rows).items() if v > 1]
     manifest["sources"] = {k: {"repository": v["repo"], "version": v["version"], "commit": v["ref"]} for k, v in SOURCES.items()}
     manifest["counts"] = {"masvs_controls": len(masvs_rows), "maswe_weaknesses": len(maswe_rows),
-                          "mastg_test_files": len(test_rows), "mastg_structured_weakness_tests": sum(1 for x in test_rows if x["weakness_id"]),
+                          "mastg_test_files": len(test_rows), "mastg_structured_weakness_tests": sum(1 for x in test_rows if x["source_weakness_ids"]),
+                          "maswe_beta_alias_ids": len(beta_to_stable),
                           "maswe_mastg_relation_rows": len(relation_rows), "asvs_requirements": len(asvs_rows),
                           "tcasvs_requirements": len(tcasvs_rows), "samm_activities": len(samm_rows), "samm_questions": len(questions)}
     manifest["checks"] = {"maswe_missing_id_or_title": [x["source_path"] for x in maswe_rows if not x["id"] or not x["title"]],
                           "mastg_missing_id": [x["source_path"] for x in test_rows if not x["test_id"]],
                           "mastg_duplicate_ids": duplicate_test_ids, "mastg_unknown_weakness_refs": unknown_weaknesses,
+                          "maswe_beta_aliases_with_multiple_targets": {k: v for k, v in beta_to_stable.items() if len(v) > 1},
                           "maswe_without_test_link": [x["id"] for x in maswe_rows if not tests_by_weakness.get(x["id"])],
                           "asvs_unmapped_requirement_count": sum(1 for x in asvs_rows if not x["candidate_gdes_controls"]),
                           "license_rows_unverified": [x["framework"] for x in license_rows if x["verification_status"] != "SOURCE FILE VERIFIED"],
