@@ -1,6 +1,6 @@
 # GDES-REP-001 — 33-case Agent Runtime Validation Matrix
 
-**Status: NOT RUN — requires the actual Claude Code, Codex and VS Code/Copilot runtimes.**
+**Runtime status: NOT RUN — actual Claude Code, Codex and VS Code/Copilot runtimes are required. Static layout CI has passed; this does not establish runtime compatibility.**
 
 This matrix separates native runtime loading/invocation from static metadata and
 folder-layout simulation. A GitHub Actions Ubuntu runner that does not have
@@ -97,10 +97,16 @@ or unverified side effect is NOT TESTED or FAIL, never PASS.
 
 ## Current disposition
 
-- Static source metadata: 11/11 PASS in the previous CI run.
-- Upstream Python unit tests: 57/57 PASS in run `42981317231`.
-- Updated layout/adaptation validation: waiting for current workflow run.
+- Static source metadata: 11/11 PASS in run `42983181464`.
+- Upstream Python unit tests: 57/57 PASS in run `42983181464`.
+- Native discovery layout simulation: 33/33 PASS (11 static copies per platform path) in run `42983181464`.
+- GDES adaptation overlays: 7/7 PASS (static validation) in run `42983181464`.
+- Resolver helper inventory: 6/6 PASS (presence/allowlist check) in run `42983181464`.
 - Claude Code runtime cases: NOT RUN.
 - Codex runtime cases: NOT RUN.
 - VS Code/Copilot runtime cases: NOT RUN.
+- Negative runtime cases: NOT RUN.
 - Standards Owner adoption decision: PENDING.
+
+CI evidence: https://github.com/muchlisbstg/Full-stack-product-development/actions/runs/42983181464
+Artifact: https://github.com/muchlisbstg/Full-stack-product-development/actions/runs/42983181464/artifacts/13837959420
