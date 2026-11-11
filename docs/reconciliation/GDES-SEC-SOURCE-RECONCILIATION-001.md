@@ -199,3 +199,46 @@ Safe work may continue on framework source-pin verification, license verificatio
 **Current disposition: DRAFT — SOURCE RECONCILIATION IN PROGRESS — NOT APPROVED.**
 
 No runtime test, independent review, legal review, procurement, or approval is claimed.
+
+
+## 6. Final pinned-source extraction result — 2026-11-11
+
+The corrected extraction pipeline completed successfully in [GitHub Actions run 42972384713](https://github.com/muchlisbstg/Full-stack-product-development/actions/runs/42972384713). Generated catalogs were committed at `7e06abbe46960e02c0bdd583111575eb96116207` and read back from the pilot branch.
+
+### 6.1 Source record counts
+
+| Source | Records |
+|---|---:|
+| MASVS controls | 24 |
+| MASWE v1.0.0 stable weaknesses | 78 |
+| MASWE v1.0.0 beta alias IDs | 118 |
+| MASTG test paths | 292 (200 structured v2 tests; 92 legacy paths) |
+| ASVS v5.0.0 requirements | 345 |
+| TCASVS v5.0.0 requirements | 132 |
+| SAMM v2.2.0 activities | 90 |
+| SAMM v2.2.0 questions | 90 |
+| Upstream license snapshots | 6 |
+
+### 6.2 MASWE beta alias reconciliation
+
+The official MASWE v1.0.0 release asset `OWASP_MASWE.yaml` was downloaded by the extractor and preserved in `docs/registers/data/OWASP_MASWE_v1.0.0_BETA_MAPPING_SOURCE.yaml`.
+
+- Asset SHA-256: `55288b0ff60003691a877a693f28f07455a5352d5c0f9163b434b5a9e4b563d7`.
+- 118 beta IDs map to stable weaknesses.
+- Seven beta IDs map to multiple stable weaknesses; all source targets are preserved.
+- `MASWE-0097` is referenced by four MASTG tests but is absent from the official stable alias mapping. Stable `MASWE-0051` is a semantic candidate only, not a source-backed alias.
+- 38 stable weaknesses have no linked MASTG test in the extracted tree, versus 36 in the release article.
+
+### 6.3 Count and mapping exceptions
+
+- MASTG v2.0.0 tree: 292 unique test Markdown paths, while the release announcement reports 285 tests. The seven-path difference remains open.
+- ASVS: 345 requirement rows; 282 use section-range candidate mappings and 63 use chapter-level fallback. All are candidates, not approved mappings.
+- TCASVS: 132 requirement rows with chapter-level candidate mappings.
+- SAMM: 90 activity GUIDs and 90 linked questions; practice-to-GDES mappings remain candidates.
+- All six exact upstream license snapshots identify CC BY-SA 4.0; legal review of attribution and ShareAlike obligations remains separate.
+
+### 6.4 Source artifacts
+
+See `docs/registers/data/GDES_SOURCE_EXTRACTION_MANIFEST_v1.0.json` for counts and checks, `GDES_MASWE_BETA_ALIAS_CROSSWALK_v1.0.0.csv` for the official alias map, and `GDES_MASWE_BETA_ALIAS_FINDINGS_v1.0.0.csv` for unresolved/multi-target items.
+
+**Final source disposition: EXTRACTED AND REMOTE-VERIFIED — CANONICAL GDES MAPPING PARTIAL — OPEN FINDINGS RETAINED — NOT APPROVED.**
