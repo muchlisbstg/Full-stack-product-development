@@ -145,3 +145,48 @@ A MASTG inventory discrepancy must be explicitly reviewed: the pinned tree conta
 This package remains **INTERNAL DRAFT — NOT ISSUED**. The procurement ceiling is deferred. No candidate search/contact, NDA, appointment, non-public evidence disclosure, independent review, or expense is authorized. Reopening requires both confirmed budget availability and explicit renewed authorization from the Standards Owner.
 
 **Handoff readiness: DOCUMENT INDEX READY — SOURCE METADATA EXTRACTION NOT VERIFIED — NOT ISSUED — REVIEWERS NOT APPOINTED.**
+
+
+## 8. Final source-extraction evidence and findings handoff — 2026-11-11
+
+### 8.1 Successful extraction evidence
+
+- Actions run: [42972384713 — SUCCESS](https://github.com/muchlisbstg/Full-stack-product-development/actions/runs/42972384713)
+- Generated commit: `7e06abbe46960e02c0bdd583111575eb96116207`
+- Source/metadata outputs were read back from `gdes/ai-governance-v1-pilot`.
+- Verified counts: MASVS 24; MASWE 78; MASWE beta aliases 118; MASTG 292 paths (200 structured, 92 legacy); ASVS 345; TCASVS 132; SAMM 90 activities and 90 questions; license snapshots 6.
+
+### 8.2 Mandatory pre-review documents
+
+- [Canonical Control Dictionary](GDES_CYBERSECURITY_CONTROL_DICTIONARY_v1.0.md) — proposed, Standards Owner decision pending in [Issue #40](https://github.com/muchlisbstg/Full-stack-product-development/issues/40).
+- [Acceptance Criteria Matrix](GDES-SEC-ACCEPTANCE-MATRIX-001.md).
+- [Framework Mapping and generated catalog index](GDES_CYBERSECURITY_FRAMEWORK_MAPPING_v1.0.md).
+- [Database Security Supplement](GDES_DATABASE_SECURITY_SUPPLEMENT_v1.0.md).
+- [Operational Security Supplement](GDES_OPERATIONAL_SECURITY_SUPPLEMENT_v1.0.md).
+- [Completeness Check](GDES_CYBERSECURITY_COMPLETENESS_CHECK_v1.0.md).
+- [Findings Register](GDES_CYBERSECURITY_FINDINGS_REGISTER_v1.0.md).
+- [Source Extraction Manifest](data/GDES_SOURCE_EXTRACTION_MANIFEST_v1.0.json).
+- [MASWE–MASTG Traceability](data/GDES_MASWE_MASTG_TRACEABILITY_v1.0.0.csv).
+- [ASVS requirement catalog](data/GDES_ASVS_REQUIREMENT_CATALOG_v5.0.0.csv).
+- [TCASVS requirement catalog](data/GDES_TCASVS_REQUIREMENT_CATALOG_v5.0.0.csv).
+- [SAMM activity catalog](data/GDES_SAMM_ACTIVITY_CATALOG_v2.2.0.csv).
+- [Upstream License Snapshot Register](data/GDES_UPSTREAM_LICENSE_SNAPSHOT_REGISTER_v1.0.csv).
+
+### 8.3 Required reviewer attention
+
+The independent Security Reviewer must explicitly disposition:
+- The unresolved MASTG beta reference `MASWE-0097` in four tests; `MASWE-0051` is a semantic candidate only.
+- Seven source-defined beta IDs that map to multiple stable MASWE targets.
+- The 38 versus 36 MASWE-without-test count difference.
+- The 292 tree-path versus 285 release-announcement MASTG count difference.
+- All 345 ASVS and 132 TCASVS requirement-level candidate mappings.
+- All 90 SAMM activity-level candidate mappings and their linked questions.
+- License attribution/ShareAlike obligations for any adapted or redistributed material.
+
+The independent Database Reviewer must separately review the DB supplement and the database-specific findings; framework mapping alone does not prove PostgreSQL RLS, composite tenant FKs, transaction/concurrency safety, temporal consistency, or SQLite/PostgreSQL parity.
+
+### 8.4 Handoff status and procurement restriction
+
+This is an internal evidence package only. It is **NOT ISSUED**. The procurement ceiling remains deferred. No candidate search/contact, NDA, appointment, non-public evidence disclosure, independent review or expenditure is authorized until budget availability is confirmed and the Standards Owner provides renewed explicit procurement authorization.
+
+**Package readiness: INTERNAL DOCUMENTATION AND SOURCE EVIDENCE AVAILABLE — FINDINGS OPEN — NOT ISSUED — REVIEWERS NOT APPOINTED — NOT APPROVED.**
