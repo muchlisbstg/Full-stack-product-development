@@ -120,7 +120,7 @@
 ## Finding-to-source mapping
 
 ### F02 — Agent tool authority / Bash scope
-- All eight `*/SKILL.md` files must be reviewed for `allowed-tools`, Bash grants, shell execution instructions, and escalation boundaries.
+- All nine `*/SKILL.md` files must be reviewed for `allowed-tools`, Bash grants, shell execution instructions, and escalation boundaries.
 - Agent/plugin metadata: `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`, `.cursor-plugin/plugin.json`, `higgsfield-brandkit/agents/openai.yaml`, `higgsfield-youtube-thumbnail/agents/openai.yaml`, `CLAUDE.md`, `INSTALL_FOR_AGENTS.md`.
 - Executable surface includes every shell/Python script under `higgsfield-*/scripts/`, root `setup`, and `scripts/update-check.sh`.
 
