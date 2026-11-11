@@ -270,7 +270,7 @@ The pinned MASTG v2.0.0 tree contains 292 unique test Markdown paths: 200 in `te
 
 ### 10.4 Individual mapping method and limitations
 
-- **ASVS:** all 345 requirement IDs are emitted individually. Existing explicit section ranges are used first; remaining requirements receive chapter-level candidate controls. Every row remains `CANDIDATE — REVIEW REQUIRED`; a complete row inventory does not mean semantic approval.
+- **ASVS:** all 345 requirement IDs are emitted individually: 282 receive explicit section-range candidates and 63 receive chapter-level fallback candidates. Every row remains `CANDIDATE — REVIEW REQUIRED`; a complete row inventory does not mean semantic approval.
 - **TCASVS:** all 132 requirements are emitted individually with chapter-based candidate GDES controls. Requirement-level semantic review remains required.
 - **SAMM:** all 90 activity GUIDs are emitted with practice-code candidate controls and linked question IDs/text. All 90 question records link to an activity GUID. These are traceability candidates, not a SAMM maturity score or an assertion of GDES compliance.
 - **MASVS/MASWE/MASTG:** MASWE controls are read from `mappings.masvs-v2`; MASTG weakness references are translated through the official MASWE v1.0.0 `mappings.maswe-beta` asset. Unknown IDs are reported separately rather than guessed.
