@@ -56,7 +56,12 @@ jobs:
       - name: Validate 11 skills and simulate 3 native discovery layouts
         run: |
           set -o pipefail
-          python3 "$RUNNER_TEMP/gdes/scripts/gdes/validate_replica_skill_metadata.py" "$RUNNER_TEMP/replica-skill" 2>&1 | tee "$RUNNER_TEMP/replica-skill-evidence/metadata-and-layout.log"
+          python3 "$RUNNER_TEMP/gdes/scripts/gdes/validate_replica_skill_metadata.py" "$RUNNER_TEMP/replica-skill" "$RUNNER_TEMP/gdes" 2>&1 | tee "$RUNNER_TEMP/replica-skill-evidence/metadata-layout-and-adaptations.log"
+
+      - name: Validate GDES helper resolver allowlist
+        run: |
+          set -o pipefail
+          python3 "$RUNNER_TEMP/gdes/scripts/gdes/replica_skill_tool.py" --check "$RUNNER_TEMP/replica-skill" 2>&1 | tee "$RUNNER_TEMP/replica-skill-evidence/helper-resolver-check.log"
 
       - name: Run upstream standard-library unit tests
         working-directory: ${{ runner.temp }}/replica-skill
