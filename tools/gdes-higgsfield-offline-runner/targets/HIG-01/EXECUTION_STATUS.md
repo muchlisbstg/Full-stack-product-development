@@ -49,3 +49,15 @@ The current runner is regex-based and only supports triage. It can miss semantic
 3. Improve runner path-aware rules and test against known-positive and known-negative fixtures.
 4. Preserve each exact Actions run URL, commit SHA, raw result JSON and file hashes.
 5. Keep runtime evaluation disabled until all P0 source findings are closed and separately authorized.
+
+
+## Source inventory expansion — 2026-11-12
+
+- Pinned upstream recursive tree retrieved successfully: **161 tracked blobs**, `truncated=false`, commit `27000402070db19d958789d05b3b52b6f4718d7c`.
+- Added [SOURCE_INVENTORY_v1.0.md](./SOURCE_INVENTORY_v1.0.md), recording all 161 paths and Git blob SHAs plus F02–F08 source mapping.
+- Inventory confirms **nine** `*/SKILL.md` files, not eight. Multiple skill instructions repeat the mutable CLI installer command; F01 remediation must therefore cover every affected instruction, not only root `setup`.
+- Direct source inspection found `higgsfield-faceless-video/scripts/assemble_blocks.sh` uses `curl -fsSL` for HTTP(S) media inputs. URL handling and redirect/SSRF constraints need review.
+- `higgsfield-websites/references/game-meshy-api.md` documents Meshy API calls with `MESHY_API_KEY` bearer authorization and POST/GET/DELETE polling examples. This is a provider integration instruction path, not proof that the API was executed.
+- `higgsfield-websites/references/security.md` contains SSRF/fetch security guidance and example code; this must be distinguished from production runtime implementation.
+- Inventory is complete for tracked paths and Git blob identifiers, but not yet a complete byte-for-byte body snapshot of all 161 files. Full callsite review remains open.
+- Runner self-test and previous candidate scan evidence remain as recorded above; this inventory commit itself has not yet been tested by Actions.
