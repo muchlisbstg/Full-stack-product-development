@@ -43,4 +43,4 @@ This is a curated, partial remediation snapshot—not a complete HIG-01 source t
 
 ## Reproducibility
 
-All upstream baseline files are tied to the commit above. The original repository must remain unchanged. Any later snapshot refresh must create a new version and record a new upstream commit SHA; do not silently replace this baseline.
+All upstream baseline files are tied to the commit above. The offline runner scans only the separate `scan-targets/HIG-01` remediation overlay. The `targets/HIG-01/upstream` files are retained as immutable baseline evidence and must never be included in the candidate scan corpus. The original repository must remain unchanged. Any later snapshot refresh must create a new version and record a new upstream commit SHA; do not silently replace this baseline.
