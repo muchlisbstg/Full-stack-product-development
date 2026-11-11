@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-11-11T06:22:07.879837+00:00",
+  "generated_at_utc": "2026-11-11T06:23:50.972086+00:00",
   "sources": {
     "ASVS": {
       "repository": "OWASP/ASVS",
@@ -126,5 +126,14 @@
     "asvs_unmapped_requirement_count": 0,
     "license_rows_unverified": [],
     "samm_activity_without_questions": []
+  },
+  "maswe_beta_mapping_asset": {
+    "url": "https://github.com/OWASP/maswe/releases/download/v1.0.0/OWASP_MASWE.yaml",
+    "sha256": "55288b0ff60003691a877a693f28f07455a5352d5c0f9163b434b5a9e4b563d7",
+    "root_type": "dict",
+    "root_keys": [
+      "metadata",
+      "weaknesses"
+    ]
   }
 }

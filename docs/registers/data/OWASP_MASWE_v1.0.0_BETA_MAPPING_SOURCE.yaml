@@ -1,0 +1,2489 @@
+metadata:
+  title: Mobile Application Security Weakness Enumeration (MASWE)
+  remarks: The OWASP MASWE (Mobile Application Security Weakness Enumeration) is a list of common security and privacy weaknesses in mobile applications. It acts as the bridge between the OWASP MASVS and the OWASP MASTG.
+  version: v1.0.0
+weaknesses:
+  MASWE-0001:
+    title: Sensitive Data Stored Unencrypted in Private Storage
+    id: MASWE-0001
+    alias: data-unencrypted-private-storage
+    requirement: The app encrypts sensitive data stored in private storage.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L2
+    threat: MAS-THREAT-0001
+    attacks:
+    - MAS-ATTACK-0005
+    - MAS-ATTACK-0007
+    - MAS-ATTACK-0008
+    mappings:
+      masvs-v1:
+      - MSTG-STORAGE-2
+      masvs-v2:
+      - MASVS-STORAGE-1
+      - MASVS-STORAGE-2
+      - MASVS-CRYPTO-2
+      cwe:
+      - 200
+      - 284
+      - 312
+      - 313
+      - 732
+      - 922
+      android-risks:
+      - file-providers
+      maswe-beta:
+      - MASWE-0006
+      - MASWE-0002
+      - MASWE-0118
+    refs:
+    - https://developer.apple.com/documentation/uikit/protecting_the_user_s_privacy/encrypting_your_app_s_files
+    - https://developer.android.com/about/versions/nougat/android-7.0-changes#permfilesys
+    - https://developer.android.com/privacy-and-security/security-tips#internal-storage
+  MASWE-0002:
+    title: Sensitive Data Stored Unencrypted Outside of Private Storage
+    id: MASWE-0002
+    alias: data-unencrypted-shared-storage-no-user-interaction
+    requirement: The app encrypts sensitive data stored outside of private storage.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0002
+    attacks:
+    - MAS-ATTACK-0010
+    - MAS-ATTACK-0011
+    mappings:
+      masvs-v1:
+      - MSTG-STORAGE-2
+      masvs-v2:
+      - MASVS-STORAGE-1
+      - MASVS-STORAGE-2
+      cwe:
+      - 200
+      - 284
+      - 312
+      - 313
+      - 732
+      - 921
+      - 922
+      android-risks:
+      - sensitive-data-external-storage
+      android-core-app-quality:
+      - Sensitive_Data_Storage
+      maswe-beta:
+      - MASWE-0007
+      - MASWE-0002
+    refs:
+    - https://developer.android.com/training/data-storage
+    - https://developer.android.com/privacy-and-security/security-tips#external-storage
+  MASWE-0003:
+    title: Cryptographic Keys Stored Outside of Platform Keystore
+    id: MASWE-0003
+    alias: crypto-keys-not-protected-at-rest
+    requirement: The app stores cryptographic keys inside the platform-provided secure keystore.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0003
+    attacks:
+    - MAS-ATTACK-0001
+    - MAS-ATTACK-0005
+    - MAS-ATTACK-0008
+    mappings:
+      masvs-v1:
+      - MSTG-STORAGE-1
+      - MSTG-CRYPTO-1
+      masvs-v2:
+      - MASVS-STORAGE-1
+      - MASVS-CRYPTO-2
+      cwe:
+      - 312
+      - 318
+      - 321
+      android-risks:
+      - hardcoded-cryptographic-secrets
+      maswe-beta:
+      - MASWE-0013
+      - MASWE-0014
+      - MASWE-0016
+    refs:
+    - https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57pt1r5.pdf
+    - https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-175Br1.pdf
+    - https://developer.android.com/privacy-and-security/keystore#ImportingEncryptedKeys
+    - https://developer.apple.com/documentation/security/certificate_key_and_trust_services/keys/storing_keys_as_data
+    - https://developer.android.com/privacy-and-security/keystore#StrongBoxKeyMint
+  MASWE-0004:
+    title: Sensitive Data Hardcoded in the App Package
+    id: MASWE-0004
+    alias: data-hardcoded-app-package
+    requirement: The app does not hardcode sensitive data in the application package.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0004
+    attacks:
+    - MAS-ATTACK-0001
+    mappings:
+      masvs-v1:
+      - MSTG-STORAGE-1
+      - MSTG-CODE-2
+      masvs-v2:
+      - MASVS-STORAGE-1
+      cwe:
+      - 312
+      - 321
+      - 540
+      - 798
+      android-risks:
+      - insecure-api-usage
+      maswe-beta:
+      - MASWE-0005
+      - MASWE-0013
+      - MASWE-0036
+    refs:
+    - https://cloud.google.com/docs/authentication/api-keys#securing
+    - https://cloud.google.com/docs/authentication/api-keys#api_key_restrictions
+    - https://github.com/gitleaks/gitleaks
+  MASWE-0005:
+    title: Insertion of Sensitive Data into Logs
+    id: MASWE-0005
+    alias: data-in-logs
+    requirement: The app excludes sensitive data from application logs.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0005
+    attacks:
+    - MAS-ATTACK-0005
+    - MAS-ATTACK-0006
+    mappings:
+      masvs-v1:
+      - MSTG-STORAGE-7
+      masvs-v2:
+      - MASVS-STORAGE-2
+      cwe:
+      - 209
+      - 359
+      - 497
+      - 532
+      android-risks:
+      - log-info-disclosure
+      android-core-app-quality:
+      - Sensitive_Data_Logging
+      maswe-beta:
+      - MASWE-0001
+    refs:
+    - https://developer.apple.com/documentation/os/logging/generating_log_messages_from_your_code
+  MASWE-0006:
+    title: Sensitive Data Not Excluded From Backup
+    id: MASWE-0006
+    alias: data-not-excluded-backup
+    requirement: The app excludes sensitive data from backups.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0006
+    attacks:
+    - MAS-ATTACK-0008
+    - MAS-ATTACK-0009
+    mappings:
+      masvs-v1:
+      - MSTG-STORAGE-8
+      masvs-v2:
+      - MASVS-STORAGE-2
+      cwe:
+      - 212
+      - 313
+      android-risks:
+      - backup-best-practices
+      maswe-beta:
+      - MASWE-0004
+      - MASWE-0003
+    refs:
+    - https://developer.android.com/guide/topics/data/autobackup#include-exclude-android-11
+    - https://developer.android.com/guide/topics/data/autobackup#include-exclude-android-12
+    - https://developer.android.com/guide/topics/data/autobackup#define-device-conditions
+  MASWE-0007:
+    title: Improper Encryption
+    id: MASWE-0007
+    alias: improper-encryption
+    requirement: The app properly encrypts sensitive data.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0007
+    attacks:
+    - MAS-ATTACK-0018
+    - MAS-ATTACK-0021
+    - MAS-ATTACK-0022
+    - MAS-ATTACK-0023
+    mappings:
+      masvs-v1:
+      - MSTG-CRYPTO-4
+      - MSTG-CRYPTO-5
+      masvs-v2:
+      - MASVS-CRYPTO-1
+      - MASVS-CRYPTO-2
+      cwe:
+      - 208
+      - 323
+      - 325
+      - 326
+      - 327
+      - 329
+      - 780
+      android-risks:
+      - broken-cryptographic-algorithm
+      android-core-app-quality:
+      - Cryptographic_Algorithms
+      maswe-beta:
+      - MASWE-0020
+      - MASWE-0012
+      - MASWE-0022
+      - MASWE-0023
+    refs:
+    - https://support.google.com/faqs/answer/10046138?hl=en
+    - https://support.google.com/faqs/answer/9450925?hl=en
+    - https://developer.android.com/privacy-and-security/cryptography#deprecated-functionality
+    - https://developer.android.com/privacy-and-security/cryptography#pbe-without-iv
+    - https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf
+    - https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-56Br2.pdf
+    - https://www.usenix.org/legacy/event/woot10/tech/full_papers/Rizzo.pdf
+  MASWE-0008:
+    title: Improper Hashing
+    id: MASWE-0008
+    alias: improper-hashing
+    requirement: The app properly hashes sensitive data.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0008
+    attacks:
+    - MAS-ATTACK-0028
+    mappings:
+      masvs-v1:
+      - MSTG-CRYPTO-4
+      masvs-v2:
+      - MASVS-CRYPTO-1
+      cwe:
+      - 328
+      android-core-app-quality:
+      - Cryptographic_Algorithms
+      maswe-beta:
+      - MASWE-0021
+    refs:
+    - https://developer.android.com/privacy-and-security/cryptography#deprecated-functionality
+    - https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf
+    - https://en.wikipedia.org/wiki/Collision_attack
+    - https://csrc.nist.gov/pubs/ir/8547/ipd
+  MASWE-0009:
+    title: Improper Use of Message Authentication Code (MAC)
+    id: MASWE-0009
+    alias: improper-mac
+    requirement: The app properly uses Message Authentication Codes (MACs).
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0009
+    attacks:
+    - MAS-ATTACK-0018
+    - MAS-ATTACK-0021
+    - MAS-ATTACK-0029
+    - MAS-ATTACK-0090
+    mappings:
+      masvs-v1:
+      - MSTG-CRYPTO-4
+      - MSTG-CRYPTO-5
+      masvs-v2:
+      - MASVS-CRYPTO-1
+      - MASVS-CRYPTO-2
+      cwe:
+      - 208
+      - 323
+      - 327
+      - 354
+      - 807
+      maswe-beta:
+      - MASWE-0024
+      - MASWE-0012
+    refs:
+    - https://developer.android.com/privacy-and-security/cryptography#deprecated-functionality
+    - https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf
+    - https://csrc.nist.gov/pubs/sp/800/224/ipd
+    - https://datatracker.ietf.org/doc/html/rfc6151
+    - https://web.archive.org/web/20170810051504/http://www.tcs.hut.fi/old/papers/aura/aura-csfws97.pdf
+    - https://en.wikipedia.org/wiki/Replay_attack
+  MASWE-0010:
+    title: Improper Generation of Cryptographic Signatures
+    id: MASWE-0010
+    alias: improper-signature-generation
+    requirement: The app properly generates cryptographic signatures.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0010
+    attacks:
+    - MAS-ATTACK-0018
+    - MAS-ATTACK-0021
+    - MAS-ATTACK-0030
+    mappings:
+      masvs-v1:
+      - MSTG-CRYPTO-4
+      - MSTG-CRYPTO-5
+      masvs-v2:
+      - MASVS-CRYPTO-1
+      - MASVS-CRYPTO-2
+      cwe:
+      - 323
+      - 326
+      - 327
+      - 330
+      maswe-beta:
+      - MASWE-0025
+      - MASWE-0012
+    refs:
+    - https://developer.android.com/privacy-and-security/cryptography#deprecated-functionality
+    - https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf
+    - https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
+    - https://csrc.nist.gov/pubs/ir/8547/ipd
+  MASWE-0011:
+    title: Improper Verification of Cryptographic Signature
+    id: MASWE-0011
+    alias: improper-signature-verification
+    requirement: The app properly verifies cryptographic signatures.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0011
+    attacks:
+    - MAS-ATTACK-0031
+    mappings:
+      masvs-v1:
+      - MSTG-CRYPTO-4
+      masvs-v2:
+      - MASVS-CRYPTO-1
+      cwe:
+      - 295
+      - 347
+      maswe-beta:
+      - MASWE-0026
+    refs:
+    - https://cwe.mitre.org/data/definitions/347.html
+    - https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
+  MASWE-0012:
+    title: Improper Random Number Generation
+    id: MASWE-0012
+    alias: improper-random-number-generation
+    requirement: The app properly generates random numbers.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0012
+    attacks:
+    - MAS-ATTACK-0001
+    - MAS-ATTACK-0019
+    - MAS-ATTACK-0024
+    mappings:
+      masvs-v1:
+      - MSTG-CRYPTO-6
+      masvs-v2:
+      - MASVS-CRYPTO-1
+      cwe:
+      - 332
+      - 337
+      - 338
+      android-risks:
+      - weak-prng
+      android-core-app-quality:
+      - Cryptographic_Algorithms
+      maswe-beta:
+      - MASWE-0027
+    refs:
+    - https://datatracker.ietf.org/doc/html/rfc4086
+    - https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html#secure-random-number-generation
+  MASWE-0013:
+    title: Improper Cryptographic Key Generation
+    id: MASWE-0013
+    alias: improper-crypto-key-generation
+    requirement: The app securely generates cryptographic keys.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0013
+    attacks:
+    - MAS-ATTACK-0018
+    - MAS-ATTACK-0019
+    - MAS-ATTACK-0020
+    mappings:
+      masvs-v1:
+      - MSTG-CRYPTO-2
+      masvs-v2:
+      - MASVS-CRYPTO-2
+      cwe:
+      - 331
+      - 326
+      - 337
+      - 338
+      - 522
+      android-risks:
+      - weak-prng
+      android-core-app-quality:
+      - Cryptographic_Algorithms
+      maswe-beta:
+      - MASWE-0009
+      - MASWE-0017
+    refs:
+    - https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57pt1r5.pdf
+    - https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf
+    - https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-175Br1.pdf
+    - https://developer.android.com/privacy-and-security/cryptography
+    - https://developer.android.com/reference/javax/crypto/KeyGenerator
+    - https://developer.android.com/reference/kotlin/android/security/keystore/KeyProtection
+    - https://developer.apple.com/documentation/cryptokit/aes/keywrap
+  MASWE-0014:
+    title: Improper Cryptographic Key Derivation
+    id: MASWE-0014
+    alias: improper-crypto-key-derivation
+    requirement: The app derives cryptographic keys using approved key derivation functions.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0014
+    attacks:
+    - MAS-ATTACK-0025
+    - MAS-ATTACK-0026
+    mappings:
+      masvs-v1:
+      - MSTG-CRYPTO-2
+      masvs-v2:
+      - MASVS-CRYPTO-2
+      cwe:
+      - 326
+      - 327
+      - 759
+      - 760
+      - 916
+      maswe-beta:
+      - MASWE-0010
+    refs:
+    - https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57pt1r5.pdf
+    - https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-132.pdf
+    - https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
+  MASWE-0015:
+    title: Cryptographic Key Rotation Not Implemented
+    id: MASWE-0015
+    alias: no-key-rotation
+    requirement: The app rotates cryptographic keys regularly.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L2
+    threat: MAS-THREAT-0015
+    attacks:
+    - MAS-ATTACK-0001
+    - MAS-ATTACK-0005
+    mappings:
+      masvs-v2:
+      - MASVS-CRYPTO-2
+      cwe:
+      - 324
+      maswe-beta:
+      - MASWE-0011
+    refs:
+    - https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57pt1r5.pdf
+    - https://developers.google.com/tink/managing-key-rotation
+  MASWE-0016:
+    title: Cryptographic Key Access Not Restricted
+    id: MASWE-0016
+    alias: crypto-key-access-not-restricted
+    requirement: The app restricts access to cryptographic keys.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L2
+    threat: MAS-THREAT-0016
+    attacks:
+    - MAS-ATTACK-0002
+    - MAS-ATTACK-0003
+    - MAS-ATTACK-0027
+    mappings:
+      masvs-v2:
+      - MASVS-CRYPTO-2
+      - MASVS-AUTH-2
+      - MASVS-AUTH-3
+      cwe:
+      - 284
+      - 306
+      maswe-beta:
+      - MASWE-0018
+    refs:
+    - https://developer.android.com/reference/android/security/keystore/KeyGenParameterSpec.Builder#setUnlockedDeviceRequired(boolean)
+    - https://developer.apple.com/documentation/security/ksecattraccessiblewhenunlockedthisdeviceonly
+    - https://developer.android.com/training/sign-in/biometric-auth#prompt-the-user-to-authenticate-with-biometrics
+    - https://developer.apple.com/documentation/security/restricting-keychain-item-accessibility
+    - https://developer.android.com/privacy-and-security/keystore#StrongBoxKeyMint
+    - https://developer.apple.com/documentation/security/ksecattrtokenidsecureenclave
+  MASWE-0017:
+    title: Device Secure Lock Not Enforced
+    id: MASWE-0017
+    alias: device-secure-lock-not-enforced
+    requirement: The app verifies that the device has a secure lock configured.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L2
+    threat: MAS-THREAT-0017
+    attacks:
+    - MAS-ATTACK-0063
+    mappings:
+      masvs-v1:
+      - MSTG-STORAGE-11
+      masvs-v2:
+      - MASVS-CRYPTO-2
+      maswe-beta:
+      - MASWE-0008
+    refs:
+    - https://developer.apple.com/documentation/localauthentication/logging_a_user_into_your_app_with_face_id_or_touch_id
+    - https://developer.apple.com/documentation/localauthentication/lacontext/canevaluatepolicy(_:error:)
+    - https://developer.android.com/reference/android/app/KeyguardManager#isDeviceSecure()
+    - https://developer.android.com/reference/android/hardware/biometrics/BiometricManager#canAuthenticate(int)
+  MASWE-0018:
+    title: Lack of Authentication or Authorization on App Components
+    id: MASWE-0018
+    alias: missing-auth-app-components
+    requirement: The app enforces authentication and authorization on its components.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0018
+    attacks:
+    - MAS-ATTACK-0038
+    - MAS-ATTACK-0039
+    mappings:
+      masvs-v1:
+      - MSTG-PLATFORM-4
+      - MSTG-AUTH-3
+      - MSTG-NETWORK-2
+      - MSTG-STORAGE-6
+      masvs-v2:
+      - MASVS-AUTH-1
+      - MASVS-PLATFORM-1
+      - MASVS-STORAGE-2
+      cwe:
+      - 306
+      - 749
+      - 862
+      - 863
+      - 923
+      - 926
+      - 939
+      - 940
+      android-risks:
+      - content-resolver
+      - insecure-broadcast-receiver
+      - access-control-to-exported-components
+      - android-exported
+      - custom-permissions
+      android-core-app-quality:
+      - Component_Export
+      - Component_Permissions
+      - Component_Protection
+      maswe-beta:
+      - MASWE-0033
+      - MASWE-0038
+      - MASWE-0040
+      - MASWE-0051
+      - MASWE-0059
+      - MASWE-0062
+      - MASWE-0063
+      - MASWE-0064
+      - MASWE-0065
+      - MASWE-0119
+    refs:
+    - https://developer.android.com/privacy-and-security/security-tips#IPNetworking
+    - https://developer.android.com/privacy-and-security/security-tips#Services
+    - https://developer.android.com/privacy-and-security/security-tips#BroadcastReceivers
+    - https://developer.android.com/privacy-and-security/security-tips#ContentProviders
+    - https://developer.android.com/privacy-and-security/security-tips#binder-and-messenger-interfaces
+    - https://developer.android.com/topic/security/risks/content-resolver
+    - https://developer.android.com/topic/security/risks/file-providers
+  MASWE-0019:
+    title: Lack of Auto-fill Support for Credential Providers
+    id: MASWE-0019
+    alias: autofill-authenticators
+    requirement: The app enables auto-fill support for credential providers.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0019
+    attacks:
+    - MAS-ATTACK-0041
+    - MAS-ATTACK-0042
+    mappings:
+      masvs-v1:
+      - MSTG-AUTH-9
+      masvs-v2:
+      - MASVS-AUTH-1
+      - MASVS-AUTH-3
+      cwe:
+      - 287
+      - 522
+      android-core-app-quality:
+      - Autofill_Hints
+      - Credential_Manager
+      maswe-beta:
+      - MASWE-0028
+      - MASWE-0032
+      - MASWE-0035
+      - MASWE-0039
+    refs:
+    - https://developer.apple.com/documentation/security/password_autofill
+    - https://developer.apple.com/documentation/authenticationservices/aswebauthenticationsession
+    - https://developer.android.com/guide/topics/text/autofill
+    - https://developer.apple.com/documentation/authenticationservices/public-private_key_authentication/supporting_passkeys
+  MASWE-0020:
+    title: Local Authentication Can Be Bypassed
+    id: MASWE-0020
+    alias: event-bound-biometric-auth
+    requirement: The app implements local authentication securely.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L2
+    threat: MAS-THREAT-0020
+    attacks:
+    - MAS-ATTACK-0002
+    - MAS-ATTACK-0003
+    - MAS-ATTACK-0027
+    - MAS-ATTACK-0040
+    mappings:
+      masvs-v1:
+      - MSTG-AUTH-8
+      - MSTG-AUTH-1
+      - MSTG-AUTH-12
+      masvs-v2:
+      - MASVS-AUTH-2
+      - MASVS-CRYPTO-2
+      cwe:
+      - 285
+      - 287
+      - 312
+      - 319
+      - 326
+      - 602
+      - 603
+      - 863
+      - 922
+      android-core-app-quality:
+      - Biometric_Authentication
+      maswe-beta:
+      - MASWE-0034
+      - MASWE-0044
+      - MASWE-0041
+      - MASWE-0042
+      - MASWE-0043
+    refs:
+    - https://developer.android.com/training/sign-in/biometric-auth#crypto
+    - https://labs.withsecure.com/publications/how-secure-is-your-android-keystore-authentication
+    - https://developer.apple.com/documentation/localauthentication/accessing_keychain_items_with_face_id_or_touch_id
+    - https://github.com/sensepost/objection/issues/136#issuecomment-419664574
+    - https://github.com/sensepost/objection/wiki/Understanding-the-iOS-Biometrics-Bypass
+    - https://developer.apple.com/documentation/security/secaccesscontrolcreateflags/applicationpassword
+  MASWE-0021:
+    title: Fallback to Non-biometric Credentials Allowed for Sensitive Transactions
+    id: MASWE-0021
+    alias: no-biometric-fallback
+    requirement: The app does not allow fallback to non-biometric credentials for sensitive transactions.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L2
+    threat: MAS-THREAT-0021
+    attacks:
+    - MAS-ATTACK-0034
+    mappings:
+      masvs-v2:
+      - MASVS-AUTH-2
+      cwe:
+      - 288
+      - 287
+      android-core-app-quality:
+      - Biometric_Authentication
+      maswe-beta:
+      - MASWE-0045
+    refs:
+    - https://developer.android.com/training/sign-in/biometric-auth#allow-fallback
+    - https://developer.apple.com/documentation/localauthentication/logging_a_user_into_your_app_with_face_id_or_touch_id#3148834
+    - https://developer.apple.com/documentation/localauthentication/lapolicy/deviceownerauthenticationwithbiometrics/
+  MASWE-0022:
+    title: Crypto Keys Not Invalidated on New Biometric Enrollment
+    id: MASWE-0022
+    alias: crypto-keys-biometric-enrollment
+    requirement: The app invalidates keys after any enrollment of new biometric data.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L2
+    threat: MAS-THREAT-0022
+    attacks:
+    - MAS-ATTACK-0035
+    mappings:
+      masvs-v2:
+      - MASVS-AUTH-2
+      - MASVS-CRYPTO-2
+      cwe:
+      - 287
+      - 522
+      maswe-beta:
+      - MASWE-0046
+    refs:
+    - https://developer.android.com/reference/android/security/keystore/KeyGenParameterSpec.Builder#setInvalidatedByBiometricEnrollment(boolean)
+    - https://developer.apple.com/documentation/security/secaccesscontrolcreateflags/biometrycurrentset
+  MASWE-0023:
+    title: Step-Up Authentication Not Implemented for Sensitive Actions
+    id: MASWE-0023
+    alias: step-up-auth
+    requirement: The app enforces step-up authentication before granting access to sensitive functionality.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L2
+    threat: MAS-THREAT-0023
+    attacks:
+    - MAS-ATTACK-0032
+    - MAS-ATTACK-0033
+    mappings:
+      masvs-v1:
+      - MSTG-AUTH-10
+      masvs-v2:
+      - MASVS-AUTH-3
+      - MASVS-PLATFORM-3
+      cwe:
+      - 306
+      android-core-app-quality:
+      - Biometric_Authentication
+      maswe-beta:
+      - MASWE-0029
+    refs:
+    - https://developer.apple.com/documentation/localauthentication
+    - https://auth0.com/blog/what-is-step-up-authentication-when-to-use-it/
+    - https://pages.nist.gov/800-63-4/sp800-63b.html
+  MASWE-0024:
+    title: Sensitive Data Accessible After Session Termination
+    id: MASWE-0024
+    alias: session-termination
+    requirement: The app makes sensitive data inaccessible after session termination.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L2
+    threat: MAS-THREAT-0024
+    attacks:
+    - MAS-ATTACK-0005
+    - MAS-ATTACK-0032
+    - MAS-ATTACK-0033
+    mappings:
+      masvs-v2:
+      - MASVS-AUTH-3
+      cwe:
+      - 285
+      - 287
+      - 613
+      maswe-beta:
+      - MASWE-0030
+    refs:
+    - https://developer.android.com/identity/sign-in/credential-manager-siwg-implementation#handle-sign-out
+    - https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html
+  MASWE-0025:
+    title: Lack of Non-Repudiation for Critical Actions
+    id: MASWE-0025
+    alias: lack-of-non-repudiation
+    requirement: The app ensures non-repudiation for critical actions.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L2
+    threat: MAS-THREAT-0025
+    attacks:
+    - MAS-ATTACK-0036
+    - MAS-ATTACK-0037
+    mappings:
+      masvs-v2:
+      - MASVS-AUTH-3
+      cwe:
+      - 451
+      - 778
+      maswe-beta:
+      - MASWE-0031
+    refs:
+    - https://developer.android.com/training/articles/security-android-protected-confirmation
+    - https://source.android.com/docs/security/features/protected-confirmation
+  MASWE-0026:
+    title: Network Traffic Not Encrypted
+    id: MASWE-0026
+    alias: cleartext-traffic
+    requirement: The app encrypts all network traffic.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0026
+    attacks:
+    - MAS-ATTACK-0012
+    - MAS-ATTACK-0013
+    - MAS-ATTACK-0014
+    mappings:
+      masvs-v1:
+      - MSTG-NETWORK-1
+      - MSTG-NETWORK-2
+      masvs-v2:
+      - MASVS-NETWORK-1
+      cwe:
+      - 319
+      android-risks:
+      - cleartext-communications
+      - insecure-machine-to-machine
+      android-core-app-quality:
+      - Network_Security_Traffic
+      - Network_Security_Configuration
+      maswe-beta:
+      - MASWE-0050
+      - MASWE-0037
+      - MASWE-0048
+    refs:
+    - https://developer.apple.com/documentation/security/preventing-insecure-network-connections
+    - https://developer.apple.com/documentation/bundleresources/information_property_list/nsapptransportsecurity/nsexceptiondomains
+    - https://developer.apple.com/documentation/network
+    - https://developer.apple.com/documentation/foundation/urlsession
+    - https://developer.apple.com/forums/thread/67493
+    - https://developer.apple.com/forums/thread/707320
+    - https://developer.android.com/privacy-and-security/security-best-practices#secure-communication
+    - https://developer.android.com/privacy-and-security/security-tips#networking
+    - https://developer.android.com/privacy-and-security/security-config#CleartextTraffic
+    - https://developer.android.com/reference/javax/net/ssl/SSLSocket
+    - https://developer.android.com/reference/android/security/NetworkSecurityPolicy#isCleartextTrafficPermitted()
+    - https://developer.android.com/reference/java/net/Socket
+    - https://developer.android.com/reference/android/webkit/WebView
+    - https://developer.android.com/reference/javax/net/ssl/HttpsURLConnection
+  MASWE-0027:
+    title: Insecure Certificate Validation
+    id: MASWE-0027
+    alias: insecure-cert-validation
+    requirement: The app validates certificates for all network traffic.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0027
+    attacks:
+    - MAS-ATTACK-0014
+    - MAS-ATTACK-0015
+    mappings:
+      masvs-v1:
+      - MSTG-NETWORK-3
+      masvs-v2:
+      - MASVS-NETWORK-1
+      cwe:
+      - 295
+      - 297
+      android-risks:
+      - unsafe-trustmanager
+      - unsafe-hostname
+      android-core-app-quality:
+      - Network_Security_Configuration
+      - Security_Provider_Initialization
+      maswe-beta:
+      - MASWE-0052
+    refs:
+    - https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-52r2.pdf#page=17
+    - https://developer.android.com/privacy-and-security/security-ssl#tls-1.3-enabled-by-default
+    - https://support.google.com/faqs/answer/7071387?hl=en
+    - https://developer.android.com/reference/android/webkit/WebViewClient.html?sjid=15211564825735678155-EU#onReceivedSslError(android.webkit.WebView,%20android.webkit.SslErrorHandler,%20android.net.http.SslError)
+    - https://developer.android.com/privacy-and-security/security-ssl#WarningsSslSocket
+    - https://developer.apple.com/forums/thread/67493
+    - https://developer.apple.com/forums/thread/707320
+    - https://support.apple.com/en-us/102390
+    - https://developer.apple.com/documentation/foundation/performing-manual-server-trust-authentication
+  MASWE-0028:
+    title: Insecure Identity Pinning
+    id: MASWE-0028
+    alias: insecure-pinning
+    requirement: The app correctly implements identity pinning.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L2
+    threat: MAS-THREAT-0028
+    attacks:
+    - MAS-ATTACK-0014
+    - MAS-ATTACK-0016
+    - MAS-ATTACK-0017
+    mappings:
+      masvs-v1:
+      - MSTG-NETWORK-4
+      masvs-v2:
+      - MASVS-NETWORK-2
+      cwe:
+      - 295
+      android-core-app-quality:
+      - Network_Security_Configuration
+      maswe-beta:
+      - MASWE-0047
+    refs:
+    - https://developer.android.com/privacy-and-security/security-config#CertificatePinning
+    - https://developer.apple.com/news/?id=g9ejcf8y
+    - https://cheatsheetseries.owasp.org/cheatsheets/Pinning_Cheat_Sheet.html
+  MASWE-0029:
+    title: Insecure Deep Links
+    id: MASWE-0029
+    alias: insecure-deep-links
+    requirement: The app securely handles deep links.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0029
+    attacks:
+    - MAS-ATTACK-0046
+    - MAS-ATTACK-0047
+    mappings:
+      masvs-v1:
+      - MSTG-PLATFORM-3
+      masvs-v2:
+      - MASVS-PLATFORM-1
+      - MASVS-STORAGE-2
+      - MASVS-CODE-4
+      cwe:
+      - 939
+      - 917
+      android-risks:
+      - unsafe-use-of-deeplinks
+      maswe-beta:
+      - MASWE-0058
+    refs:
+    - https://developer.apple.com/documentation/technotes/tn3155-debugging-universal-links
+    - https://developer.android.com/training/app-links/verify-android-applinks
+  MASWE-0030:
+    title: Improper Use of the Clipboard
+    id: MASWE-0030
+    alias: improper-clipboard
+    requirement: The app uses the clipboard securely and only with user consent.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0030
+    attacks:
+    - MAS-ATTACK-0041
+    mappings:
+      masvs-v2:
+      - MASVS-PLATFORM-1
+      - MASVS-STORAGE-2
+      cwe:
+      - 200
+      - 668
+      android-risks:
+      - secure-clipboard-handling
+      maswe-beta:
+      - MASWE-0059
+    refs:
+    - https://developer.android.com/develop/ui/views/touch-and-input/copy-paste#PreventingSensitiveData
+    - https://developer.apple.com/documentation/uikit/uipasteboard
+  MASWE-0031:
+    title: Allowing Untrusted App Extensions
+    id: MASWE-0031
+    alias: insecure-app-extensions
+    requirement: The app only permits trusted app extensions to interact with it.
+    platform:
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0031
+    attacks:
+    - MAS-ATTACK-0048
+    mappings:
+      masvs-v1:
+      - MSTG-PLATFORM-11
+      masvs-v2:
+      - MASVS-PLATFORM-1
+      - MASVS-STORAGE-2
+      cwe:
+      - 829
+      maswe-beta:
+      - MASWE-0061
+    refs:
+    - https://developer.apple.com/documentation/uikit/uiapplicationdelegate/1623122-application
+    - https://developer.apple.com/documentation/uikit/uiapplication/extensionpointidentifier/keyboard
+  MASWE-0032:
+    title: Insecure Intents
+    id: MASWE-0032
+    alias: insecure-intents
+    requirement: The app securely handles intents.
+    platform:
+    - android
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0032
+    attacks:
+    - MAS-ATTACK-0047
+    - MAS-ATTACK-0049
+    - MAS-ATTACK-0050
+    mappings:
+      masvs-v2:
+      - MASVS-PLATFORM-1
+      - MASVS-STORAGE-2
+      cwe:
+      - 927
+      - 940
+      android-risks:
+      - implicit-intent-hijacking
+      - intent-redirection
+      - pending-intent
+      - sender-of-pending-intents
+      - sticky-broadcast
+      android-core-app-quality:
+      - Component_Permissions
+      maswe-beta:
+      - MASWE-0066
+    refs:
+    - https://support.google.com/faqs/answer/9267555?hl=en
+    - https://developer.android.com/privacy-and-security/security-tips#intents
+    - https://developer.android.com/topic/security/risks/intent-redirection
+    - https://developer.android.com/topic/security/risks/implicit-intent-hijacking
+    - https://developer.android.com/topic/security/risks/pending-intent
+    - https://developer.android.com/topic/security/risks/sticky-broadcast
+  MASWE-0033:
+    title: Sensitive Native Functionality Exposed in WebViews
+    id: MASWE-0033
+    alias: js-bridges-webviews
+    requirement: The app does not expose sensitive native functionality to WebView content.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0033
+    attacks:
+    - MAS-ATTACK-0047
+    - MAS-ATTACK-0051
+    mappings:
+      masvs-v1:
+      - MSTG-PLATFORM-7
+      masvs-v2:
+      - MASVS-PLATFORM-2
+      - MASVS-STORAGE-2
+      cwe:
+      - 749
+      - 94
+      android-risks:
+      - insecure-webview-native-bridges
+      android-core-app-quality:
+      - WebView_JavaScript
+      maswe-beta:
+      - MASWE-0068
+    refs:
+    - https://support.google.com/faqs/answer/9095419
+    - https://developer.android.com/develop/ui/views/layout/webapps/native-api-access-jsbridge
+    - https://developer.android.com/reference/androidx/webkit/WebViewCompat#addWebMessageListener(android.webkit.WebView,java.lang.String,java.util.Set%3Cjava.lang.String%3E,androidx.webkit.WebViewCompat.WebMessageListener)
+    - https://developer.apple.com/documentation/webkit/wkscriptmessagehandler
+  MASWE-0034:
+    title: WebViews Allow Access to Local Resources with Untrusted Content
+    id: MASWE-0034
+    alias: webviews-local-resources
+    requirement: The app only allows trusted WebView content to access local resources.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0034
+    attacks:
+    - MAS-ATTACK-0047
+    - MAS-ATTACK-0051
+    mappings:
+      masvs-v1:
+      - MSTG-PLATFORM-6
+      masvs-v2:
+      - MASVS-PLATFORM-2
+      - MASVS-STORAGE-2
+      - MASVS-CODE-4
+      cwe:
+      - 22
+      - 79
+      - 200
+      - 669
+      android-risks:
+      - webview-unsafe-file-inclusion
+      android-core-app-quality:
+      - WebView_Asset_Loader
+      maswe-beta:
+      - MASWE-0069
+      - MASWE-0073
+    refs:
+    - https://blog.oversecured.com/Android-Exploring-vulnerabilities-in-WebResourceResponse/
+  MASWE-0035:
+    title: WebViews Loading Untrusted Content
+    id: MASWE-0035
+    alias: webviews-untrusted-content
+    requirement: The app only allows trusted content in WebViews.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0035
+    attacks:
+    - MAS-ATTACK-0047
+    - MAS-ATTACK-0051
+    mappings:
+      masvs-v2:
+      - MASVS-PLATFORM-2
+      - MASVS-CODE-4
+      cwe:
+      - 79
+      - 601
+      - 829
+      android-risks:
+      - cross-app-scripting
+      - unsafe-uri-loading
+      maswe-beta:
+      - MASWE-0071
+      - MASWE-0070
+      - MASWE-0072
+    refs:
+    - https://blog.oversecured.com/Evernote-Universal-XSS-theft-of-all-cookies-from-all-sites-and-more/
+  MASWE-0036:
+    title: Unnecessary Exposure of Sensitive Data via the User Interface
+    id: MASWE-0036
+    alias: data-leak-ui
+    requirement: The app does not unnecessarily expose sensitive data through its user interface.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L2
+    threat: MAS-THREAT-0036
+    attacks:
+    - MAS-ATTACK-0005
+    - MAS-ATTACK-0041
+    - MAS-ATTACK-0043
+    mappings:
+      masvs-v1:
+      - MSTG-STORAGE-7
+      masvs-v2:
+      - MASVS-PLATFORM-3
+      - MASVS-STORAGE-2
+      cwe:
+      - 200
+      - 359
+      maswe-beta:
+      - MASWE-0053
+    refs:
+    - https://developer.android.com/develop/ui/views/touch-and-input/keyboard-input/style#Type
+    - https://developer.apple.com/documentation/uikit/uitextinputtraits/1624427-issecuretextentry
+  MASWE-0037:
+    title: Unnecessary Exposure of Sensitive Data via Notifications
+    id: MASWE-0037
+    alias: data-leak-notifications
+    requirement: The app does not unnecessarily expose sensitive data through system notifications.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L2
+    threat: MAS-THREAT-0037
+    attacks:
+    - MAS-ATTACK-0044
+    - MAS-ATTACK-0045
+    mappings:
+      masvs-v2:
+      - MASVS-PLATFORM-3
+      - MASVS-STORAGE-2
+      cwe:
+      - 200
+      - 359
+      maswe-beta:
+      - MASWE-0054
+    refs:
+    - https://developer.android.com/develop/ui/views/notifications/build-notification#lockscreenNotification
+    - https://developer.apple.com/documentation/usernotifications
+    - https://developer.apple.com/documentation/usernotifications/generating-a-remote-notification
+    - https://developer.apple.com/documentation/usernotifications/unnotificationcategory/hiddenpreviewsbodyplaceholder
+    - https://developer.apple.com/documentation/usernotifications/unnotificationcategoryoptions/hiddenpreviewsshowtitle
+    - https://developer.apple.com/documentation/usernotifications/unnotificationcategoryoptions/hiddenpreviewsshowsubtitle
+  MASWE-0038:
+    title: Insufficient Protection of Sensitive Data from Screenshots or Screen Recordings
+    id: MASWE-0038
+    alias: data-leak-screenshots
+    requirement: The app removes or masks sensitive data from its views when moved to the background, when being recorded or when a screenshot is taken.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L2
+    threat: MAS-THREAT-0038
+    attacks:
+    - MAS-ATTACK-0010
+    - MAS-ATTACK-0071
+    - MAS-ATTACK-0072
+    mappings:
+      masvs-v1:
+      - MSTG-STORAGE-9
+      masvs-v2:
+      - MASVS-PLATFORM-3
+      - MASVS-STORAGE-2
+      cwe:
+      - 200
+      - 359
+      maswe-beta:
+      - MASWE-0055
+    refs:
+    - https://developer.android.com/about/versions/14/features/screenshot-detection
+  MASWE-0039:
+    title: App Vulnerable to Overlay Attacks
+    id: MASWE-0039
+    alias: tapjacking-attacks
+    requirement: The app protects its sensitive screens against overlay attacks.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L2
+    threat: MAS-THREAT-0039
+    attacks:
+    - MAS-ATTACK-0036
+    mappings:
+      masvs-v1:
+      - MSTG-PLATFORM-9
+      masvs-v2:
+      - MASVS-PLATFORM-3
+      - MASVS-CODE-1
+      cwe:
+      - 1021
+      android-risks:
+      - tapjacking
+      maswe-beta:
+      - MASWE-0056
+    refs:
+    - https://developer.android.com/topic/security/risks/tapjacking
+  MASWE-0040:
+    title: Sensitive Data Leaked via Accessibility Services
+    id: MASWE-0040
+    alias: data-leak-accessibility
+    requirement: The app prevents sensitive data from being exposed to, or captured by, accessibility services.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L2
+    threat: MAS-THREAT-0040
+    attacks:
+    - MAS-ATTACK-0052
+    mappings:
+      masvs-v2:
+      - MASVS-PLATFORM-3
+      - MASVS-STORAGE-2
+      cwe:
+      - 200
+      - 359
+    refs:
+    - https://developer.android.com/guide/topics/ui/accessibility/service
+    - https://support.google.com/googleplay/android-developer/answer/10964491
+    - https://developer.apple.com/documentation/uikit/uiaccessibility
+  MASWE-0041:
+    title: Running on a Recent Platform Version Not Ensured
+    id: MASWE-0041
+    alias: run-on-recent-platform-version
+    requirement: The app detects if it is running on an unsupported OS version and reacts appropriately.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L2
+    threat: MAS-THREAT-0041
+    attacks:
+    - MAS-ATTACK-0054
+    - MAS-ATTACK-0055
+    mappings:
+      masvs-v2:
+      - MASVS-CODE-1
+      cwe:
+      - 451
+      - 693
+      - 1104
+      - 1357
+      android-risks:
+      - strandhogg
+      - unsafe-download-manager
+      maswe-beta:
+      - MASWE-0077
+      - MASWE-0057
+    refs:
+    - https://developer.android.com/topic/security/risks/strandhogg
+  MASWE-0042:
+    title: Latest Platform Version Not Targeted
+    id: MASWE-0042
+    alias: target-latest-platform-version
+    requirement: The app targets the latest platform version.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0042
+    attacks:
+    - MAS-ATTACK-0056
+    mappings:
+      masvs-v2:
+      - MASVS-CODE-1
+      cwe:
+      - 693
+      - 1357
+      android-core-app-quality:
+      - Target_SDK_Version
+      - Compile_SDK_Version
+      maswe-beta:
+      - MASWE-0078
+    refs:
+    - https://developer.android.com/google/play/requirements/target-sdk
+    - https://developer.apple.com/news/upcoming-requirements/
+  MASWE-0043:
+    title: Enforced Updating Not Implemented
+    id: MASWE-0043
+    alias: enforced-updating
+    requirement: The app detects if it must be updated and reacts appropriately.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L2
+    threat: MAS-THREAT-0043
+    attacks:
+    - MAS-ATTACK-0040
+    - MAS-ATTACK-0053
+    mappings:
+      masvs-v1:
+      - MSTG-ARCH-9
+      masvs-v2:
+      - MASVS-CODE-2
+      cwe:
+      - 602
+      - 693
+      maswe-beta:
+      - MASWE-0075
+    refs:
+    - https://developer.android.com/guide/playcore/in-app-updates
+    - https://developer.android.com/reference/com/google/android/play/core/appupdate/AppUpdateManager
+    - https://medium.com/swlh/updating-users-to-the-latest-app-release-on-ios-ed96e4c76705
+    - https://gist.github.com/DineshKachhot/f63fcebceca6351fc982cafd38f6f05c
+  MASWE-0044:
+    title: Dependencies with Known Vulnerabilities
+    id: MASWE-0044
+    alias: dependencies-with-known-vulnerabilities
+    requirement: The app's third-party components are regularly checked for known vulnerabilities.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0044
+    attacks:
+    - MAS-ATTACK-0073
+    mappings:
+      masvs-v1:
+      - MSTG-CODE-5
+      masvs-v2:
+      - MASVS-CODE-3
+      cwe:
+      - 1395
+      - 1357
+      android-risks:
+      - insecure-library
+      - unsafe-download-manager
+      android-core-app-quality:
+      - SDK_Maintenance
+      - Security_Provider_Initialization
+      maswe-beta:
+      - MASWE-0076
+    refs:
+    - https://www.cisa.gov/sites/default/files/2023-04/sbom-types-document-508c.pdf
+    - https://www.ntia.doc.gov/files/ntia/publications/sbom_minimum_elements_report.pdf
+    - https://developer.android.com/guide/practices/sdk-best-practices
+    - https://developer.android.com/privacy-and-security/security-best-practices#services-dependencies-updated
+    - https://developer.android.com/privacy-and-security/security-best-practices#update-dependencies
+    - https://support.google.com/googleplay/android-developer/answer/14514531
+    - https://support.google.com/googleplay/android-developer/answer/13326895
+    - https://developer.apple.com/support/third-party-SDK-requirements/
+    - https://www.youtube.com/watch?v=3klmiHX0uVQ
+    - https://developer.apple.com/videos/play/wwdc2023/10060/
+  MASWE-0045:
+    title: Compiler-Provided Security Features Not Used
+    id: MASWE-0045
+    alias: compiler-provided-security-features-not-implemented
+    requirement: The app uses the compiler-provided security features of the platform.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L2
+    threat: MAS-THREAT-0045
+    attacks:
+    - MAS-ATTACK-0001
+    - MAS-ATTACK-0059
+    mappings:
+      masvs-v2:
+      - MASVS-CODE-3
+      - MASVS-CODE-4
+      android-risks:
+      - use-of-native-code
+      maswe-beta:
+      - MASWE-0116
+    refs:
+    - https://android.googlesource.com/platform/ndk/+/master/docs/BuildSystemMaintainers.md
+    - https://sensepost.com/blog/2021/on-ios-binary-protections/
+    - https://www.sans.org/blog/stack-canaries-gingerly-sidestepping-the-cage/
+  MASWE-0046:
+    title: Use of Deprecated APIs or Functionality
+    id: MASWE-0046
+    alias: deprecated-apis
+    requirement: The app does not use deprecated APIs or functionality.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L2
+    threat: MAS-THREAT-0046
+    attacks:
+    - MAS-ATTACK-0058
+    mappings:
+      masvs-v1:
+      - MSTG-CRYPTO-4
+      masvs-v2:
+      - MASVS-CODE-3
+      - MASVS-CRYPTO-2
+      cwe:
+      - 327
+      - 477
+      - 522
+      maswe-beta:
+      - MASWE-0015
+    refs:
+    - https://developer.android.com/about/versions/12/behavior-changes-all#bouncy-castle
+    - https://developer.android.com/reference/java/security/KeyStore
+    - https://labs.withsecure.com/publications/how-secure-is-your-android-keystore-authentication
+  MASWE-0047:
+    title: Using Non-Standard APIs for Security-Critical Functionality
+    id: MASWE-0047
+    alias: non-standard-security-apis
+    requirement: The app uses standard APIs for security-critical functionality.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0047
+    attacks:
+    - MAS-ATTACK-0001
+    - MAS-ATTACK-0014
+    - MAS-ATTACK-0021
+    mappings:
+      masvs-v1:
+      - MSTG-CRYPTO-2
+      - MSTG-NETWORK-6
+      masvs-v2:
+      - MASVS-CODE-3
+      - MASVS-AUTH-1
+      - MASVS-CRYPTO-1
+      - MASVS-NETWORK-1
+      cwe:
+      - 287
+      - 326
+      - 327
+      - 1240
+      android-risks:
+      - bad-dns
+      android-core-app-quality:
+      - Cryptographic_Algorithms
+      maswe-beta:
+      - MASWE-0019
+      - MASWE-0032
+      - MASWE-0049
+    refs:
+    - https://developer.android.com/privacy-and-security/security-tips#Credentials
+    - https://developer.apple.com/documentation/security/password_autofill
+    - https://developer.android.com/privacy-and-security/cryptography#crypto_provider
+    - https://www.bsi.bund.de/SharedDocs/Downloads/EN/BSI/Publications/TechGuidelines/TG02102/BSI-TR-02102-1.pdf?__blob=publicationFile
+  MASWE-0048:
+    title: Malicious Code Included in the App
+    id: MASWE-0048
+    alias: malicious-code-included
+    requirement: The app package does not contain malicious code.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0048
+    attacks:
+    - MAS-ATTACK-0060
+    - MAS-ATTACK-0061
+    mappings:
+      masvs-v2:
+      - MASVS-CODE-3
+      cwe:
+      - 506
+      - 507
+      - 511
+    refs:
+    - insecure-library
+    - https://support.google.com/googleplay/android-developer/answer/13326895
+    - https://developer.apple.com/support/third-party-SDK-requirements/
+  MASWE-0049:
+    title: Unsafe Dynamic Code Loading
+    id: MASWE-0049
+    alias: unsafe-code-loading
+    requirement: The app loads dynamic code safely from trusted sources.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L2
+    threat: MAS-THREAT-0049
+    attacks:
+    - MAS-ATTACK-0014
+    - MAS-ATTACK-0057
+    mappings:
+      masvs-v2:
+      - MASVS-CODE-4
+      cwe:
+      - 494
+      android-risks:
+      - dynamic-code-loading
+      - create-package-context
+      android-core-app-quality:
+      - App_Bundles
+      maswe-beta:
+      - MASWE-0085
+    refs:
+    - dynamic-code-loading
+  MASWE-0050:
+    title: Unsafe Handling of Untrusted Data
+    id: MASWE-0050
+    alias: unsafe-untrusted-data
+    requirement: The app securely handles untrusted data.
+    platform:
+    - android
+    - ios
+    profiles:
+    - L1
+    - L2
+    threat: MAS-THREAT-0050
+    attacks:
+    - MAS-ATTACK-0047
+    - MAS-ATTACK-0059
+    mappings:
+      masvs-v1:
+      - MSTG-PLATFORM-2
+      masvs-v2:
+      - MASVS-CODE-4
+      cwe:
+      - 20
+      - 22
+      - 73
+      - 89
+      - 116
+      - 345
+      - 348
+      - 349
+      - 502
+      - 611
+      - 924
+      android-risks:
+      - path-traversal
+      - zip-path-traversal
+      - sql-injection
+      - unsafe-deserialization
+      - xml-external-entities-injection
+      - untrustworthy-contentprovider-provided-filename
+      - use-of-native-code
+      maswe-beta:
+      - MASWE-0079
+      - MASWE-0080
+      - MASWE-0081
+      - MASWE-0082
+      - MASWE-0083
+      - MASWE-0084
+      - MASWE-0086
+      - MASWE-0087
+      - MASWE-0088
+    refs:
+    - https://developer.android.com/topic/security/risks/path-traversal
+    - https://developer.android.com/topic/security/risks/sql-injection
+    - https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html
+  MASWE-0051:
+    title: Root/Jailbreak Detection Not Implemented
+    id: MASWE-0051
+    alias: root-jailbreak-detection
+    requirement: The app detects if it runs on a rooted/jailbroken device and reacts appropriately.
+    platform:
+    - android
+    - ios
+    profiles:
+    - R
+    threat: MAS-THREAT-0051
+    attacks:
+    - MAS-ATTACK-0003
+    - MAS-ATTACK-0005
+    - MAS-ATTACK-0065
+    mappings:
+      masvs-v1:
+      - MSTG-RESILIENCE-1
+      - MSTG-RESILIENCE-8
+      masvs-v2:
+      - MASVS-RESILIENCE-1
+      - MASVS-RESILIENCE-4
+      cwe:
+      - 1326
+  MASWE-0052:
+    title: App Virtualization Environment Detection Not Implemented
+    id: MASWE-0052
+    alias: app-virtualization-detection
+    requirement: The app detects when it is running inside an app-virtualization environment.
+    platform:
+    - android
+    - ios
+    profiles:
+    - R
+    threat: MAS-THREAT-0052
+    attacks:
+    - MAS-ATTACK-0067
+    mappings:
+      masvs-v2:
+      - MASVS-RESILIENCE-1
+      cwe:
+      - 693
+      maswe-beta:
+      - MASWE-0098
+  MASWE-0053:
+    title: Emulated or Virtual Device Detection Not Implemented
+    id: MASWE-0053
+    alias: emulated-virtual-device-detection
+    requirement: The app detects when it is running in an emulated or virtual device environment.
+    platform:
+    - android
+    - ios
+    profiles:
+    - R
+    threat: MAS-THREAT-0053
+    attacks:
+    - MAS-ATTACK-0003
+    - MAS-ATTACK-0066
+    mappings:
+      masvs-v1:
+      - MSTG-RESILIENCE-5
+      - MSTG-RESILIENCE-8
+      masvs-v2:
+      - MASVS-RESILIENCE-1
+      - MASVS-RESILIENCE-4
+      maswe-beta:
+      - MASWE-0099
+      - MASWE-0103
+    refs:
+    - https://developer.android.com/google/play/integrity/overview
+    - https://developer.android.com/google/play/integrity/verdicts
+    - https://github.com/eltavine/Duck-Detector-Refactoring
+    - https://github.com/Lakr233/vphone-cli
+    - https://developer.apple.com/documentation/devicecheck
+    - https://ieeexplore.ieee.org/document/10935812
+  MASWE-0054:
+    title: Device Attestation Not Implemented
+    id: MASWE-0054
+    alias: device-attestation
+    requirement: The app implements device attestation.
+    platform:
+    - android
+    - ios
+    profiles:
+    - R
+    threat: MAS-THREAT-0054
+    attacks:
+    - MAS-ATTACK-0065
+    - MAS-ATTACK-0066
+    - MAS-ATTACK-0068
+    mappings:
+      masvs-v1:
+      - MSTG-RESILIENCE-10
+      masvs-v2:
+      - MASVS-RESILIENCE-1
+      maswe-beta:
+      - MASWE-0100
+    refs:
+    - https://developer.android.com/google/play/integrity
+    - https://developer.android.com/google/play/integrity/verdicts
+    - https://developer.android.com/google/play/integrity/standard
+    - https://developer.android.com/google/play/integrity/classic
+    - https://github.com/android/keyattestation
+    - https://source.android.com/docs/security/features/keystore/attestation
+    - https://grapheneos.org/articles/attestation-compatibility-guide
+    - https://developer.apple.com/documentation/devicecheck
+    - https://developer.apple.com/documentation/devicecheck/accessing-and-modifying-per-device-data
+    - https://developer.apple.com/documentation/devicecheck/establishing-your-app-s-integrity
+    - https://developer.apple.com/documentation/devicecheck/validating-apps-that-connect-to-your-server
+    - https://github.com/Oliver-Binns/app-attest
+    - https://github.com/VisionR1/KeyAttestation
+    - https://github.com/JingMatrix/TEESimulator
+    - https://github.com/5ec1cff/TrickyStore
+  MASWE-0055:
+    title: Malware Detection Not Implemented
+    id: MASWE-0055
+    alias: malware-detection
+    requirement: The app detects attacks by malware.
+    platform:
+    - android
+    - ios
+    profiles:
+    - R
+    threat: MAS-THREAT-0055
+    attacks:
+    - MAS-ATTACK-0036
+    - MAS-ATTACK-0052
+    mappings:
+      masvs-v2:
+      - MASVS-RESILIENCE-2
+      cwe:
+      - 693
+    refs:
+    - https://developers.google.com/android/play-protect
+    - https://developers.google.com/android/play-protect/client-protections
+  MASWE-0056:
+    title: App Attestation Not Implemented
+    id: MASWE-0056
+    alias: app-integrity
+    requirement: The app implements app attestation.
+    platform:
+    - android
+    - ios
+    profiles:
+    - R
+    threat: MAS-THREAT-0056
+    attacks:
+    - MAS-ATTACK-0040
+    - MAS-ATTACK-0068
+    - MAS-ATTACK-0069
+    mappings:
+      masvs-v1:
+      - MSTG-CODE-1
+      masvs-v2:
+      - MASVS-RESILIENCE-2
+      cwe:
+      - 347
+      maswe-beta:
+      - MASWE-0104
+      - MASWE-0106
+    refs:
+    - https://developer.apple.com/documentation/xcode/using-the-latest-code-signature-format
+    - https://developer.apple.com/documentation/devicecheck/preparing-to-use-the-app-attest-service
+    - https://developer.apple.com/documentation/devicecheck/validating-apps-that-connect-to-your-server
+    - https://source.android.com/docs/security/features/apksigning
+    - https://developer.android.com/google/play/integrity/verdicts
+    - https://developer.android.com/reference/android/content/pm/SigningInfo
+    - https://github.com/android/keyattestation
+    - https://source.android.com/docs/security/features/keystore/attestation
+    - https://grapheneos.org/articles/attestation-compatibility-guide
+  MASWE-0057:
+    title: App Resources Integrity Not Verified
+    id: MASWE-0057
+    alias: app-resources-integrity
+    requirement: The app verifies the integrity of its resources.
+    platform:
+    - android
+    - ios
+    profiles:
+    - R
+    threat: MAS-THREAT-0057
+    attacks:
+    - MAS-ATTACK-0009
+    - MAS-ATTACK-0070
+    mappings:
+      masvs-v1:
+      - MSTG-RESILIENCE-3
+      masvs-v2:
+      - MASVS-RESILIENCE-2
+      - MASVS-CODE-4
+      cwe:
+      - 471
+      maswe-beta:
+      - MASWE-0105
+    refs:
+    - https://developer.android.com/privacy-and-security/cryptography
+    - https://developer.android.com/privacy-and-security/keystore
+    - https://developer.apple.com/documentation/cryptokit/hmac
+    - https://developer.apple.com/documentation/cryptokit/storing-cryptokit-keys-in-the-keychain
+    - https://developer.apple.com/documentation/security/restricting-keychain-item-accessibility
+  MASWE-0058:
+    title: Runtime Code Integrity Not Verified
+    id: MASWE-0058
+    alias: runtime-code-integrity
+    requirement: The app detects unauthorized changes to its code and execution flow at runtime.
+    platform:
+    - android
+    - ios
+    profiles:
+    - R
+    threat: MAS-THREAT-0058
+    attacks:
+    - MAS-ATTACK-0002
+    - MAS-ATTACK-0003
+    mappings:
+      masvs-v1:
+      - MSTG-RESILIENCE-6
+      masvs-v2:
+      - MASVS-RESILIENCE-2
+      maswe-beta:
+      - MASWE-0107
+  MASWE-0059:
+    title: Code Obfuscation Not Implemented
+    id: MASWE-0059
+    alias: code-obfuscation
+    requirement: The app implements code obfuscation.
+    platform:
+    - android
+    - ios
+    profiles:
+    - R
+    threat: MAS-THREAT-0059
+    attacks:
+    - MAS-ATTACK-0001
+    mappings:
+      masvs-v1:
+      - MSTG-RESILIENCE-9
+      - MSTG-RESILIENCE-12
+      masvs-v2:
+      - MASVS-RESILIENCE-3
+      cwe:
+      - 693
+      maswe-beta:
+      - MASWE-0089
+      - MASWE-0091
+      - MASWE-0092
+    refs:
+    - https://developer.android.com/topic/performance/app-optimization/enable-app-optimization#overview
+  MASWE-0060:
+    title: Resource Obfuscation Not Implemented
+    id: MASWE-0060
+    alias: resource-obfuscation
+    requirement: The app applies resource obfuscation to hinder reverse engineering.
+    platform:
+    - android
+    - ios
+    profiles:
+    - R
+    threat: MAS-THREAT-0060
+    attacks:
+    - MAS-ATTACK-0001
+    mappings:
+      masvs-v1:
+      - MSTG-RESILIENCE-11
+      masvs-v2:
+      - MASVS-RESILIENCE-3
+      cwe:
+      - 693
+      maswe-beta:
+      - MASWE-0090
+  MASWE-0061:
+    title: Debug Artifacts Not Removed
+    id: MASWE-0061
+    alias: non-production-resources
+    requirement: The app does not contain debug artifacts.
+    platform:
+    - android
+    - ios
+    profiles:
+    - R
+    threat: MAS-THREAT-0061
+    attacks:
+    - MAS-ATTACK-0001
+    - MAS-ATTACK-0006
+    mappings:
+      masvs-v1:
+      - MSTG-CODE-3
+      - MSTG-CODE-4
+      masvs-v2:
+      - MASVS-RESILIENCE-3
+      cwe:
+      - 489
+      - 497
+      - 540
+      - 912
+      - 1295
+      android-risks:
+      - test-debug
+      android-core-app-quality:
+      - Production_Build_Quality
+      maswe-beta:
+      - MASWE-0094
+      - MASWE-0093
+      - MASWE-0095
+  MASWE-0062:
+    title: No Application-Level Payload Encryption
+    id: MASWE-0062
+    alias: data-unencrypted
+    requirement: The app applies application-level payload encryption in addition to transport-layer encryption.
+    platform:
+    - android
+    - ios
+    profiles:
+    - R
+    threat: MAS-THREAT-0062
+    attacks:
+    - MAS-ATTACK-0064
+    mappings:
+      masvs-v1:
+      - MSTG-RESILIENCE-13
+      masvs-v2:
+      - MASVS-RESILIENCE-3
+      - MASVS-NETWORK-1
+      cwe:
+      - 319
+      maswe-beta:
+      - MASWE-0096
+  MASWE-0063:
+    title: Debug Mechanisms Not Disabled
+    id: MASWE-0063
+    alias: debuggable-flag
+    requirement: The app disables debug mechanisms.
+    platform:
+    - android
+    - ios
+    profiles:
+    - R
+    threat: MAS-THREAT-0063
+    attacks:
+    - MAS-ATTACK-0002
+    - MAS-ATTACK-0003
+    - MAS-ATTACK-0004
+    mappings:
+      masvs-v1:
+      - MSTG-RESILIENCE-2
+      masvs-v2:
+      - MASVS-RESILIENCE-4
+      - MASVS-PLATFORM-2
+      cwe:
+      - 489
+      android-risks:
+      - android-debuggable
+      maswe-beta:
+      - MASWE-0067
+      - MASWE-0074
+    refs:
+    - https://developer.android.com/guide/topics/manifest/application-element
+    - https://developer.android.com/reference/android/webkit/WebView#setWebContentsDebuggingEnabled(boolean)
+    - https://developer.apple.com/documentation/webkit/wkwebview/4111163-isinspectable
+    - https://developer.apple.com/documentation/bundleresources/entitlements/com.apple.security.cs.debugger
+  MASWE-0064:
+    title: Debugger Detection Not Implemented
+    id: MASWE-0064
+    alias: debugger-detection
+    requirement: The app detects debugger attachment at runtime and responds to protect sensitive operations.
+    platform:
+    - android
+    - ios
+    profiles:
+    - R
+    threat: MAS-THREAT-0064
+    attacks:
+    - MAS-ATTACK-0002
+    mappings:
+      masvs-v1:
+      - MSTG-RESILIENCE-2
+      masvs-v2:
+      - MASVS-RESILIENCE-4
+      maswe-beta:
+      - MASWE-0101
+    refs:
+    - https://developer.android.com/reference/android/os/Debug#isDebuggerConnected()
+    - https://man7.org/linux/man-pages/man5/proc_pid_status.5.html
+    - https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/ptrace.2.html
+    - https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man3/sysctl.3.html
+    - https://www.youtube.com/watch?v=ih6gWZDuNME
+  MASWE-0065:
+    title: Dynamic Analysis Tools Detection Not Implemented
+    id: MASWE-0065
+    alias: dynamic-analysis-tools
+    requirement: The app detects dynamic analysis tools and responds to protect sensitive operations.
+    platform:
+    - android
+    - ios
+    profiles:
+    - R
+    threat: MAS-THREAT-0065
+    attacks:
+    - MAS-ATTACK-0003
+    mappings:
+      masvs-v1:
+      - MSTG-RESILIENCE-4
+      masvs-v2:
+      - MASVS-RESILIENCE-4
+      maswe-beta:
+      - MASWE-0102
+    refs:
+    - https://frida.re/docs/home/
+    - https://github.com/LSPosed/LSPosed
+    - https://github.com/LSPosed/LSPlant
+    - https://www.cydiasubstrate.com/api/c/MSHookFunction/
+    - https://github.com/tealbathingsuit/ellekit
+    - https://github.com/roothide/Bootstrap
+    - https://burjcdigital.urjc.es/server/api/core/bitstreams/d249ebbb-5923-48ea-9215-af14cf2cc0b9/content
+  MASWE-0066:
+    title: Inadequate Permission Management
+    id: MASWE-0066
+    alias: inadequate-permission-management
+    requirement: The app adequately manages permissions.
+    platform:
+    - android
+    - ios
+    profiles:
+    - P
+    threat: MAS-THREAT-0066
+    attacks:
+    - MAS-ATTACK-0088
+    - MAS-ATTACK-0089
+    mappings:
+      masvs-v2:
+      - MASVS-PRIVACY-1
+      cwe:
+      - 250
+      android-core-app-quality:
+      - Minimize_Permissions
+      - Sensitive_Permissions
+      - Runtime_Permissions
+      - Permission_Rationale
+      - Graceful_Degradation
+      maswe-beta:
+      - MASWE-0117
+    refs:
+    - https://developer.apple.com/design/human-interface-guidelines/privacy#Requesting-permission
+    - https://developer.apple.com/documentation/uikit/protecting_the_user_s_privacy/requesting_access_to_protected_resources
+    - https://developer.android.com/training/permissions/requesting
+    - https://support.google.com/googleplay/android-developer/answer/9888170?hl=en
+    - https://developer.android.com/privacy-and-security/minimize-permission-requests
+    - https://developer.android.com/training/permissions/usage-notes
+    - https://arxiv.org/pdf/1905.02713
+    - https://arxiv.org/pdf/2203.10583
+    - https://ieeexplore.ieee.org/document/9001128
+    - https://www.enisa.europa.eu/sites/default/files/publications/WP2017%20O-2-2-4%20GDPR%20Mobile.pdf
+    - https://developer.android.com/privacy-and-security/risks/ai-risks/excessive-agency
+    - https://developer.android.com/privacy-and-security/risks/ai-risks/sensitive-information-disclosure
+    - https://developer.apple.com/documentation/bundleresources/information_property_list/nsextension/nsextensionattributes/requestsopenaccess
+  MASWE-0067:
+    title: Lack of Anonymization or Pseudonymisation Measures
+    id: MASWE-0067
+    alias: anonymization-pseudonymization-measures
+    requirement: The app uses anonymization or pseudonymisation measures.
+    platform:
+    - android
+    - ios
+    profiles:
+    - P
+    threat: MAS-THREAT-0067
+    attacks:
+    - MAS-ATTACK-0074
+    - MAS-ATTACK-0078
+    mappings:
+      masvs-v2:
+      - MASVS-PRIVACY-2
+      cwe:
+      - 359
+      maswe-beta:
+      - MASWE-0109
+    refs:
+    - https://cloud.google.com/sensitive-data-protection/docs/classification-redaction
+    - https://gdpr-info.eu/recitals/no-26/
+    - https://gdpr-info.eu/recitals/no-28/
+    - https://gdpr-info.eu/art-4-gdpr/
+    - https://www.edpb.europa.eu/topics/ai-and-technology/anonymisation-pseudonymisation_en
+    - https://ec.europa.eu/justice/article-29/documentation/opinion-recommendation/files/2014/wp216_en.pdf
+    - https://www.statista.com/topics/9460/app-tracking-and-mobile-privacy/
+  MASWE-0068:
+    title: Incorrect Use of Identifiers for User Tracking
+    id: MASWE-0068
+    alias: unique-identifiers-user-tracking
+    requirement: The app does not use persistent or unique identifiers in a way that enables user tracking.
+    platform:
+    - android
+    - ios
+    profiles:
+    - P
+    threat: MAS-THREAT-0068
+    attacks:
+    - MAS-ATTACK-0074
+    - MAS-ATTACK-0077
+    mappings:
+      masvs-v2:
+      - MASVS-PRIVACY-2
+      cwe:
+      - 359
+      android-core-app-quality:
+      - Hardware_IDs
+      maswe-beta:
+      - MASWE-0110
+    refs:
+    - https://developer.android.com/reference/android/provider/Settings.Secure#ANDROID_ID
+    - https://developer.android.com/privacy-and-security/about#resettable-identifiers
+    - https://developer.android.com/identity/user-data-ids
+    - https://developer.android.com/identity/user-data-ids#common-use-cases
+    - https://developer.android.com/identity/ad-id
+    - https://developers.google.com/privacy-sandbox/private-advertising/attribution-reporting/android
+    - https://developer.apple.com/app-store/app-privacy-details/#user-tracking
+    - https://developer.apple.com/app-store/user-privacy-and-data-use/
+    - https://developer.apple.com/documentation/apptrackingtransparency/
+    - https://developer.apple.com/documentation/adsupport/asidentifiermanager/advertisingidentifier
+    - https://developer.apple.com/documentation/uikit/uidevice/1620059-identifierforvendor/
+    - https://developer.apple.com/app-store/ad-attribution/
+    - https://developer.apple.com/documentation/adattributionkit
+    - https://gdpr-info.eu/recitals/no-30/
+  MASWE-0069:
+    title: Usage of Non-Privacy-Preserving Functionality
+    id: MASWE-0069
+    alias: non-privacy-preserving-functionality
+    requirement: The app uses privacy-preserving functionality.
+    platform:
+    - android
+    - ios
+    profiles:
+    - P
+    threat: MAS-THREAT-0069
+    attacks:
+    - MAS-ATTACK-0076
+    - MAS-ATTACK-0088
+    mappings:
+      masvs-v2:
+      - MASVS-PRIVACY-2
+      cwe:
+      - 359
+      android-core-app-quality:
+      - Minimize_Permissions
+    refs:
+    - https://datatracker.ietf.org/doc/html/rfc8252#appendix-B
+    - https://developer.apple.com/documentation/authenticationservices/aswebauthenticationsession
+    - https://developer.android.com/training/data-storage/shared/photopicker
+    - https://developer.apple.com/documentation/photokit/phpickerviewcontroller
+  MASWE-0070:
+    title: Inadequate Awareness for Privacy Relevant Actions
+    id: MASWE-0070
+    alias: inadequate-awareness-privacy-actions
+    requirement: The app informs the user about the privacy implications before performing an action.
+    platform:
+    - android
+    - ios
+    profiles:
+    - P
+    threat: MAS-THREAT-0070
+    attacks:
+    - MAS-ATTACK-0084
+    mappings:
+      masvs-v2:
+      - MASVS-PRIVACY-2
+      cwe:
+      - 359
+      maswe-beta:
+      - MASWE-0109
+    refs:
+    - https://cloud.google.com/sensitive-data-protection/docs/classification-redaction
+    - https://gdpr-info.eu/recitals/no-26/
+    - https://gdpr-info.eu/recitals/no-28/
+    - https://gdpr-info.eu/art-4-gdpr/
+    - https://www.edpb.europa.eu/topics/ai-and-technology/anonymisation-pseudonymisation_en
+    - https://ec.europa.eu/justice/article-29/documentation/opinion-recommendation/files/2014/wp216_en.pdf
+    - https://www.statista.com/topics/9460/app-tracking-and-mobile-privacy/
+  MASWE-0071:
+    title: Inadequate Defaults for Privacy Relevant Actions
+    id: MASWE-0071
+    alias: unsafe-defaults-privacy-actions
+    requirement: The app uses adequate defaults for privacy relevant actions.
+    platform:
+    - android
+    - ios
+    profiles:
+    - P
+    threat: MAS-THREAT-0071
+    attacks:
+    - MAS-ATTACK-0084
+    - MAS-ATTACK-0087
+    mappings:
+      masvs-v2:
+      - MASVS-PRIVACY-2
+      cwe:
+      - 359
+      maswe-beta:
+      - MASWE-0109
+    refs:
+    - https://cloud.google.com/sensitive-data-protection/docs/classification-redaction
+    - https://gdpr-info.eu/recitals/no-26/
+    - https://gdpr-info.eu/recitals/no-28/
+    - https://gdpr-info.eu/art-4-gdpr/
+    - https://www.edpb.europa.eu/topics/ai-and-technology/anonymisation-pseudonymisation_en
+    - https://ec.europa.eu/justice/article-29/documentation/opinion-recommendation/files/2014/wp216_en.pdf
+    - https://www.statista.com/topics/9460/app-tracking-and-mobile-privacy/
+  MASWE-0072:
+    title: Inadequate Privacy Policy
+    id: MASWE-0072
+    alias: privacy-policy
+    requirement: The app provides an adequate privacy policy.
+    platform:
+    - android
+    - ios
+    profiles:
+    - P
+    threat: MAS-THREAT-0072
+    attacks:
+    - MAS-ATTACK-0079
+    - MAS-ATTACK-0080
+    mappings:
+      masvs-v1:
+      - MSTG-STORAGE-12
+      masvs-v2:
+      - MASVS-PRIVACY-3
+      cwe:
+      - 359
+      maswe-beta:
+      - MASWE-0111
+    refs:
+    - https://support.google.com/googleplay/android-developer/answer/9859455#privacy_policy
+    - https://developer.apple.com/app-store/app-privacy-details/#privacy-links
+    - https://developer.apple.com/app-store/review/guidelines/#5.1.1
+  MASWE-0073:
+    title: Inadequate Data Collection Declarations
+    id: MASWE-0073
+    alias: data-collection-declarations
+    requirement: The app adequately declares all user collected data.
+    platform:
+    - android
+    - ios
+    profiles:
+    - P
+    threat: MAS-THREAT-0073
+    attacks:
+    - MAS-ATTACK-0081
+    - MAS-ATTACK-0082
+    mappings:
+      masvs-v1:
+      - MSTG-STORAGE-12
+      - MSTG-NETWORK-1
+      masvs-v2:
+      - MASVS-PRIVACY-3
+      - MASVS-PRIVACY-1
+      cwe:
+      - 359
+      maswe-beta:
+      - MASWE-0112
+      - MASWE-0108
+    refs:
+    - https://support.apple.com/en-us/102188
+    - https://support.apple.com/kb/HT211970
+    - https://developer.apple.com/app-store/review/guidelines/#5.1.2
+    - https://developer.apple.com/app-store/app-privacy-details/#data-collection
+    - https://support.google.com/googleplay/android-developer/answer/10787469
+    - https://developer.apple.com/videos/play/wwdc2023/10060
+    - https://support.google.com/googleplay/answer/11416267
+    - https://www.youtube.com/watch?v=J7TM0Yy0aTQ
+    - https://www.youtube.com/watch?v=4rfF3y4xchU
+  MASWE-0074:
+    title: Inadequate Tracking Domains Declarations
+    id: MASWE-0074
+    alias: tracking-domains-declarations
+    requirement: The app adequately declares all tracking domains it connects to.
+    platform:
+    - android
+    - ios
+    profiles:
+    - P
+    threat: MAS-THREAT-0074
+    attacks:
+    - MAS-ATTACK-0074
+    - MAS-ATTACK-0075
+    mappings:
+      masvs-v2:
+      - MASVS-PRIVACY-3
+      cwe:
+      - 359
+      maswe-beta:
+      - MASWE-0108
+    refs:
+    - https://developer.apple.com/documentation/bundleresources/privacy_manifest_files/describing_use_of_required_reason_api
+    - https://developer.apple.com/documentation/bundleresources/privacy_manifest_files
+    - https://developer.apple.com/app-store/app-privacy-details/#user-tracking
+    - https://developer.apple.com/documentation/apptrackingtransparency/
+  MASWE-0075:
+    title: Non-Reproducible Builds
+    id: MASWE-0075
+    alias: non-reproducible-builds
+    requirement: The app offers reproducible builds.
+    platform:
+    - android
+    - ios
+    profiles:
+    - P
+    threat: MAS-THREAT-0075
+    attacks:
+    - MAS-ATTACK-0060
+    - MAS-ATTACK-0062
+    mappings:
+      masvs-v2:
+      - MASVS-PRIVACY-3
+      cwe:
+      - 1357
+      - 494
+    refs:
+    - https://reproducible-builds.org/
+    - https://slsa.dev/
+    - https://github.com/signalapp/Signal-Android/blob/main/reproducible-builds/README.md
+  MASWE-0076:
+    title: Lack of Proper Data Management Controls
+    id: MASWE-0076
+    alias: data-management-controls
+    requirement: The app provides adequate controls to manage user data.
+    platform:
+    - android
+    - ios
+    profiles:
+    - P
+    threat: MAS-THREAT-0076
+    attacks:
+    - MAS-ATTACK-0083
+    mappings:
+      masvs-v2:
+      - MASVS-PRIVACY-4
+      cwe:
+      - 359
+      maswe-beta:
+      - MASWE-0113
+    refs:
+    - https://developer.apple.com/app-store/app-privacy-details/#privacy-links
+  MASWE-0077:
+    title: Inadequate Data Visibility Controls
+    id: MASWE-0077
+    alias: data-visibility-control
+    requirement: The app provides adequate controls over the visibility of user data.
+    platform:
+    - android
+    - ios
+    profiles:
+    - P
+    threat: MAS-THREAT-0077
+    attacks:
+    - MAS-ATTACK-0084
+    - MAS-ATTACK-0087
+    mappings:
+      masvs-v2:
+      - MASVS-PRIVACY-4
+      cwe:
+      - 359
+      maswe-beta:
+      - MASWE-0114
+    refs:
+    - https://firebase.google.com/support/privacy/storing-privacy-settings
+    - https://www.researchgate.net/publication/335863205_Demystifying_Hidden_Privacy_Settings_in_Mobile_Apps
+  MASWE-0078:
+    title: Inadequate or Ambiguous User Consent Mechanisms
+    id: MASWE-0078
+    alias: ambiguous-consent-mechanisms
+    requirement: The app requests user consent prior to any data processing.
+    platform:
+    - android
+    - ios
+    profiles:
+    - P
+    threat: MAS-THREAT-0078
+    attacks:
+    - MAS-ATTACK-0085
+    - MAS-ATTACK-0086
+    mappings:
+      masvs-v2:
+      - MASVS-PRIVACY-4
+      cwe:
+      - 200
+      - 285
+      - 358
+      - 359
+      maswe-beta:
+      - MASWE-0115
+      - MASWE-0060
+    refs:
+    - https://developer.apple.com/design/human-interface-guidelines/privacy#Requesting-permission
+    - https://developer.apple.com/documentation/uikit/protecting_the_user_s_privacy/requesting_access_to_protected_resources
+    - https://developer.android.com/training/permissions/requesting#explain
