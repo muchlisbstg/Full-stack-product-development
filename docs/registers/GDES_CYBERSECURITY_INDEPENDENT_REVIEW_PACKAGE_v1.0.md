@@ -113,3 +113,35 @@ The user's standing decision is that the GDES procurement ceiling is deferred an
 Reopening requires both confirmed budget availability and explicit renewed authorization from the Standards Owner.
 
 **Disposition: INTERNAL DRAFT PACKAGE ONLY — NOT ISSUED — NO REVIEWER APPOINTED.**
+
+
+## 7. Updated source and handoff readiness — 2026-11-11
+
+### 7.1 Immutable source and license baseline
+
+Use the corrected source snapshot register in `GDES_CYBERSECURITY_FRAMEWORK_MAPPING_v1.0.md`:
+
+- ASVS 5.0.0 — `OWASP/ASVS@62981c68fd06206e8afa161653943935de9a5047`
+- MASVS YAML — `OWASP/masvs@bbe226fd17e6dab51927f392936deef31c816423`
+- MASWE 1.0.0 — `OWASP/maswe@308b82b4bbe29166934fb5a621b40471cfea61db`
+- MASTG 2.0.0 — `OWASP/mastg@990472dbcffe126f5556045d60270c4ffdfdde72`
+- TCASVS 5.0.0 — `OWASP/TCASVS@f10ec111883787dd6f83e0237d0f1b2e043d55e0`
+- SAMM 2.2.0 — `owaspsamm/core@21352e0fc79a6764abcd83a008690e32d2d5a3fe`
+
+All six pinned license files were inspected and identify CC BY-SA 4.0. Reviewers must still assess attribution, ShareAlike, modifications, and whether the GDES output reproduces or adapts licensed source content.
+
+### 7.2 Canonical ID rule for reviewers
+
+Review against `GDES-SEC-DICT-001`, not bare IDs from the earlier provisional mapping matrix. In particular, the canonical proposed meanings for SEC-008 through SEC-011 are Supply Chain, Logging/Monitoring, Verification/Evidence, and Incident/Resilience respectively. Database review uses `GDES-DB-001–005`. Every historical alias must be qualified by its source document/version.
+
+### 7.3 Extraction evidence status
+
+The metadata extractor and branch-scoped Actions workflow are present, but the observed workflow attempts have not produced a successful extraction. Do not treat planned catalog paths as existing evidence. Before reviewer handoff, attach the successful Actions run URL, commit SHA, generated manifest, CSV file SHAs, row counts, missing-field checks, duplicate checks, unknown weakness references, and license-file SHA-256 values.
+
+A MASTG inventory discrepancy must be explicitly reviewed: the pinned tree contains 292 unique test Markdown paths (200 in `tests-beta/`, 92 in legacy `tests/`), while the v2.0.0 release announcement reports 285 tests. The extractor must preserve the full tree inventory and distinguish structured metadata-linked tests from legacy pages.
+
+### 7.4 Procurement and disclosure boundary
+
+This package remains **INTERNAL DRAFT — NOT ISSUED**. The procurement ceiling is deferred. No candidate search/contact, NDA, appointment, non-public evidence disclosure, independent review, or expense is authorized. Reopening requires both confirmed budget availability and explicit renewed authorization from the Standards Owner.
+
+**Handoff readiness: DOCUMENT INDEX READY — SOURCE METADATA EXTRACTION NOT VERIFIED — NOT ISSUED — REVIEWERS NOT APPOINTED.**
