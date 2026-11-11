@@ -380,3 +380,39 @@ The extractor and branch-scoped workflow have been committed. No successful Acti
 | RECON-018 | Cybersecurity Gate decision | Mapping completeness, independent reviews, tests, findings closure/retest and explicit Standards Owner approval | NOT CLEARED — SDLC blocked |
 
 **Current decision:** Cybersecurity documentation is advanced, upstream source/license snapshots are verified, canonical dictionary is submitted but not approved, metadata extraction is not verified, procurement remains deferred, independent review has not started, and SDLC formal progression remains blocked.
+
+
+## 17. Cybersecurity extraction result and current gate disposition — 2026-11-11
+
+This addendum supersedes the earlier RECON-014 note that the extraction workflow had not yet executed successfully.
+
+### 17.1 Verified execution
+
+- Actions run [42972384713](https://github.com/muchlisbstg/Full-stack-product-development/actions/runs/42972384713) completed successfully.
+- Generated catalog commit: `7e06abbe46960e02c0bdd583111575eb96116207`.
+- Remote read-back verified for generated catalogs, manifest, official MASWE beta mapping asset, and six-row license register.
+- Counts: 24 MASVS controls; 78 MASWE; 118 beta aliases; 292 MASTG paths (200 structured and 92 legacy); 345 ASVS requirements; 132 TCASVS requirements; 90 SAMM activities and 90 questions; six license snapshots.
+
+### 17.2 Source-mapping exceptions
+
+The generated manifest reports:
+- One unresolved beta weakness ID `MASWE-0097` in four MASTG tests; stable `MASWE-0051` is only a semantic candidate, not a source-backed alias.
+- Seven beta aliases have multiple stable targets in the official release asset.
+- 38 stable MASWE entries have no MASTG test link versus 36 reported in the release article.
+- 292 unique MASTG test Markdown paths versus 285 tests reported in the v2.0.0 release announcement.
+- ASVS and TCASVS catalogs have candidate mappings, not approved semantic mappings.
+- SAMM activity-level relationships are candidates, not maturity scores or GDES compliance results.
+
+Detailed finding records: `docs/registers/GDES_CYBERSECURITY_FINDINGS_REGISTER_v1.0.md`.
+
+### 17.3 Updated action status
+
+| ID | Action | Updated status |
+|---|---|---|
+| RECON-014 | Pinned framework metadata extraction and generated-catalog validation | **EXTRACTION COMPLETE — REMOTE VERIFIED**; source mapping exceptions remain OPEN in findings register |
+| RECON-015 | Standards Owner decision on GDES-SEC-DICT-001 | PENDING — Issue #40 OPEN |
+| RECON-016 | Independent Security and Database review | BLOCKED — procurement deferred; no reviewers appointed |
+| RECON-017 | Findings remediation and retest | NOT STARTED |
+| RECON-018 | Cybersecurity Gate decision | NOT CLEARED — SDLC formal progression remains blocked |
+
+**Current decision:** source extraction and license snapshot verification are complete; candidate mappings and source exceptions remain under review; canonical dictionary is not approved; independent review has not started; runtime tests and retests have not started; Cybersecurity Gate is not cleared.
