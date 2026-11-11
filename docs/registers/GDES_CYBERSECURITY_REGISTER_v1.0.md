@@ -272,3 +272,38 @@ This adds a clear scope condition to the mapping matrix in Section 5: its initia
 - TCASVS: https://github.com/OWASP/TCASVS
 - TCASVS OWASP project card: https://owasp.org/projects/thick-client-application-security-verification-standard
 
+
+
+## 14. Detailed crosswalk and independent review gate — 2026-11-11
+
+The detailed framework crosswalk is maintained separately to keep the control register readable:
+
+- Mapping artifact: [GDES Cybersecurity Mapping Matrix v1.0](GDES_CYBERSECURITY_MAPPING_MATRIX_v1.0.md)
+- Mapping ID: GDES-SEC-MAP-001
+- Status: TECHNICAL MAPPING DRAFT — INDEPENDENT REVIEW NOT COMPLETED
+- Matrix source pin includes ASVS v5.0.0 CSV, MASVS control YAML, TCASVS 5.0.0 six chapter sources, and SAMM v2.2.0 practice sources.
+
+### Corrections and clarified source decisions
+
+1. **ASVS:** exact requirement sections are now mapped for all 11 GDES controls using the v5.0.0 CSV. Serialized requirement identifiers MUST use OWASP's version-qualified format, e.g. `v5.0.0-1.2.5`. Section ranges in the mapping matrix preserve the chapter and section context.
+2. **MASVS:** 24 controls across STORAGE, CRYPTO, AUTH, NETWORK, PLATFORM, CODE, RESILIENCE, and PRIVACY were extracted from the pinned YAML source. The exact MASWE-to-MASTG test leaf mapping remains open and must be selected per actual mobile feature/platform.
+3. **TCASVS:** repository source declares stable 5.0.0, with six chapters and 130+ requirements. The OWASP project card still shows 1.8; the matrix resolves this by pinning the 5.0.0 repository chapter source and records the discrepancy for Standards Owner disposition.
+4. **SAMM:** v2.2.0 practice sources were checked, including Threat Assessment (TA), Security Testing (ST), and Secure Build (SB). The matrix maps all 15 practice names; complete stream/activity/question source pins remain open.
+5. **Database scope:** none of these mappings alone proves PostgreSQL RLS, composite tenant FKs, transaction isolation, concurrency, temporal consistency, or SQLite/PostgreSQL parity. These remain explicit GDES database acceptance requirements.
+
+### Current gate outcome
+
+- ASVS section-level requirement crosswalk: CREATED.
+- MASVS 24-control crosswalk: CREATED.
+- TCASVS 5.0.0 chapter/section crosswalk: CREATED.
+- SAMM 15-practice crosswalk: CREATED at practice-name level.
+- MASWE/MASTG leaf test selection: OPEN.
+- SAMM stream/activity/question-level mapping: OPEN.
+- Independent Security Review: NOT STARTED / BLOCKED — reviewer not appointed.
+- Independent Database Review: NOT STARTED / BLOCKED — reviewer not appointed.
+- Standards Owner approval: NOT APPROVED.
+- Runtime testing: NOT TESTED.
+
+**Overall: TECHNICAL MAPPING SUBSTANTIALLY STRUCTURED; COVERAGE PARTIAL; INDEPENDENT REVIEW BLOCKED; NOT APPROVED.**
+
+Do not start the formal SDLC Register v1.0 gate until the mapping matrix's independent review, mobile leaf-test selection, SAMM stream/activity traceability, and database gap disposition are complete.
