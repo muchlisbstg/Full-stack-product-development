@@ -93,6 +93,25 @@ TCASVS_TO_GDES = {
     "V5": ["GDES-SEC-006"],
     "V6": ["GDES-SEC-005", "GDES-SEC-006"],
 }
+# Description-keyword crosswalk is a transparent candidate-generation aid only.
+# Every output remains subject to line-by-line independent semantic review.
+DESCRIPTION_RULES = {
+    "GDES-SEC-001": r"\b(threat model|threat modeling|risk assessment|security policy|security governance|security principle|security architecture|trust boundary)\b",
+    "GDES-SEC-002": r"\b(authentication|authenticator|credential|identity|mfa|multi.factor|session|token lifecycle|account recovery)\b",
+    "GDES-SEC-003": r"\b(authorization|authorisation|access control|permission|privilege|role.based|least privilege|tenant isolation)\b",
+    "GDES-SEC-004": r"\b(input validation|output encoding|injection|cross.site scripting|xss|deseriali[sz]ation|memory safety|code execution|path traversal)\b",
+    "GDES-SEC-005": r"\b(network|tls|https|http security|api security|communication channel|ssrf|certificate validation|firewall|egress)\b",
+    "GDES-SEC-006": r"\b(cryptograph|encryption|data protection|sensitive data|privacy|data storage|key management|integrity protection)\b",
+    "GDES-SEC-007": r"\b(secret|secrets|credential storage|configuration|hardcoded key|private key|keystore|keychain)\b",
+    "GDES-SEC-008": r"\b(dependenc|third.party|supply chain|software composition|library|package|build artifact|provenance|component inventory)\b",
+    "GDES-SEC-009": r"\b(logging|log data|monitoring|audit trail|alerting|error handling|diagnostic|telemetry)\b",
+    "GDES-SEC-010": r"\b(security test|verification|assessment|vulnerabilit|penetration test|code review|security review|static analysis|dynamic analysis)\b",
+    "GDES-SEC-011": r"\b(incident|recovery|backup|restore|resilien|availability|business continuity|disaster|rollback|patch management)\b",
+}
+def description_candidates(text):
+    value = str(text or "").lower()
+    return [control for control, pattern in DESCRIPTION_RULES.items() if re.search(pattern, value, re.I)]
+
 SAMM_TO_GDES = {
     "D-SA": ["GDES-SEC-001", "GDES-SEC-003", "GDES-SEC-004", "GDES-SEC-005", "GDES-SEC-006"],
     "D-SR": ["GDES-SEC-001", "GDES-SEC-002", "GDES-SEC-003"],
@@ -333,15 +352,21 @@ def main() -> None:
         for line in content.splitlines():
             m = re.match(r"^\|\s*(V[1-6]\.\d+\.\d+)\s*\|\s*(.*?)\s*\|\s*([123])\s*\|\s*(.*?)\s*\|$", line)
             if m:
-                candidates = TCASVS_TO_GDES.get(chapter, [])
-                tcasvs_rows.append({"requirement_id": m.group(1), "description": m.group(2).strip(),
+                description = m.group(2).strip()
+                candidates = description_candidates(description)
+                mapping_method = "DESCRIPTION-KEYWORD CANDIDATE"
+                if not candidates:
+                    candidates = TCASVS_TO_GDES.get(chapter, [])
+                    mapping_method = "CHAPTER FALLBACK CANDIDATE"
+                tcasvs_rows.append({"requirement_id": m.group(1), "description": description,
                                     "verification_level": m.group(3), "source": m.group(4).strip(),
                                     "chapter": chapter, "candidate_gdes_controls": candidates,
-                                    "mapping_status": "CHAPTER-BASED CANDIDATE — REVIEW REQUIRED",
+                                    "mapping_method": mapping_method,
+                                    "mapping_status": "CANDIDATE — REVIEW REQUIRED",
                                     "source_path": chapter_path})
     write_csv("GDES_TCASVS_REQUIREMENT_CATALOG_v5.0.0.csv",
               ["requirement_id", "chapter", "description", "verification_level", "source",
-               "candidate_gdes_controls", "mapping_status", "source_path"], tcasvs_rows)
+               "candidate_gdes_controls", "mapping_method", "mapping_status", "source_path"], tcasvs_rows)
 
     # SAMM 2.2.0: every practice activity, maturity-level, and coverage question.
     samm_tree = trees["SAMM"]
@@ -360,19 +385,25 @@ def main() -> None:
         d = yaml.safe_load(text_of(SOURCES["SAMM"]["repo"], SOURCES["SAMM"]["ref"], f["path"])) or {}
         code = Path(f["path"]).stem[:4]
         qs = sorted(questions_by_activity.get(d.get("id", ""), []), key=lambda x: str(x["order"]))
+        activity_text = " ".join(str(d.get(k, "")) for k in ("title", "benefit", "shortDescription", "longDescription"))
+        candidates = description_candidates(activity_text)
+        mapping_method = "ACTIVITY-DESCRIPTION KEYWORD CANDIDATE"
+        if not candidates:
+            candidates = SAMM_TO_GDES.get(code, [])
+            mapping_method = "PRACTICE-LEVEL FALLBACK CANDIDATE"
         samm_rows.append({"activity_guid": d.get("id", ""), "activity_code": Path(f["path"]).stem,
                           "practice_code": code, "title": d.get("title", ""), "benefit": d.get("benefit", ""),
                           "short_description": d.get("shortDescription", ""), "long_description": d.get("longDescription", ""),
                           "results": d.get("results", ""), "metrics": d.get("metrics", ""), "costs": d.get("costs", ""),
                           "personnel": d.get("personnel", ""), "related_activities": d.get("relatedActivities", []),
                           "question_ids": [q["question_id"] for q in qs], "questions": [q["question"] for q in qs],
-                          "candidate_gdes_controls": SAMM_TO_GDES.get(code, []),
-                          "mapping_status": "PRACTICE/ACTIVITY CANDIDATE — REVIEW REQUIRED",
+                          "candidate_gdes_controls": candidates, "mapping_method": mapping_method,
+                          "mapping_status": "CANDIDATE — REVIEW REQUIRED",
                           "source_path": f["path"], "source_blob_sha": f["sha"]})
     write_csv("GDES_SAMM_ACTIVITY_CATALOG_v2.2.0.csv",
               ["activity_guid", "activity_code", "practice_code", "title", "benefit", "short_description",
                "long_description", "results", "metrics", "costs", "personnel", "related_activities",
-               "question_ids", "questions", "candidate_gdes_controls", "mapping_status", "source_path", "source_blob_sha"], samm_rows)
+               "question_ids", "questions", "candidate_gdes_controls", "mapping_method", "mapping_status", "source_path", "source_blob_sha"], samm_rows)
     write_csv("GDES_SAMM_QUESTION_CATALOG_v2.2.0.csv",
               ["question_id", "activity_guid", "question", "order", "quality_criteria", "source_path", "source_blob_sha"], questions)
 
