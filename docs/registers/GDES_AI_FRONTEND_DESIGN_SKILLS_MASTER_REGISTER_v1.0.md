@@ -92,3 +92,47 @@ These are proposed GDES classifications, not upstream guarantees and not final a
 | Version | Date | Change |
 |---|---|---|
 | 1.0 | 2026-11-11 | Initial scoped register entry for GDES-REP-001; draft for review |
+
+
+## 9. Compatibility review and Standards Owner submission — 2026-11-11
+
+The 11 upstream `SKILL.md` files were re-inspected against current official Agent Skills guidance for Claude Code, Codex and VS Code. All 11 have a non-empty `name` and `description`, and the `name` matches the skill folder. Description lengths observed are 421–592 characters. This is a **static format check only**.
+
+- Claude Code: upstream `.claude-plugin/marketplace.json` and `.claude-plugin/plugin.json` exist; native plugin packaging is present. Runtime loading/invocation remains NOT TESTED.
+- Codex: the `name` + `description` metadata matches the documented `SKILL.md` format. Native project installation requires a copy under `.agents/skills/<name>/`. Runtime discovery/invocation remains NOT TESTED.
+- VS Code/Copilot: metadata and folder naming match the documented Agent Skills format. Native Copilot project discovery uses `.github/skills/<name>/`; VS Code's Codex integration is documented as experimental. Runtime discovery/invocation remains NOT TESTED.
+
+### Additional findings
+
+- `replica-backend` and `replica-deploy` describe high-impact operations but do not set `disable-model-invocation: true`. Require a GDES-controlled manual-invocation guard before any enabled pilot.
+- Several skill instructions call Python helpers using bare or parent-relative paths, while the README examples use repository-root-prefixed paths. Script resolution must be normalized and tested per installation path.
+- The upstream Claude plugin manifests do not constitute Codex or VS Code extension packaging.
+
+### Evidence and evaluation assets
+
+- Compatibility and isolated evaluation report: `docs/registers/GDES_REPLICA_SKILL_COMPATIBILITY_AND_SANDBOX_EVALUATION_v1.0.md`.
+- Static metadata validator: `scripts/gdes/validate_replica_skill_metadata.py`.
+- Isolated GitHub Actions workflow: `.github/workflows/gdes-replica-skill-isolated-eval.yml`.
+- Upstream source pin: `77c9436fb3d18c3d58169efb8caf4fe906b0dc51`.
+
+The workflow is committed but no run ID, logs, artifacts, or test status were returned by GitHub at the time of this update. Therefore the isolated test suite is **NOT TESTED**, and the three platform runtime criteria remain **PARTIAL / NOT TESTED**. No compatibility PASS is claimed for runtime behavior.
+
+### Revised acceptance status
+
+| ID | Acceptance criterion | Updated status |
+|---|---|---|
+| REP-AC-01 | Source/version/commit/license recorded | PASS — source evidence recorded |
+| REP-AC-02 | All 11 skills inventoried | PASS — inventory complete |
+| REP-AC-03 | Six Python utilities inspected | PARTIAL — static inspection only |
+| REP-AC-04 | No installation or project execution | PASS — none installed or invoked |
+| REP-AC-05 | Claude Code compatibility | PARTIAL — static format/package compatible; runtime NOT TESTED |
+| REP-AC-06 | Codex compatibility | PARTIAL — static format compatible; runtime NOT TESTED |
+| REP-AC-07 | VS Code compatibility | PARTIAL — static format compatible; runtime NOT TESTED |
+| REP-AC-08 | Governance and clean-room safeguards | PARTIAL — overlay drafted; negative runtime tests pending |
+| REP-AC-09 | Isolated upstream unit tests | NOT TESTED — no Actions run evidence |
+| REP-AC-10 | Invocation and path findings resolved | OPEN |
+| REP-AC-11 | Standards Owner decision | PENDING |
+
+### Submission status
+
+GDES-REP-001 is submitted for Standards Owner disposition as **Recommended Practice — proposed**. The decision requested is approve, revise, or reject the classification with conditions. This submission does not authorize installation, adoption, merge, production use, or deployment. `replica-deploy` remains Restricted; `replica-backend` remains Optional Tool.
