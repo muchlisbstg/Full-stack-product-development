@@ -220,3 +220,92 @@ Proposed Standards Owner consideration:
 - Keep SEC-010 as verification/evidence, not the owner of the underlying technical safeguard.
 - If the owner prefers not to expand the dictionary, mark these source requirements as `GAP — NO DIRECT CANONICAL CONTROL` and preserve explicit residual coverage gaps. Do not force-map them.
 - This is a proposed change request only; no canonical dictionary edit or approval is made by this paper.
+
+
+## 12. ASVS v5.0.0 — semantic batch B (V2.1–V2.4)
+
+Source catalog blob: `8e1f34ae3f80f8121f29de7fc1b6d33253d0d646`.
+
+| ASVS requirement | Proposed disposition | Rationale |
+|---|---|---|
+| V2.1.1 | RETAIN SEC-004 | Documented structural input validation rules are direct input-handling controls. |
+| V2.1.2 | EXPAND SEC-004 primary; SEC-003 conditional | Cross-field consistency is input validation; SEC-003 applies when the relationship encodes authorization or ownership constraints. |
+| V2.1.3 | EXPAND SEC-004 primary; SEC-003 conditional | Documented business limits are validation; per-user entitlement/quota enforcement may require authorization. |
+| V2.2.1 | RETAIN SEC-004 | Positive/allowlist validation and business constraints are direct input validation. |
+| V2.2.2 | EXPAND SEC-004 primary; SEC-003 supporting | Trusted server-side validation is mandatory; authorization checks must also be server-side when input affects protected actions. |
+| V2.2.3 | RETAIN SEC-004 | Consistency of related input values is validation/business-rule integrity. |
+| V2.3.1 | EXPAND SEC-003 primary; SEC-004 and SEC-010 supporting | Workflow sequencing is authorization/state-transition control; input integrity and test evidence support it. |
+| V2.3.2 | EXPAND SEC-003 primary; SEC-004 and SEC-010 supporting | Business limits may encode user entitlement/authorization; validation and verification are supporting. |
+| V2.3.3 | EXPAND DB-003 primary; SEC-010 supporting | Atomic business transactions and rollback are transaction/concurrency/temporal integrity, not generic input validation. |
+| V2.3.4 | EXPAND DB-003 primary; SEC-003 supporting | Locking against double booking is concurrency/consistency; access control protects who may reserve or modify the resource. |
+| V2.3.5 | EXPAND SEC-003 primary; SEC-010 supporting | Multi-user approval and separation of duties are authorization controls; verification evidence is supporting. |
+| V2.4.1 | EXPAND SEC-005 primary; SEC-003 and SEC-011 supporting | Rate limiting/anti-automation protects service interfaces and resource availability; authorization and resilience apply to scoped actions and outage behavior. |
+| V2.4.2 | EXPAND SEC-003 primary; DB-003 conditional | Human-timing checks are anti-abuse/business authorization; DB-003 applies where rapid duplicate submissions threaten transaction consistency/idempotency. |
+
+### ASVS batch B findings
+
+- V2.3.3 and V2.3.4 should map to DB-003 where atomicity, locking and concurrency are the actual source requirement outcomes.
+- Existing candidate SEC-004/SEC-010 for business-logic requirements is incomplete; authorization and database transaction integrity are first-class dimensions.
+- Rate limiting is primarily an API/network and availability concern, not merely input sanitization.
+
+## 13. TCASVS v5.0.0 — semantic batch C (V3 data protection)
+
+| Source ID | Proposed semantic disposition | Rationale |
+|---|---|---|
+| V3.2.4 | EXPAND SEC-007 primary; SEC-006 and SEC-010 supporting | Embedded secrets/key material are secrets/configuration; protection context and static-analysis evidence are supporting. |
+| V3.2.5 | EXPAND DB-004 primary; DB-005 and SEC-006 supporting | Local database file access is database privilege/credential governance; encryption and backup/restore are conditional based on platform capabilities and data sensitivity. |
+| V3.2.6 | EXPAND DB-005 primary; SEC-006 and SEC-011 supporting | Database/application backup-export integrity and restore handling belong to DB-005 where database data is involved; data protection and resilience support. |
+| V3.3.1 | EXPAND SEC-002 primary; SEC-007 supporting | Session/authentication token storage is identity/session protection; OS secure storage is secrets/configuration. |
+| V3.3.2 | RETAIN SEC-006; SEC-007 supporting | Encryption at rest and key-management practice are data protection and secret/key custody. |
+| V3.3.3 | RETAIN SEC-007; SEC-002 conditional | OS credential APIs are secure secret storage; SEC-002 applies where stored material is authentication/session identity. |
+| V3.3.4 | RETAIN SEC-007; SEC-006 supporting | Hardware-backed key custody and non-exportability are secrets/key management with cryptographic data-protection context. |
+| V3.4.1 | GAP — secure memory/resource lifecycle; SEC-006/007 conditional | Zeroization and short-lived secret memory are not fully owned by the current dictionary; SEC-006/007 identify protected data/secret types but not memory-safe lifecycle. |
+| V3.4.2 | GAP — secure memory/runtime hardening; SEC-006/007 conditional | Non-pageable memory is a platform/runtime hardening requirement; do not force-map it to generic encryption or secret storage. |
+| V3.4.3 | RETAIN SEC-006; SEC-009 conditional | Clipboard leakage is sensitive-data exposure; logging/monitoring is not primary unless clipboard events are logged. |
+| V3.4.4 | RETAIN SEC-006; SEC-009 conditional | Crash-dump minimization prevents sensitive-data disclosure; SEC-009 applies only to crash telemetry/error handling. |
+| V3.5.1 | RETAIN SEC-006; DB-005 conditional | Secure removal of temporary sensitive data is data lifecycle protection; DB-005 applies if the temporary files are database backup/export artifacts. |
+| V3.5.2 | EXPAND SEC-007 primary; SEC-003 supporting; DB-004 conditional | Temporary-file directory permissions are secure configuration and access control; DB-004 applies only to local DB files/credentials. |
+
+## 14. SAMM v2.2.0 — semantic batch C
+
+| Activity | Proposed semantic disposition | Rationale |
+|---|---|---|
+| G-PC-1-A — Define policies and standards | RETAIN SEC-001; SEC-008 supporting | Organization security policy baseline is governance; supply-chain standards are a subset where relevant. |
+| G-PC-1-B — Identify compliance requirements | EXPAND SEC-001 primary; SEC-006/SEC-008 conditional | Compliance applicability is governance; privacy/data protection and supplier/component obligations depend on the applicable regime. |
+| G-PC-2-A — Develop test procedures | RETAIN SEC-010; SEC-001 supporting | Security test procedure design is verification; policy requirements provide traceable criteria. |
+| G-PC-2-B — Standardize policy and compliance requirements | EXPAND SEC-001 primary; SEC-010 supporting; SEC-006 conditional | Policy requirement libraries are governance and test guidance; privacy/data protection is included only where relevant. |
+| G-PC-3-A — Measure compliance to policies and standards | EXPAND SEC-001 primary; SEC-010 supporting | Compliance measurement is governance and assurance evidence, not generic logging or configuration. |
+| G-PC-3-B — Measure compliance to external requirements | EXPAND SEC-001 primary; SEC-010 supporting; SEC-006 conditional | External compliance status is governance and verification; privacy/data requirements apply when the regulation concerns protected data. |
+| G-SM-1-A — Identify the organization's risk appetite | RETAIN SEC-001 | Risk appetite and security prioritization are governance/threat-risk management. |
+| G-SM-1-B — Define basic security metrics | EXPAND SEC-001 primary; SEC-010 supporting | Program metrics are governance; measurement of assurance effectiveness is verification evidence. |
+| G-SM-2-A — Define the security strategy | RETAIN SEC-001; SEC-010 supporting | Security strategy and milestones are governance; assurance metrics are supporting. |
+| G-SM-2-B — Set strategic KPIs | EXPAND SEC-001 primary; SEC-010 supporting | Security program KPI targets are governance and assurance measurement, not ordinary operational logging. |
+| G-SM-3-A — Align security and business strategies | RETAIN SEC-001 | Security strategy alignment and periodic review are governance. |
+| G-SM-3-B — Drive the security program through metrics | EXPAND SEC-001 primary; SEC-010 supporting | Program improvement based on metrics is governance with verification/assurance evidence. |
+| I-DM-1-A — Track security defects centrally | RETAIN SEC-010; SEC-009 supporting | Defect identification, triage and evidence are security verification; monitoring/alerting supports workflow. |
+| I-DM-1-B — Define basic defect metrics | RETAIN SEC-010; SEC-001 supporting | Defect metrics are assurance evidence and governance reporting. |
+| I-DM-2-A — Rate and track security defects | RETAIN SEC-010; SEC-001 supporting | Severity/risk scoring and defect tracking are verification and risk governance. |
+| I-DM-2-B — Define advanced defect metrics | RETAIN SEC-010; SEC-001 supporting | Assurance and defect trend metrics are verification evidence and governance. |
+| I-DM-3-A — Enforce an SLA for defect management | EXPAND SEC-010 primary; SEC-009 supporting; SEC-001 conditional | Defect closure and escalation are assurance workflow; alerting supports operational tracking; risk governance applies to escalations. |
+| I-DM-3-B — Use metrics to improve the security strategy | EXPAND SEC-001 primary; SEC-010 supporting | Strategic adjustment from defect metrics is governance informed by assurance evidence. |
+| I-SB-1-A — Define a consistent build process | EXPAND SEC-008 primary; SEC-007 supporting; SEC-010 supporting | Repeatable build process governs artifact provenance and configuration; verification demonstrates reproducibility. |
+| I-SB-1-B — Identify application dependencies | RETAIN SEC-008; SEC-007 conditional | Dependency inventory is supply-chain governance; credentials/configuration are conditional and not inherent to a BOM. |
+
+## 15. Updated reconciliation coverage snapshot
+
+| Framework | Inventory | Row-level dispositions recorded in this paper | Remaining |
+|---|---:|---:|---:|
+| ASVS | 345 | 42 | 303 |
+| TCASVS | 132 | 69 | 63 |
+| SAMM | 90 | 44 | 46 |
+
+Counts are cumulative distinct source rows represented in sections 2, 7–9 and 12–14. They are documentary triage coverage only; they are not approval, compliance evidence, runtime test results or independent review.
+
+## 16. Additional canonical control gap proposal
+
+The latest batches show two distinct control domains not fully represented by the proposed 16-control dictionary:
+
+1. **Secure coding and runtime exploit mitigation** — memory safety, resource lifecycle, binary mitigations (ASLR, DEP/NX, CFI), platform exploit hardening and secret-memory lifecycle. This remains a proposed `GDES-SEC-012` change request.
+2. **Abuse resistance and service availability** — anti-automation, rate limiting, resource exhaustion and service-interface abuse. Existing SEC-005/SEC-011 cover parts, but their definitions should be checked to ensure rate-limit and abuse controls have an explicit owner.
+
+Do not approve either extension by inference. Keep the source rows explicitly marked GAP or PARTIAL until the Standards Owner decides the canonical dictionary scope.
