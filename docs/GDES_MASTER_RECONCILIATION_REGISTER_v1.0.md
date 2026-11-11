@@ -274,3 +274,41 @@ These are proposed workbook schemas. They are not evidence that the four domain 
 
 **End of GDES Master Reconciliation Register v1.0 — Draft for Review.**
 
+
+
+## 14. Cybersecurity Register v1.0 creation and mapping review — 2026-11-11
+
+The first domain register has been created in the pilot branch:
+
+- File: docs/registers/GDES_CYBERSECURITY_REGISTER_v1.0.md
+- Status: DRAFT — NOT APPROVED
+- Register ID: GDES-SEC-REG-001
+- Commit creating the file: 906dc49bb78049b56b3a73d370961e636407a0f2
+- Follow-up mapping/source review commit: 88d86cf0ed8657b09d988d1050a7ea37e45df52e
+- Latest verified file blob SHA: 526a049141a41f3b1be76483bfab7594890c248a
+- Scope: provisional GDES-SEC-001–011 descriptions, first-pass ASVS/SAMM/Cheat Sheet mapping, acceptance criteria, negative-access catalogue, evidence/finding templates, and review workflow.
+
+### Mapping review disposition
+
+- ASVS 5.0.0 stable release and CC BY-SA 4.0 source license verified.
+- SAMM v2.2.0 release and commit reference identified; CC-BY-SA-4.0 source license identified.
+- OWASP Cheat Sheet Series official source and CC BY-SA 4.0 license identified.
+- A platform coverage gap was found: ASVS is web/web-service oriented and cannot be the sole security reference for native Android/iOS and desktop/thick-client targets.
+- MASVS/MASWE/MASTG added as required mobile mapping references.
+- TCASVS added as required desktop/thick-client mapping reference; its version metadata is conflicting between the OWASP project card and repository README and remains NOT RECONCILED.
+- Exact ASVS requirement IDs, exact SAMM practice/stream IDs, upstream source pins for all supporting references, and canonical legacy GDES control wording remain incomplete.
+- No runtime security tests were executed; all controls remain NOT TESTED.
+
+**Overall Cybersecurity mapping result: PARTIAL — NOT APPROVED.** The 11-control first-pass mapping is a plausibility review, not proof of platform coverage, implementation, or compliance.
+
+### Updated action register
+
+| ID | Action | Status |
+|---|---|---|
+| RECON-004 | Validate Cybersecurity Register against threat model and control frameworks | IN PROGRESS — register created; independent review and exact mapping pending |
+| RECON-007 | Run GAI/SEC controls in isolated fixtures | NOT TESTED |
+| RECON-012 | Complete Cybersecurity exact requirement mapping, platform extensions, and independent review | OPEN |
+| RECON-013 | Reconcile legacy GDES-SEC wording and master workbook security/database/governance rows | OPEN |
+
+The SDLC Register remains next in the approved build sequence, but Cybersecurity mapping review must first produce documented coverage, unresolved gaps, and independent reviewer disposition. No SDLC Register is claimed to have been created in this update.
+
