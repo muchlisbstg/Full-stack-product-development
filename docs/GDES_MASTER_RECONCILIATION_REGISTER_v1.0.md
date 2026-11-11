@@ -312,3 +312,35 @@ The first domain register has been created in the pilot branch:
 
 The SDLC Register remains next in the approved build sequence, but Cybersecurity mapping review must first produce documented coverage, unresolved gaps, and independent reviewer disposition. No SDLC Register is claimed to have been created in this update.
 
+
+
+## 15. Detailed Cybersecurity framework crosswalk — 2026-11-11
+
+Created:
+- `docs/registers/GDES_CYBERSECURITY_MAPPING_MATRIX_v1.0.md`
+- Mapping ID: GDES-SEC-MAP-001
+- Creation commit: `f1a82631f313db5c22f9d5b1bd39ecb5b2e11839`
+- Follow-up source-pin/identifier correction commit: `b186e066173acba674a37e2f2732bb6c03b285a0`
+- Latest mapping blob SHA after correction: `420c13485aace686756d29184eb25eb3246f7346`
+
+Mapping contents:
+- ASVS v5.0.0 exact requirement section ranges for all 11 GDES-SEC controls, sourced from the tagged official CSV. Use version-qualified IDs such as `v5.0.0-1.2.5`.
+- MASVS 24-control inventory across eight control groups.
+- TCASVS 5.0.0 six-chapter section-level crosswalk, with chapter source blob pins.
+- SAMM 2.2.0 15-practice mapping by canonical practice names/abbreviations, with selected practice blob pins.
+- Coverage gaps, independent reviewer protocol, review status, and SDLC exit gate.
+
+Source reconciliation:
+- TCASVS repository README identifies stable 5.0.0 and six chapters; OWASP project card metadata still displays 1.8. The mapping pins repository v5.0 source and records the project-card discrepancy rather than treating the older card as the current source.
+- MASWE v1.0.0 and MASTG v2.0.0 are stable sources; individual weakness-to-test mappings remain to be selected for actual app features/platforms.
+- SAMM v2.2.0 practice mapping is at practice-name level; stream/activity/question-level traceability remains open.
+- ASVS chapter/section requirement ranges are mapped but project-level applicability and verification levels still require reviewer decisions.
+- Database controls remain a major GDES-specific gap and require independent Database Reviewer validation.
+
+Review state:
+- Independent Security Reviewer: NOT APPOINTED; NOT STARTED / BLOCKED.
+- Independent Database Reviewer: NOT APPOINTED; NOT STARTED / BLOCKED.
+- Runtime security tests: NOT TESTED.
+- Standards Owner approval: NOT APPROVED.
+
+**Gate remains NOT CLEARED.** The technical crosswalk exists, but coverage is PARTIAL and independent review has not occurred. SDLC Register v1.0 must not be represented as authorized to proceed until remaining mapping and review conditions are satisfied.
