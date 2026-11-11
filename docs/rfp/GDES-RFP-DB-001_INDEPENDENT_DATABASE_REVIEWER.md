@@ -3,14 +3,15 @@
 | Metadata | Value |
 |---|---|
 | RFP ID | GDES-RFP-DB-001 |
-| Version | 1.0 |
-| Status | **DRAFT FOR REVIEW — NOT ISSUED** |
+| Version | 1.1 |
+| Status | **REVISED DRAFT — OWNER REVIEWED — PROCUREMENT DEFERRED — NOT ISSUED** |
 | Owner | MUCHLIS BSTG / GDES Standards Owner |
 | Repository | `muchlisbstg/Full-stack-product-development` |
 | Branch | `gdes/ai-governance-v1-pilot` |
 | Related artifacts | `docs/GDES_MASTER_STANDARD_v1.0.md`; `docs/registers/GDES_CYBERSECURITY_REGISTER_v1.0.md`; `docs/registers/GDES_CYBERSECURITY_MAPPING_MATRIX_v1.0.md`; Export Client database and architecture evidence supplied separately |
 | Currency | IDR; indicative planning estimates only |
-| Procurement authority | None granted by this draft |
+| Procurement authority | None; procurement and budget approval deferred |
+| Standards Owner disposition | Conditional acceptance of draft structure; revisions required before issue |
 
 > **Governance notice:** This is an internal draft request-for-proposal template. It has not been issued to vendors, does not appoint a reviewer, does not approve expenditure, and does not authorize database access, data processing, DDL, migrations, writes, staging mutation, production access, or database sign-off. GDES Master Standard and related registers remain draft / not approved.
 
@@ -144,17 +145,17 @@ All figures are planning assumptions for proposal comparison, not verified marke
 | PostgreSQL RLS, roles, policies and tenant isolation | 5–8 hours |
 | Transaction, concurrency and temporal integrity | 4–7 hours |
 | SQLite/PostgreSQL parity and test-evidence review | 3–5 hours |
-| Findings, report and walkthrough | 2–2 hours |
-| **Indicative total** | **20–32 hours** |
+| Findings, report and walkthrough | 3–5 hours |
+| **Indicative total** | **21–35 hours** |
 
 | Pricing basis | Indicative range |
 |---|---:|
 | Target professional rate assumption | Rp1.800.000–Rp3.500.000/hour |
 | Indicative base engagement | **Rp36.000.000–Rp112.000.000** |
-| Internal target allocation for planning | **Rp38.000.000** |
+| Approved budget / cap | **DEFERRED — NOT APPROVED** |
 | Preferred commercial structure | Fixed fee with explicit hours, deliverables, assumptions, and exclusions |
 
-The internal target allocation is not a price commitment. A full review may exceed this allocation. If a credible proposal exceeds it, the owner must reduce scope or separately approve a revised budget; the reviewer must not silently omit RLS, composite FK, concurrency, temporal, or cross-engine parity review.
+No budget cap or procurement funding is approved at this stage. The rate and fee range above are non-binding market-planning assumptions only. Any future cap must be approved in writing before vendor outreach or award. A proposal that cannot meet the full agreed scope within a subsequently approved cap must be escalated; the reviewer must not silently omit RLS, composite FK, concurrency, temporal, or cross-engine parity review.
 
 Vendor proposal must itemize professional fees, taxes, travel, platform fees, subcontracting, optional disposable-environment test work, retest, and out-of-scope rate. No expense is reimbursable without prior written approval.
 
@@ -170,7 +171,7 @@ Vendor proposal must itemize professional fees, taxes, travel, platform fees, su
 | Evidence/report quality and commercial clarity | 10% |
 | **Total** | **100%** |
 
-Minimum recommended threshold: 75/100, with no unresolved material conflict of interest and no failure of mandatory requirements. The owner may reject all proposals. Candidates should be asked to explain, using a sanitized scenario, how they would detect tenant-context leakage through pooled connections and how they would test RLS bypass paths without modifying a live database.
+Minimum recommended threshold: 75/100, with no unresolved material conflict of interest and no failure of mandatory requirements. The owner may reject all proposals. Credential claims must be checked with the issuing body or another reliable verification method where available; references must be independently contacted with the candidate's permission. Candidates should be asked to explain, using a sanitized scenario, how they would detect tenant-context leakage through pooled connections and how they would test RLS bypass paths without modifying a live database. Ask for an explicit test matrix covering at minimum: (a) missing tenant context, (b) forged tenant identifier, (c) stale context after connection reuse, (d) switching tenant context within a pooled connection, (e) table owner / BYPASSRLS / privileged-role paths, (f) SECURITY DEFINER and view/function paths, (g) cross-tenant SELECT/INSERT/UPDATE/DELETE and joins, and (h) expected-deny assertions with reproducible evidence. Tests must be proposed for an isolated disposable target only; no live database testing is authorized.
 
 ## 9. Acceptance criteria
 
@@ -219,7 +220,7 @@ Each proposed reviewer and subcontractor must declare:
 4. personal relationships or other circumstances that could reasonably impair impartiality;
 5. any restriction on reporting adverse findings.
 
-The declaration must identify parties, dates, nature of relationship, affected scope, and proposed mitigation. The owner may reject or narrow the engagement where independence cannot be preserved. Undisclosed material conflicts may be grounds for termination and rejection of deliverables.
+The declaration must identify parties, dates, nature of relationship, affected scope, and proposed mitigation. It must cover all current relationships and relevant relationships, engagements, and financial interests during at least the preceding 24 months; disclose any continuing or reasonably foreseeable conflict; and be updated if circumstances change. The owner may reject or narrow the engagement where independence cannot be preserved. Undisclosed material conflicts may be grounds for termination and rejection of deliverables.
 
 ## 12. Proposal submission requirements
 
@@ -256,13 +257,44 @@ Any disposable database execution is a separately approved work package. Owner f
 - Any expansion of scope, hours, access, or cost requires written approval in advance.
 - The owner may pause or terminate the engagement for independence, confidentiality, safety, budget, or scope reasons.
 
-## 15. Approval record
+## 15. Severity classification and test-evidence rubric
+
+Use the following severity definitions consistently; the reviewer must explain the rationale and business impact for every rating:
+
+| Severity | Definition | Expected handling |
+|---|---|---|
+| Critical | Exploitable condition with severe systemic impact, such as broad cross-tenant data exposure, RLS bypass, or corruption of authoritative records | Immediate owner escalation; no routine acceptance without explicit risk decision and remediation plan |
+| High | Material integrity/confidentiality risk, tenant/site boundary weakness, or credible unauthorized write/read path | Prioritized remediation and documented retest or formal risk disposition |
+| Medium | Meaningful integrity or isolation weakness with constrained exploitability/impact, or material missing defense-in-depth control | Remediation plan, owner, and target date required |
+| Low | Limited-impact weakness or improvement with low exploitability | Track and disposition proportionately |
+| Informational | Observation, clarification, or hardening recommendation without a demonstrated vulnerability | Record rationale and optional improvement |
+
+For every test-evidence item, record test ID, requirement/control, engine and exact version, schema commit/SHA, disposable environment identifier, fixture/data classification, role used, tenant/site context, preconditions, operation, expected result, actual result, execution timestamp, logs/result digest, and reviewer conclusion. Distinguish source/schema inspection from tests actually executed. Never label a test PASS because a test case exists or because SQLite behavior is assumed to prove PostgreSQL behavior.
+
+## 16. Standards Owner review disposition and procurement hold
+
+| Item | Decision |
+|---|---|
+| Standards Owner review | Reviewed; conditional acceptance of the RFP structure |
+| Required revisions | RLS/tenant-context test matrix; source-inspection vs executed-test distinction; severity and evidence rubric; corrected report effort; 24-month COI lookback; credential/reference verification |
+| Procurement decision | **DEFERRED** |
+| Budget ceiling / funding | **NOT APPROVED — NO CAP AUTHORIZED** |
+| Vendor discovery or contact | **NOT AUTHORIZED** |
+| RFP issue / public posting | **NOT AUTHORIZED** |
+| NDA execution | Not started; required before non-public disclosure to a selected candidate |
+| Appointment / SOW | Not authorized |
+| Review execution | Not started |
+
+This owner review authorizes document revision only. It does not authorize candidate searches, vendor outreach, proposal solicitation, expense, payment, NDA execution, repository access for external parties, database connections, or technical testing. A new explicit owner decision is required to lift the procurement hold.
+
+## 17. Approval record
 
 | Decision | Status | Authority / evidence |
 |---|---|---|
 | Draft prepared | DRAFT | Repository commit evidence |
-| RFP review | NOT STARTED | Standards Owner |
-| Budget approval | NOT APPROVED | Separate owner decision required |
+| RFP review | REVIEWED — REVISIONS REQUIRED | Standards Owner |
+| Budget approval | DEFERRED — NOT APPROVED | Owner decision required before procurement |
+| Vendor contact / RFP issue | NOT AUTHORIZED | No outreach permitted |
 | Vendor selection | NOT STARTED | Competitive evaluation required |
 | NDA execution | NOT EXECUTED | Before non-public disclosure |
 | Engagement award | NOT AUTHORIZED | Separate written authorization |
