@@ -85,3 +85,27 @@ For every candidate retain:
 **Current recommendation: DEFER — static findings and runtime evidence gaps remain.**
 
 The present evidence is source/static review only. No candidate has passed runtime, compatibility, dependency-security, or negative-side-effect testing. No candidate is approved for installation into the primary development environment, production use, or promotion to a GDES standard. Continue only in an isolated disposable offline runner and submit the resulting evidence for Standards Owner review.
+
+
+## 9. Remediation and offline screening preparation
+
+Remediation checklist: [GDES_REG_002_HIGGSFIELD_REMEDIATION_CHECKLIST_v1.0.md](../evaluations/GDES_REG_002_HIGGSFIELD_REMEDIATION_CHECKLIST_v1.0.md).
+
+Offline runner: [tools/gdes-higgsfield-offline-runner/README.md](../../tools/gdes-higgsfield-offline-runner/README.md).
+
+Runner components:
+- `runner.py` — inert-text-only source scanner; does not import or execute candidate code.
+- `policy.json` — heuristic checks mapped to selected findings for HIG-01 through HIG-04.
+- `test_runner.py` — synthetic harness self-tests, including forbidden-pattern detection, missing-marker handling, and symlink rejection.
+- `targets/HIG-01..HIG-04/` — reserved input folders; no candidate source snapshots loaded yet.
+- `results/` — reserved result folder; no scan output generated yet.
+
+**Runner validation status: NOT_RUN.** The harness has been authored and statically reviewed but has not been executed in VS Code or another isolated runner. Target directories currently contain no candidate source snapshots. No finding has been marked remediated or passed.
+
+Run commands from the runner directory:
+```bash
+python -I -S -B runner.py --self-test
+python -I -S -B runner.py --targets ./targets --output ./results/latest.json
+```
+
+The scanner reports heuristic statuses only. A heuristic pass does not prove semantic correctness or security and cannot independently release the runtime gate. Manual review and negative-test evidence remain mandatory.
