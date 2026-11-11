@@ -140,3 +140,62 @@ The pipeline is designed to extract every MASWE record, all MASTG test metadata,
 | Runtime security tests and retests | NOT TESTED | Authorized environment, execution evidence, findings and retest evidence |
 
 **Updated result: SOURCE PINS AND LICENSE FILES VERIFIED — EXTRACTION PIPELINE COMMITTED BUT NOT EXECUTED SUCCESSFULLY — DOCUMENTATION COMPLETENESS PARTIAL — INDEPENDENT REVIEW BLOCKED — NOT APPROVED — SDLC BLOCKED.**
+
+
+## 9. Successful metadata extraction and final source completeness review — 2026-11-11
+
+### 9.1 Execution evidence
+
+- GitHub Actions run: [42972384713 — SUCCESS](https://github.com/muchlisbstg/Full-stack-product-development/actions/runs/42972384713)
+- Generated commit: `7e06abbe46960e02c0bdd583111575eb96116207`
+- Branch: `gdes/ai-governance-v1-pilot`
+- Generated catalogs and source asset were fetched back from GitHub after the run.
+
+### 9.2 Extraction and structural checks
+
+| Dataset | Verified records | Structural check |
+|---|---:|---|
+| MASVS controls | 24 | Extracted |
+| MASWE stable weaknesses | 78 | No missing ID/title |
+| MASWE beta aliases | 118 | Seven aliases have multiple stable targets |
+| MASTG test paths | 292 | No missing or duplicate test IDs |
+| MASTG structured weakness-linked tests | 200 | One source beta ID remains unresolved |
+| MASWE–MASTG relation rows | 236 | Source metadata and no-test cases represented |
+| ASVS requirements | 345 | Zero unmapped candidate rows |
+| TCASVS requirements | 132 | All chapter-mapped candidates |
+| SAMM activities | 90 | No activity without questions |
+| SAMM questions | 90 | Activity GUID links extracted |
+| License snapshots | 6 | No source license file unverified |
+
+### 9.3 Open source-mapping findings
+
+1. **MASWE-0097:** referenced by four MASTG tests but absent from the official MASWE v1.0.0 beta-alias mapping asset. Stable MASWE-0051 is a semantic candidate only; it is not treated as a source-backed mapping.
+2. **Seven multi-target aliases:** the official asset maps seven beta IDs to multiple stable MASWE IDs. Preserve the full source mapping and obtain reviewer disposition; do not force one-to-one mapping.
+3. **No-test count discrepancy:** 38 stable MASWE entries have no MASTG link in the extracted snapshot, versus 36 reported in the MASWE release article. Difference: +2.
+4. **MASTG path count discrepancy:** the pinned tree has 292 unique test Markdown paths (200 structured v2 test files and 92 legacy paths), while the v2.0.0 release announcement reports 285 tests. Difference: +7.
+5. **ASVS candidate mapping:** all 345 requirements have candidate GDES controls, but some use chapter-level fallback rather than a direct section-range link. This is complete inventory coverage, not approved semantic mapping.
+6. **TCASVS candidate mapping:** 132 requirement rows have chapter-based candidate links. Requirement-specific validation remains open.
+7. **SAMM activity-level mapping:** 90 activities and 90 questions are extracted and linked by GUID; practice-to-GDES mapping remains a candidate crosswalk.
+
+Detailed records are in `GDES_MASWE_BETA_ALIAS_FINDINGS_v1.0.0.csv`, `GDES_MASWE_MASTG_TRACEABILITY_v1.0.0.csv`, and `GDES_SOURCE_EXTRACTION_MANIFEST_v1.0.json`.
+
+### 9.4 License disposition
+
+All six exact upstream license file snapshots were inspected and identify CC BY-SA 4.0. The generated license register includes repository, commit, path, Git blob SHA, SHA-256, and source URL. This does not replace legal review of attribution, ShareAlike obligations, and any adapted material.
+
+### 9.5 Governance and test gates
+
+| Gate | Current status |
+|---|---|
+| Source metadata extraction | <badge color="success">Complete — remote verified</badge> |
+| Framework candidate mapping | <badge color="warning">Partial — review required</badge> |
+| Canonical dictionary | <badge color="warning">Pending Standards Owner — Issue #40</badge> |
+| Independent Security Reviewer | <badge color="danger">Blocked — procurement deferred</badge> |
+| Independent Database Reviewer | <badge color="danger">Blocked — procurement deferred</badge> |
+| Database runtime/security testing | Not tested |
+| Operational runtime/security testing | Not tested |
+| Finding closure and retest | Not started |
+| Cybersecurity Gate | Not cleared |
+| SDLC formal progression | Blocked |
+
+**Updated result: SOURCE EXTRACTION COMPLETE — SOURCE MAPPING PARTIAL — FINDINGS OPEN — INDEPENDENT REVIEW BLOCKED — RUNTIME TESTS NOT EXECUTED — NOT APPROVED.**
