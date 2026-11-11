@@ -9,6 +9,7 @@ on:
       - scripts/gdes/validate_replica_skill_metadata.py
       - scripts/gdes/replica_skill_tool.py
       - docs/adaptations/replica-skill-gdes/**
+      - docs/registers/GDES_REPLICA_SKILL_33_CASE_RUNTIME_TEST_MATRIX_v1.0.md
   workflow_dispatch:
 
 permissions:
