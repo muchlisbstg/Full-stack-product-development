@@ -129,7 +129,7 @@ No separate source file for GDES AI Governance v1.0 or the Frontend, Cybersecuri
 
 ## 10. Infrastructure and Hosting Register — initial baseline
 
-This section establishes the infrastructure register baseline from the Export Client RT-03 evidence already recorded in `muchlisbstg/export-client-mobile-sync`. It does not imply that the GDES Infrastructure Register existed previously as an approved Google Sheet or standalone source file. Provider/account access, funding, and runtime authority remain distinct facts.
+This section establishes the infrastructure register baseline from the Export Client RT-03 evidence already recorded in `muchlisbstg/export-client-mobile-sync`. The recovered GDES workbook v1.1 does not contain a dedicated Infrastructure Register worksheet; this section is therefore the current repository-side normalized baseline, not a previously approved Google Sheet. Provider/account access, funding, and runtime authority remain distinct facts.
 
 | ID | Service / asset | Function and environment | Classification | Funding / provisioning | Region | Evidence and current assessment | Reviewer / approval |
 |---|---|---|---|---|---|---|---|
@@ -143,15 +143,34 @@ This section establishes the infrastructure register baseline from the Export Cl
 
 **RT-03 linkage:** RT-03A Source Inventory = RECORDED; RT-03B Infrastructure Target = RECORDED; RT-03C Staging Inventory = RECORDED; RT-03D Runtime Verification = NOT STARTED; RT-03E Database Integrity = NOT STARTED. RT-03 overall remains IN PROGRESS and P0 Release Readiness remains BLOCKED. The two historical Supabase catalog fingerprints (26 versus 27 RLS-enabled relations) are separate snapshots and require provenance/scope reconciliation before comparison.
 
-## 11. Cross-register reconciliation status and source gaps
+## 11. Source Register Recovery — workbook evidence
+
+Two prior GDES workbook artifacts were recovered from the user's ChatGPT Library and inspected:
+
+| Artifact | Worksheet count | Contents / disposition |
+|---|---:|---|
+| `GDES_MUCHLIS_BSTG_v1.0_Draft.xlsx` | 12 | Earlier draft; retained as historical baseline |
+| `GDES_MUCHLIS_BSTG_v1.1_Draft.xlsx` | 16 | Latest recovered master workbook candidate; contains the three-layer architecture and compliance matrix; remains Draft |
+
+The v1.1 workbook includes `12_MANDATORY_STANDARD`, `13_RECOMMENDED_PRACTICE`, `14_REGIONAL_ADDENDUM`, `15_COMPLIANCE_MATRIX`, quality gates, governance controls, technology baseline, engineering disciplines, seven-continent profiles, and cross-platform requirements. It does **not** contain dedicated detailed source worksheets for the separate Frontend Design, Cybersecurity, SDLC, AI Governance, or Infrastructure registers. Therefore it is the recovered **Master Standard workbook**, not proof that all domain registers were recovered.
+
+Source recovery outcome:
+- Master workbook recovery: **FOUND**; v1.1 is the latest candidate, v1.0 is retained as history.
+- Separate domain-register workbooks / original Google Sheets: **NOT LOCATED** in the accessible Library search.
+- Google Sheets canonical live URL / owner / sharing access: **NOT VERIFIED**; connected Drive/Sheets access is unavailable in this workspace.
+- Workbook approval: **NOT APPROVED**; both artifacts are Draft.
+
+The recovered workbook should be version-controlled as source evidence before formal adoption. Do not silently overwrite it or imply it is an approved master.
+
+## 12. Cross-register reconciliation status and source gaps
 
 | Register | Current reconciled baseline | Source completeness | Outstanding work | Status |
 |---|---|---|---|---|
-| AI Governance | Root `AGENTS.md`, pilot validation plan, and governance decisions mapped to master sections 5, 6, 12–15 | No standalone AI Governance v1.0 source file verified | Run GAI-01–GAI-10; preserve NOT TESTED until runtime evidence; independent review | Draft / NOT TESTED |
-| Frontend Design | GDES-UX-001–012 baseline; Impeccable Recommended Practice; UI/UX Pro Max and Taste experimental; HUE Recommended Practice | Original source register / Google Sheet not retrieved | Populate exact repository, function, license, Web/Mobile/Desktop compatibility, priority, audit status, acceptance criteria, evidence, reviewer, approval; compare experiment results | Initial baseline only |
-| Cybersecurity | GDES-SEC-001–011 baseline | Original source register / Google Sheet not retrieved | Map controls to threat model and accepted framework; attach test evidence; independent Security review | Initial baseline only |
-| SDLC | GDES-SDLC-001–008 baseline; six approval gates | Original source register / Google Sheet not retrieved | Assign gate owners and project-specific exit artifacts; verify approval workflow | Initial baseline only |
-| Infrastructure | GDES-INF-001–005 baseline in section 10 | No prior official GDES Infrastructure Register / Google Sheet verified | Link canonical source if it exists; otherwise approve this repository register as the controlled baseline; update only with verified evidence | Initial baseline only |
+| AI Governance | Recovered GDES v1.1 workbook governance controls + root `AGENTS.md` and pilot validation plan | No separate AI Governance domain register workbook verified | Reconcile GAI-01–GAI-10 row-by-row against workbook and AGENTS; execute tests; independent review | Partial baseline / NOT TESTED |
+| Frontend Design | Recovered workbook technology/cross-platform principles + GDES-UX-001–012 decisions; Impeccable Recommended Practice; UI/UX Pro Max experimental; Taste comparison; HUE Recommended Practice | No separate Frontend Design source register workbook verified | Validate every tool/repository row, license, platform compatibility, priority, audit status, acceptance criteria, evidence, reviewer and approval | Partial baseline only |
+| Cybersecurity | Recovered workbook `GDES-MS-SEC-001/002`, `GDES-MS-DB-001`, `GC-04/05/06` plus GDES-SEC-001–011 baseline | No separate Cybersecurity source register workbook verified | Reconcile control IDs and coverage row-by-row; map threat model; attach test evidence; independent Security review | Partial baseline only |
+| SDLC | Recovered workbook `03_QUALITY_GATES` QG-01–QG-12, `GC-01–GC-08`, plus GDES-SDLC-001–008 baseline | No separate SDLC source register workbook verified | Map SDLC IDs to QG and governance controls; assign gate owners and exit artifacts; verify workflow | Partial baseline only |
+| Infrastructure | GDES-INF-001–005 baseline in section 10, informed by RT-03A–E | No dedicated Infrastructure worksheet in recovered v1.1 workbook; no separate source register verified | Reconcile with canonical source if later supplied; validate provider and runtime evidence; Hostinger remains PLANNED — UNFUNDED | Partial baseline only |
 | Technology / Repository Evaluation | Classification rules established in master section 9 | Detailed tool inventory not reconciled in this pass | Link source catalog; validate licenses, versions, compatibility, cost, and risk | Pending |
 
 ### 11.1 Reconciliation completeness rules
@@ -159,15 +178,15 @@ This section establishes the infrastructure register baseline from the Export Cl
 - This pass reconciles the available pilot artifacts and recorded decisions; it does not claim to have retrieved missing external sheets or unlinked source registers.
 - No row may be marked PASS or APPROVED without test evidence or explicit human approval, respectively.
 - Tool/repository metadata (license, version, compatibility, maintenance, cost) must be verified against the actual upstream source before a recommendation is finalized.
-- The canonical Google Sheets source remains unresolved because the connected Google Drive/Sheets access is unavailable in this workspace. A supplied file/link or later authorized connector access is required to reconcile external workbook rows.
+- The master workbook itself is recovered from the user's Library; however, the canonical live Google Sheets URL, workbook owner, and sharing access remain unverified because connected Drive/Sheets access is unavailable. Separate domain register sources were not located in the accessible Library search.
 - Until source artifacts are linked and domain reviewers sign off, the register is an initial normalized baseline, not a complete audit of all historical registers.
 
-## 12. Updated action register
+## 13. Updated action register
 
 | ID | Action | Owner | Exit criteria | Status |
 |---|---|---|---|---|
 | RECON-001 | Review and approve GDES Master Standard v1.0 | Standards Owner | Explicit decision and approval evidence | Pending |
-| RECON-002 | Identify/link official source Google Sheets and domain registers | Standards Owner | Canonical source link, owner, version and access confirmed | Blocked — source not available |
+| RECON-002 | Establish recovered v1.1 workbook as controlled source candidate and locate separate domain registers / live Google Sheet | Standards Owner | v1.1 source artifact versioned; canonical URL/owner confirmed; domain source rows linked | Partial — master workbook found; domain sources and live URL not located |
 | RECON-003 | Complete Frontend Register metadata and source validation | Frontend/Design reviewer | Repository, function, license, compatibility, priority, audit, acceptance, evidence, reviewer and approval fields verified | Pending |
 | RECON-004 | Validate Cybersecurity Register against threat model and control framework | Independent Security Reviewer | Coverage, tests, findings and sign-off | Pending |
 | RECON-005 | Validate SDLC Register with project owners | QA/Delivery owner | Gate owners, required artifacts and approval workflow | Pending |
@@ -178,9 +197,9 @@ This section establishes the infrastructure register baseline from the Export Cl
 | RECON-010 | Reconcile GDES Infrastructure Register with canonical workbook/source | Standards Owner / Infrastructure owner | Source linked or repository register explicitly adopted; Hostinger remains PLANNED — UNFUNDED until provisioned | Pending |
 | RECON-011 | Keep Export Client PR #145 Draft and unmerged | Repository maintainer | Draft state and no merge/deploy action | Ongoing constraint |
 
-## 13. Current decision
+## 14. Current decision
 
-**HOLD — Wider Rollout.** The Master Standard now includes an infrastructure governance baseline. The reconciliation register contains initial normalized baselines for AI Governance, Frontend, Cybersecurity, SDLC, and Infrastructure. However, source workbook completeness, repository/license metadata, runtime tests, independent reviews, and formal approval remain outstanding. This is not a declaration that all registers are fully audited or approved.
+**HOLD — Wider Rollout.** The v1.1 Master Standard workbook has been recovered and is the latest candidate baseline; v1.0 is historical. The repository register maps available AI Governance, Frontend, Cybersecurity, SDLC, and Infrastructure decisions to that workbook, but the separate detailed domain source registers and canonical Google Sheets URL have not been located. Row-by-row metadata verification, runtime tests, independent reviews, and formal approval remain outstanding. This is not a declaration that all registers are fully audited or approved.
 
 **End of GDES Master Reconciliation Register v1.0 — Draft for Review.**
 
