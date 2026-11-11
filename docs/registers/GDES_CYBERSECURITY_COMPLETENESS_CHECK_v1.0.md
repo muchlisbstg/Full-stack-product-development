@@ -199,3 +199,67 @@ All six exact upstream license file snapshots were inspected and identify CC BY-
 | SDLC formal progression | Blocked |
 
 **Updated result: SOURCE EXTRACTION COMPLETE — SOURCE MAPPING PARTIAL — FINDINGS OPEN — INDEPENDENT REVIEW BLOCKED — RUNTIME TESTS NOT EXECUTED — NOT APPROVED.**
+
+
+## 10. CYB-02 updated completeness check — 2026-11-11
+
+This section is the current reconciliation view and supersedes stale statements in earlier sections that say the extraction pipeline has not completed.
+
+### 10.1 Execution evidence
+
+- Workflow run [42973483998 — SUCCESS](https://github.com/muchlisbstg/Full-stack-product-development/actions/runs/42973483998).
+- Workflow source SHA: `996423e8cef1cf8dde56580a1ab625554c253977`.
+- Generated catalogs commit: `1e002b8f4e3386d5fb9daf8ba6e6c155b78091fd`.
+- Branch: `gdes/ai-governance-v1-pilot`.
+- Job `Extract pinned framework metadata`: success; checkout, parser setup, extraction, generated-catalog commit and post steps all successful.
+- No separate Actions artifact was returned. Generated outputs were committed and independently read back from the branch.
+
+### 10.2 Reconciled structural completeness
+
+| Dataset / check | Verified result | Disposition |
+|---|---:|---|
+| MASVS controls | 24 | Extracted |
+| MASWE stable weaknesses | 78 | Extracted; stable IDs/titles present in prior manifest |
+| MASWE beta aliases | 118 | Source-defined alias inventory |
+| MASTG paths | 292 | 200 structured + 92 legacy |
+| MASWE–MASTG traceability | 236 rows | Includes explicit no-test rows and source-metadata relation method |
+| ASVS requirement catalog | 345 unique IDs | 282 section-range + 63 chapter candidates; 345 candidate-only |
+| TCASVS requirement catalog | 132 unique IDs | 79 description-keyword + 53 chapter-fallback; 132 candidate-only |
+| SAMM activity catalog | 90 unique GUIDs | 71 activity-description + 19 practice fallback; 90 candidate-only |
+| SAMM question catalog | 90 | Linked by activity GUID in source extraction |
+| Upstream license snapshots | 6 | All six source files verified; legal interpretation pending |
+
+### 10.3 License evidence integrity
+
+The license register includes the following six records and fields: framework/version, source repository and commit, exact license path, Git blob SHA, SHA-256, SPDX candidate, verification status and source URL. Every row is marked `SOURCE FILE VERIFIED`; this is not legal approval.
+
+| Framework | License path | Git blob SHA | SHA-256 |
+|---|---|---|---|
+| ASVS | LICENSE.md | `2d58298e6eda10e7204abb52722efbc840db2390` | `28a9529c7d0bb4dc51f4bf5c116a3d16ef247a052f7591466768ddf563fd1cf5` |
+| MASVS | License.md | `a4543ddbacf00400a038c0fe22bd8c70a38810ee` | `3b3f4b884ba3bad739b06cd9ea716af5cb737b6c3a86b3b7e823bb3cd5ff31f4` |
+| MASWE | License.md | `bf3f89d72ab3ae01eb8e06c24b80a1be4ca169d2` | `f088c87b313385c847183ee2759dd56378307b103d9e4870f77b67099616cfde` |
+| MASTG | License.md | `bf3f89d72ab3ae01eb8e06c24b80a1be4ca169d2` | `f088c87b313385c847183ee2759dd56378307b103d9e4870f77b67099616cfde` |
+| TCASVS | LICENSE.md | `7d4f96c54aa155a17387e64501c50b6a0469932c` | `23ee78c8bae49cf08ea2f0c84945c66b987ebe4520881fb51b3dad4fb43d07c2` |
+| SAMM | license.txt | `3b7b82d0da2db857eda1a798dbd908ea136f07b5` | `7abe19ec9bb73b36141b999b861d24ad855e808bafe0f81e84cce28556f6c297` |
+
+All six SPDX candidates are `CC-BY-SA-4.0`. Attribution, ShareAlike, adaptation and redistribution obligations remain subject to legal review.
+
+### 10.4 Completeness disposition
+
+| Work item | Current status |
+|---|---|
+| Source pins and extraction workflow | VERIFIED |
+| Generated catalogs and remote read-back | VERIFIED |
+| MASWE/MASTG source relations | EXTRACTED — FINDINGS OPEN |
+| ASVS individual mapping | INVENTORY COMPLETE — SEMANTIC REVIEW REQUIRED |
+| TCASVS individual mapping | INVENTORY COMPLETE — SEMANTIC REVIEW REQUIRED |
+| SAMM activity-level mapping | INVENTORY COMPLETE — SEMANTIC REVIEW REQUIRED |
+| License snapshots | SOURCE FILES VERIFIED — LEGAL REVIEW PENDING |
+| Canonical dictionary | PENDING STANDARDS OWNER — Issue #40 |
+| Independent Security / Database review | BLOCKED — procurement deferred |
+| Runtime security testing | NOT TESTED |
+| Remediation and retest | NOT STARTED |
+| Cybersecurity Gate | NOT CLEARED |
+| Formal SDLC | BLOCKED |
+
+**CYB-02 — COMPLETED AS DOCUMENTARY COMPLETENESS RECONCILIATION.** This does not mean the framework mappings are semantically approved, nor that legal, independent or runtime verification has occurred.
