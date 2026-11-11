@@ -22,7 +22,7 @@
 | OWASP MASWE | Stable 1.0.0 | Source release announced 2026-08-17; IDs MASWE-0001–MASWE-0078 | Verify LICENSE at pinned snapshot | MASWE is the weakness layer linking MASVS controls to test cases. |
 | OWASP MASTG | Stable 2.0.0 | Release tag `v2.0.0`, release commit `990472d` | Verify LICENSE at pinned snapshot | Use the test case IDs from the tagged guide; do not substitute old MASTG v1 IDs without a migration mapping. |
 | OWASP TCASVS | 5.0.0 | Repository commit `9c05d7ae8d7a5934688f8e396444c9e0b25a2074`; source chapter blobs listed below | CC BY-SA 4.0 | Repository README identifies 5.0.0 stable and 130+ requirements in six chapters. OWASP project card still shows 1.8; treat card as stale/conflicting metadata and pin repository release content. |
-| OWASP SAMM | 2.2.0 | Release target `v2.2.0`; practice model source to be frozen at exact release commit before approval | CC BY-SA 4.0 | Model contains 5 business functions and 15 security practices. This matrix maps practices by canonical name and abbreviation; no maturity score is asserted. |
+| OWASP SAMM | 2.2.0 | Release tag `v2.2.0`; pinned practice blobs include TA `9e7ef2a9cec41a0b9daec52699429b00ec0b73ad`, ST `bacd54e4cbdbf5c372b2474cb494c04832299b83`, SB `d7ee530c995932aaec501ae38373d3c8dee600a6` | CC BY-SA 4.0 | Model contains 5 business functions and 15 security practices. This matrix maps practices by canonical name and abbreviation; no maturity score is asserted. |
 
 ### Source files and blob identifiers
 
@@ -33,11 +33,11 @@
 - TCASVS V3: `5.0/en/0x12-V3-Data-Storage-and-Protection.md` — `2c88e1301a1be9f2c848285cd4d2d1dcaff95384`
 - TCASVS V4: `5.0/en/0x13-V4-Code-Quality-and-Exploit-Mitigation.md` — `437e1bcb5c66f9e599dba3405b631bf1dc210b55`
 - TCASVS V5: `5.0/en/0x14-V5-Cryptography.md` — `4743696b9cdee016794b7e1e9ac35979830de648`
-- TCASVS V6: `5.0/en/0x15-V6-Network-Communication.md` — `136f60912405b993cc94cee62b6d3d0331e225f4`
+- TCASVS V6: `5.0/en/0x15-V6-Network-Communication.md` — `136f60912405b993cc94cee62b6d3d0331e225f4`\n- SAMM v2.2.0 practice blobs: TA `9e7ef2a9cec41a0b9daec52699429b00ec0b73ad`; ST `bacd54e4cbdbf5c372b2474cb494c04832299b83`; SB `d7ee530c995932aaec501ae38373d3c8dee600a6`
 
 ## 2. Mapping convention
 
-- ASVS references below use the exact section requirement ID range present in the pinned v5.0.0 CSV. Prefix each requirement with `v5.0.0-` when exported to test cases.
+- ASVS references below use the exact section requirement ID range present in the pinned v5.0.0 CSV. Serialize each ASVS requirement using OWASP's version-qualified form `v5.0.0-1.2.5` (the CSV's chapter marker `V` is omitted in the serialized identifier); retain the CSV chapter/section fields in the mapping record.
 - MASVS IDs are control identifiers, not test cases.
 - MASWE IDs describe weaknesses; select applicable weaknesses under each mapped MASVS control.
 - MASTG test identifiers are executable test procedures. They must be selected from the pinned v2.0.0 guide and tied to platform (Android/iOS), app architecture, and test environment.
@@ -109,7 +109,7 @@ SAMM is a maturity model with five business functions and fifteen practices. Thi
 | Gap ID | Gap | Impact | Required closure evidence | Status |
 |---|---|---|---|---|
 | MAP-GAP-001 | Exact MASWE weakness IDs and MASTG v2 test IDs not yet mapped to all applicable MASVS controls | Mobile control coverage cannot be declared complete | Machine-readable control→weakness→test crosswalk and Android/iOS test applicability | OPEN |
-| MAP-GAP-002 | SAMM exact release commit and all practice/stream activity references not frozen in this artifact | Maturity crosswalk is name-level, not activity-level | v2.2.0 source commit, stream IDs, activity/question references | OPEN |
+| MAP-GAP-002 | SAMM practice-level crosswalk exists, but complete 15-practice source blob pins and stream/activity/question IDs are not yet captured | Maturity crosswalk is practice-level, not activity-level | Complete v2.2.0 practice/stream/activity/question source pins and exact mapping | OPEN |
 | MAP-GAP-003 | ASVS section ranges are pinned to CSV; each project-specific applicability decision and verification level remains to be recorded | Cannot infer every requirement applies to every product | Requirement-level applicability register with L1/L2/L3, rationale and owner | OPEN |
 | MAP-GAP-004 | TCASVS project card still advertises 1.8 while repository source declares 5.0.0 | Metadata ambiguity | Standards Owner acceptance of repository 5.0.0 pin and source SHA | OPEN |
 | MAP-GAP-005 | Database-specific tenant integrity and PostgreSQL controls are not fully covered by the four requested frameworks | Critical database assurance gap | GDES DB control supplement; independent DB review; target-engine tests for RLS, composite FKs, transaction/concurrency, negative access | OPEN |
