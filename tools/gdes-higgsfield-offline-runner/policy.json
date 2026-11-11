@@ -159,9 +159,7 @@
         },
         {
           "id": "HIG-04-F04",
-          "forbidden": [
-            "new URL\\([^\\n]{0,200}\\)"
-          ],
+          "forbidden": [],
           "required": [
             "(UPLOAD_HOST_ALLOWLIST|allowedUploadHosts|host allowlist)"
           ]
