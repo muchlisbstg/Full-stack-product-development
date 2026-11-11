@@ -344,3 +344,39 @@ Review state:
 - Standards Owner approval: NOT APPROVED.
 
 **Gate remains NOT CLEARED.** The technical crosswalk exists, but coverage is PARTIAL and independent review has not occurred. SDLC Register v1.0 must not be represented as authorized to proceed until remaining mapping and review conditions are satisfied.
+
+
+## 16. Cybersecurity canonical dictionary submission and source-pin reconciliation — 2026-11-11
+
+The proposed canonical Cybersecurity Control Dictionary is formally submitted to the Standards Owner for disposition:
+
+- Artifact: `docs/registers/GDES_CYBERSECURITY_CONTROL_DICTIONARY_v1.0.md`
+- Artifact ID: `GDES-SEC-DICT-001`
+- Decision issue: https://github.com/muchlisbstg/Full-stack-product-development/issues/40
+- Current issue state: OPEN — Pending Standards Owner decision
+- Current artifact state: DRAFT — NOT APPROVED
+- Effective date: Not assigned.
+
+### Source and licensing correction
+
+The corrected immutable upstream source commits and license-file blob references are recorded in `docs/registers/GDES_CYBERSECURITY_FRAMEWORK_MAPPING_v1.0.md`. The v2.2.0 SAMM source is `owaspsamm/core`, not the archived `OWASP/samm` repository. All six selected source license files were inspected and identify CC BY-SA 4.0; legal review of redistribution/adaptation remains separate.
+
+### ID integrity decision
+
+The new dictionary defines `GDES-SEC-008` as Dependency & Software Supply Chain, `GDES-SEC-009` as Logging/Monitoring, `GDES-SEC-010` as Verification/Evidence, and `GDES-SEC-011` as Incident/Resilience. Database controls are `GDES-DB-001–005`. Historical GDES-SEC IDs from the Cybersecurity Register and the Master Reconciliation Register have different meanings and must be qualified by source document/version. The old mapping matrix has been explicitly marked legacy/provisional.
+
+### Automated extraction status
+
+The extractor and branch-scoped workflow have been committed. No successful Actions run or generated catalog read-back has been verified. Therefore MASWE/MASTG, ASVS, TCASVS, SAMM activity/question catalogs are still **NOT EXECUTED / NOT VERIFIED**. The MASTG pinned tree count discrepancy (292 unique test paths versus 285 reported in the v2.0.0 release announcement) remains open.
+
+### Updated reconciliation actions
+
+| ID | Action | Exit criteria | Status |
+|---|---|---|---|
+| RECON-014 | Complete pinned framework metadata extraction and generated-catalog validation | Successful Actions run; generated CSV/JSON files read back; counts, duplicates, missing metadata, unknown references and license hashes reconciled | OPEN — workflow execution not verified |
+| RECON-015 | Standards Owner decision on GDES-SEC-DICT-001 | Written approve/revise/reject disposition for namespaces, semantics, aliases and source baseline | PENDING — Issue #40 |
+| RECON-016 | Independent Security and Database review | Confirmed budget, renewed procurement authorization, appointed independent reviewers, written findings and dispositions | BLOCKED — procurement deferred |
+| RECON-017 | Findings remediation and retest | Every finding closed or formally risk-accepted with expiry; retest evidence tied to commit/environment | NOT STARTED |
+| RECON-018 | Cybersecurity Gate decision | Mapping completeness, independent reviews, tests, findings closure/retest and explicit Standards Owner approval | NOT CLEARED — SDLC blocked |
+
+**Current decision:** Cybersecurity documentation is advanced, upstream source/license snapshots are verified, canonical dictionary is submitted but not approved, metadata extraction is not verified, procurement remains deferred, independent review has not started, and SDLC formal progression remains blocked.
