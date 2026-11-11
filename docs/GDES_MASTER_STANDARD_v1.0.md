@@ -165,6 +165,19 @@ At minimum, teams SHOULD document relevant decisions for:
 
 A technology register is an inventory and evaluation aid, not a blanket mandate to install every listed tool or repository.
 
+### 9.1 Infrastructure and hosting governance
+
+Projects MUST maintain an infrastructure register for each material environment and service. At minimum, record:
+- service/provider, project/account reference, environment, region, and intended purpose;
+- classification as existing, planned, experimental, or retired;
+- funding/provisioning status, accountable owner, and budget approval;
+- network exposure, identity/access model, secrets boundary, and data residency considerations;
+- authoritative runtime responsibility (frontend, API, worker, database, storage, or supporting service);
+- configuration and deployment provenance, monitoring, backup/recovery, and rollback evidence;
+- dependencies, vendor constraints, exit/portability considerations, reviewer, approval, and review date.
+
+A provider selection or deployment record MUST NOT be treated as proof that an application runtime is operational or authoritative. A staging service MUST NOT be represented as production. A planned but unfunded service MUST be recorded as **PLANNED — UNFUNDED** and MUST NOT be treated as provisioned, available, or approved for deployment. Runtime and database integrity claims require evidence from the actual connected runtime and database, not merely repository configuration or a provider catalog snapshot.
+
 ## 10. Cybersecurity and privacy baseline
 
 Every adopting project MUST conduct risk-based security analysis proportionate to exposure, data sensitivity, and business impact.
@@ -309,7 +322,7 @@ The following registers are subordinate controlled indexes to this master:
 - GDES Cybersecurity Register;
 - GDES SDLC Register;
 - GDES AI Governance Register;
-- Technology and Repository Evaluation Register;
+- Technology and Repository Evaluation Register;\n- Infrastructure and Hosting Register;
 - Regional Addendum Register;
 - Exception Register;
 - Evidence and Approval Register.
