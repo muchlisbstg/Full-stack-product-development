@@ -1,0 +1,59 @@
+name: HIG-01 Offline Remediation Snapshot
+
+on:
+  push:
+    branches:
+      - gdes/higgsfield-hig01-remediation-snapshot
+    paths:
+      - "tools/gdes-higgsfield-offline-runner/**"
+      - ".github/workflows/gdes-higgsfield-hig01-offline.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inert-source-screen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact snapshot commit
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+
+      - name: Record source and runner hashes
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha256sum \
+            tools/gdes-higgsfield-offline-runner/targets/HIG-01/SNAPSHOT_MANIFEST.md \
+            tools/gdes-higgsfield-offline-runner/targets/HIG-01/upstream/setup \
+            tools/gdes-higgsfield-offline-runner/targets/HIG-01/upstream/INSTALL.md \
+            tools/gdes-higgsfield-offline-runner/targets/HIG-01/upstream/INSTALL_FOR_AGENTS.md \
+            tools/gdes-higgsfield-offline-runner/targets/HIG-01/remediated/setup \
+            > /tmp/hig01-sha256.txt
+          cat /tmp/hig01-sha256.txt | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Runner self-test (synthetic fixtures only)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -I -S -B tools/gdes-higgsfield-offline-runner/runner.py --self-test
+
+      - name: Scan inert HIG-01 source snapshot
+        shell: bash
+        run: |
+          set -uo pipefail
+          set +e
+          python -I -S -B tools/gdes-higgsfield-offline-runner/runner.py \
+            --targets tools/gdes-higgsfield-offline-runner/targets \
+            --output tools/gdes-higgsfield-offline-runner/results/hig01-snapshot.json
+          rc=$?
+          set -e
+          echo "Runner exit code: $rc" | tee -a "$GITHUB_STEP_SUMMARY"
+          cat tools/gdes-higgsfield-offline-runner/results/hig01-snapshot.json | tee -a "$GITHUB_STEP_SUMMARY"
+          if [ "$rc" -ne 0 ] && [ "$rc" -ne 2 ]; then
+            exit "$rc"
+          fi
+          echo "Static release gate remains BLOCKED until all findings and all candidate targets are addressed." >> "$GITHUB_STEP_SUMMARY"
