@@ -183,3 +183,78 @@ Run the cases independently on each platform. Record product/runtime version, sk
 - Runtime test suite: still NOT TESTED; no Actions run ID or logs available.
 
 The draft PR is the formal review handoff. It does not constitute approval or authorize installation, adoption, merge, or deployment.
+
+
+## 12. Follow-up execution, GDES adaptation and runtime boundary — 2026-11-11
+
+### 12.1 Upstream isolated test execution
+
+GitHub Actions run `42981317231` completed with conclusion **SUCCESS** on commit
+`c1a519527f07af2c249bf1104b9ce51259ebd314`.
+
+Verified job evidence:
+- Runner: Ubuntu 26.04.
+- Python: 3.14.4.
+- Upstream source pin verified: `77c9436fb3d18c3d58169efb8caf4fe906b0dc51`.
+- Metadata validator: 11/11 skill folders PASS.
+- Expected Python utility inventory: 6/6 PASS.
+- Upstream standard-library unit tests: **57 passed, 0 failed**.
+- Two warnings identified: `replica-backend` and `replica-deploy` lack `disable-model-invocation: true` in upstream source.
+
+Run URL: https://github.com/muchlisbstg/Full-stack-product-development/actions/runs/42981317231
+
+The job log is available from GitHub Actions. The first run had no artifact upload step, so no retained artifact ZIP exists for run #1. The workflow was then updated to tee logs, generate a summary and upload an artifact with 30-day retention. The follow-up run for the updated validation is currently pending at the time of this report; its final conclusion and artifact must be recorded after completion.
+
+### 12.2 GDES adaptation overlay
+
+The evaluation branch now contains controlled adapted copies, without changing the pinned upstream source:
+- `replica-backend` and `replica-deploy`: Claude Code `disable-model-invocation: true` plus explicit GDES manual-authorization gates.
+- `replica-design`, `replica-diff`, `replica-entrepreneur`, `replica-brand`, `replica-launch`, and `replica-deploy`: helper commands route through `scripts/gdes/replica_skill_tool.py`.
+- Resolver uses `GDES_REPLICA_SKILLS_ROOT`, an explicit helper allowlist and path-containment validation. It avoids cwd-relative helper resolution. The selected upstream helper can still read/write files according to its own arguments; the resolver is not a sandbox or authorization boundary.
+
+Adaptation guide: `docs/adaptations/replica-skill-gdes/README.md`.
+Adapted skill copies: `docs/adaptations/replica-skill-gdes/<skill>/SKILL.md`.
+
+These are review overlays only. They are not installed in any platform or project. The Claude Code frontmatter guard is Claude-specific. No equivalent enforcement is claimed for Codex or VS Code until their platform-specific negative tests are run.
+
+### 12.3 Native discovery layout validation
+
+The updated validator stages the 11 upstream skills in disposable directory trees for:
+- Claude Code: `.claude/skills/<skill>/SKILL.md`
+- Codex: `.agents/skills/<skill>/SKILL.md`
+- VS Code/Copilot: `.github/skills/<skill>/SKILL.md`
+
+This is a 33-copy static packaging/layout simulation, not an actual platform agent load or invocation. It cannot be reported as runtime compatibility.
+
+A 33-case runtime test matrix with positive and negative cases is recorded in
+`docs/registers/GDES_REPLICA_SKILL_33_CASE_RUNTIME_TEST_MATRIX_v1.0.md`.
+All 33 runtime cases remain **NOT RUN** pending access to the actual Claude Code,
+Codex and VS Code/Copilot runtimes and a disposable workspace on each.
+
+### 12.4 Updated acceptance criteria
+
+| ID | Acceptance criterion | Current status |
+|---|---|---|
+| REP-AC-01 | Upstream source, version, commit and MIT license recorded | PASS |
+| REP-AC-02 | 11 skills inventoried | PASS |
+| REP-AC-03 | Six Python utilities source-inspected | PARTIAL — static review only |
+| REP-AC-04 | No upstream skill installed or executed in GDES product repository | PASS |
+| REP-AC-05 | Claude Code metadata/package format | PASS — static only; runtime NOT TESTED |
+| REP-AC-06 | Codex Agent Skills metadata format | PASS — static only; runtime NOT TESTED |
+| REP-AC-07 | VS Code/Copilot Agent Skills metadata format | PASS — static only; runtime NOT TESTED |
+| REP-AC-08 | Upstream unit tests executed | PASS — 57/57 in run 42981317231 |
+| REP-AC-09 | 11 skills staged in three native discovery path simulations | PENDING — updated workflow run pending |
+| REP-AC-10 | GDES adapted copies have manual invocation gates and resolver paths | IMPLEMENTED — static CI validation pending |
+| REP-AC-11 | Resolver allowlist and helper-path checks | IMPLEMENTED — static CI validation pending |
+| REP-AC-12 | Claude Code 11-skill load/invocation runtime tests | NOT RUN |
+| REP-AC-13 | Codex 11-skill load/invocation runtime tests | NOT RUN |
+| REP-AC-14 | VS Code/Copilot 11-skill load/invocation runtime tests | NOT RUN |
+| REP-AC-15 | Security, prompt-injection and side-effect negative tests | NOT RUN |
+| REP-AC-16 | Standards Owner explicit classification/adoption decision | PENDING |
+
+### 12.5 Decision gate
+
+GDES-REP-001 remains **PENDING STANDARDS OWNER DECISION**. The PR is a review
+handoff, not an approval. No installation, merge, adoption, production use,
+migration, payment configuration, infrastructure provisioning, publication or
+deployment is authorized.
