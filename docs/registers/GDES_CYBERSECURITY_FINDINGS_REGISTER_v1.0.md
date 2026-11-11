@@ -71,3 +71,38 @@ All generated artifacts are stored under `docs/registers/data/` and were read ba
 - SDLC formal progression: BLOCKED.
 
 **Final status: FINDINGS REGISTERED — SOURCE EXTRACTION COMPLETE — SOURCE MAPPING PARTIAL — INDEPENDENT REVIEW BLOCKED — NOT APPROVED.**
+
+
+## 6. CYB-01 evidence reconciliation update — 2026-11-11
+
+This section supersedes the earlier evidence baseline in the header and sections above where the earlier run/commit is cited as the latest baseline.
+
+### 6.1 Current immutable execution baseline
+
+- Repository: `muchlisbstg/Full-stack-product-development`
+- Branch: `gdes/ai-governance-v1-pilot`
+- Workflow: [GDES Cybersecurity Source Reconciliation — run 42973483998](https://github.com/muchlisbstg/Full-stack-product-development/actions/runs/42973483998)
+- Workflow conclusion: `success`; job `Extract pinned framework metadata` and all listed steps concluded `success`.
+- Workflow source SHA: `996423e8cef1cf8dde56580a1ab625554c253977`.
+- Generated-catalog commit / current branch baseline at reconciliation: `1e002b8f4e3386d5fb9daf8ba6e6c155b78091fd`.
+- Generated catalogs were fetched back from GitHub at that commit. The workflow reported no separately uploaded Actions artifacts; repository-committed files are the evidence objects.
+- Current branch ref was independently read back and pointed to `1e002b8f4e3386d5fb9daf8ba6e6c155b78091fd` before this documentation update.
+
+### 6.2 Reconciled findings and dispositions
+
+| Finding | Reconciled evidence | Disposition |
+|---|---|---|
+| GDES-FND-SEC-001 | MASWE-0097 remains without a source-defined stable target; four MASTG tests reference it. MASWE-0051 remains semantic-only and is not substituted. | OPEN — no invented alias |
+| GDES-FND-SEC-002 | Seven source-defined beta aliases retain multiple stable targets exactly as upstream defines them. | OPEN — reviewer disposition required |
+| GDES-FND-SEC-003 | 38 stable MASWE records have no linked MASTG test in this pinned extraction; release note states 36; delta +2. | OPEN — source-scope discrepancy |
+| GDES-FND-SEC-004 | 292 unique MASTG Markdown paths comprise 200 structured tests and 92 legacy paths; release announcement states 285; delta +7. | OPEN — inventory-scope discrepancy |
+| GDES-FND-MAP-001 | ASVS: 345 unique requirement IDs; 282 section-range candidates and 63 chapter candidates; all 345 remain candidate-only. | OPEN — no semantic approval |
+| GDES-FND-MAP-002 | TCASVS: 132 unique requirement IDs; 79 description-keyword candidates and 53 chapter-fallback candidates; all 132 remain candidate-only. | OPEN — no semantic approval |
+| GDES-FND-MAP-003 | SAMM: 90 unique activity GUIDs; 71 activity-description candidates and 19 practice-level fallback candidates; all 90 remain candidate-only. | OPEN — no maturity or compliance claim |
+| GDES-FND-LIC-001 | Six license snapshots have exact source commit, path, Git blob SHA and SHA-256 in the license register. | PENDING LEGAL REVIEW — technical snapshot verified only |
+
+No finding is closed by this reconciliation. No remediation, independent disposition, runtime test, or retest is claimed.
+
+### 6.3 CYB-01 completion status
+
+**CYB-01 — COMPLETED AS DOCUMENTARY RECONCILIATION.** Evidence baselines and findings are reconciled to the latest successful run and generated catalog commit. Technical mapping findings remain open and are not reviewer-approved.
