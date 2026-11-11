@@ -194,3 +194,81 @@ Checklist:
 **Gate to SDLC Register:** begin SDLC Register drafting after Cybersecurity mapping review has documented coverage, unresolved gaps, and reviewer disposition. Runtime tests need not all be complete before SDLC drafting, but no security control may be called PASS or APPROVED without its own evidence and decision.
 
 **End of GDES Cybersecurity Register v1.0 — Draft for Review.**
+
+
+## 13. External source verification update — 2026-11-11
+
+A targeted source check identified important scope and version details that refine the first-pass mapping above.
+
+### 13.1 Verified source pins and license evidence
+
+| Reference | Verified source detail | License | Disposition |
+|---|---|---|---|
+| OWASP ASVS | Stable release 5.0.0; pin to tag v5.0.0. The release is structured as 17 chapters and requirement identifiers are version-dependent. | CC BY-SA 4.0 | Verified at project/release level; exact requirements still need row-by-row mapping |
+| OWASP SAMM | Release v2.2.0; release page identifies commit 21352e0 | CC-BY-SA-4.0 | Version/release and license lead verified; exact practice/stream mapping still pending |
+| OWASP Cheat Sheet Series | Official project repository and published guidance confirmed | CC BY-SA 4.0 | Guidance source verified; rolling repository commit must be pinned when a sheet is used |
+
+ASVS 5.0.0 requirements use version-qualified identifiers such as v5.0.0-1.2.5. GDES MUST preserve the version prefix in all future mappings because ASVS identifiers can change between major releases.
+
+ASVS 5.0.0 chapter index:
+- V1 Encoding and Sanitization
+- V2 Validation and Business Logic
+- V3 Web Frontend Security
+- V4 API and Web Service
+- V5 File Handling
+- V6 Authentication
+- V7 Session Management
+- V8 Authorization
+- V9 Self-contained Tokens
+- V10 OAuth and OIDC
+- V11 Cryptography
+- V12 Secure Communication
+- V13 Configuration
+- V14 Data Protection
+- V15 Secure Coding and Architecture
+- V16 Security Logging and Error Handling
+- V17 WebRTC
+
+### 13.2 Cross-platform coverage gap — mandatory mapping extension
+
+ASVS is scoped to web applications and web services. It is not sufficient as the only security verification reference for a product that also ships native Android/iOS applications and desktop/thick-client software.
+
+Add these supplementary reference frames:
+- **Mobile:** OWASP MASVS, with MASWE as the mobile weakness taxonomy and MASTG as the test procedure library. Apply to Android and iOS clients. Exact release/tag and source license must be pinned in the next mapping revision.
+- **Desktop / thick client:** OWASP TCASVS. Its repository and OWASP project card currently expose differing version labels (repository README identifies 5.0.0 while the OWASP project card identifies 1.8). Treat the version as **NOT RECONCILED**; do not assert a single adopted release until source maintainers' release metadata is checked. License is identified as CC BY-SA 4.0 in the project metadata.
+
+This adds a clear scope condition to the mapping matrix in Section 5: its initial ASVS/SAMM/Cheat Sheet relationships are **web/API-oriented reference coverage only**. For the full GDES Web/Mobile/Desktop scope, every cross-platform control remains **PARTIAL / NOT TESTED** until MASVS/MASTG and TCASVS mappings are added and reviewed. The prior 11/11 plausibility count is not an end-to-end platform coverage score.
+
+### 13.3 Mapping quality findings
+
+| Finding ID | Severity | Finding | Required action | Status |
+|---|---|---|---|---|
+| FIND-SEC-MAP-001 | High | ASVS alone does not cover native mobile and thick-client desktop security scope | Add MASVS/MASWE/MASTG and TCASVS mapping tracks | OPEN |
+| FIND-SEC-MAP-002 | Medium | Initial matrix uses chapter/domain-level ASVS references, not exact requirement IDs | Pin v5.0.0 source and map exact version-qualified IDs | OPEN |
+| FIND-SEC-MAP-003 | Medium | TCASVS version metadata conflicts between OWASP project card and repository README | Reconcile release tag and source of truth before pinning | OPEN |
+| FIND-SEC-MAP-004 | Medium | Initial GDES-SEC-001–011 descriptions are provisional because canonical legacy source rows were not recovered | Reconcile against recovered master workbook and any canonical source register | OPEN |
+| FIND-SEC-MAP-005 | Medium | SAMM and Cheat Sheet mappings are practice/guidance references, not direct control verification | Record exact practice/stream or sheet URL and keep relation as informs unless direct coverage is justified | OPEN |
+
+### 13.4 Updated mapping test outcome
+
+- Source verification: ASVS 5.0.0 release and CC BY-SA 4.0 verified; SAMM v2.2.0 release/commit and CC-BY-SA-4.0 identified; Cheat Sheet Series official guidance and CC BY-SA 4.0 identified.
+- Cross-platform scope: **GAP FOUND** — MASVS and TCASVS are required supplementary references for the declared mobile and desktop product scope.
+- Requirement-level mapping: **NOT TESTED / INCOMPLETE** — exact ASVS requirement IDs and SAMM practice/stream IDs are not yet mapped.
+- Legacy GDES control wording: **NOT RECONCILED**.
+- Overall mapping result: **PARTIAL — NOT APPROVED**.
+- No runtime security tests were executed as part of this source-mapping review.
+
+### 13.5 Source links
+
+- ASVS 5.0.0 downloads and release: https://asvs.owasp.org/downloads/
+- ASVS v5.0.0 source and identifier guidance: https://github.com/OWASP/ASVS/tree/v5.0.0
+- SAMM v2.2.0 release: https://github.com/owaspsamm/core/releases/tag/v2.2.0
+- SAMM model: https://owaspsamm.org/model/
+- Cheat Sheet Series: https://github.com/OWASP/CheatSheetSeries
+- Cheat Sheet Series license/guidance: https://cheatsheetseries.owasp.org/
+- MASVS: https://github.com/OWASP/masvs
+- MASVS use and control groups: https://mas.owasp.org/MASVS/03-Using_the_MASVS/
+- MASTG / MASWE project: https://mas.owasp.org/
+- TCASVS: https://github.com/OWASP/TCASVS
+- TCASVS OWASP project card: https://owasp.org/projects/thick-client-application-security-verification-standard
+
