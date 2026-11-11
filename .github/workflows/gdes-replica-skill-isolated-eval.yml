@@ -7,6 +7,8 @@ on:
     paths:
       - .github/workflows/gdes-replica-skill-isolated-eval.yml
       - scripts/gdes/validate_replica_skill_metadata.py
+      - scripts/gdes/replica_skill_tool.py
+      - docs/adaptations/replica-skill-gdes/**
   workflow_dispatch:
 
 permissions:
@@ -18,10 +20,13 @@ concurrency:
 
 jobs:
   isolated-evaluation:
-    name: Pinned source and standard-library tests
+    name: Pinned source, discovery layouts and unit tests
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - name: Prepare evidence directory
+        run: mkdir -p "$RUNNER_TEMP/replica-skill-evidence"
+
       - name: Checkout GDES evidence branch without persisted credentials
         env:
           REPOSITORY: ${{ github.repository }}
@@ -30,6 +35,13 @@ jobs:
           git clone --quiet "https://github.com/${REPOSITORY}.git" "$RUNNER_TEMP/gdes"
           git -C "$RUNNER_TEMP/gdes" fetch --quiet --depth=1 origin "${COMMIT_SHA}"
           git -C "$RUNNER_TEMP/gdes" checkout --quiet --detach FETCH_HEAD
+          {
+            echo "GDES repository: ${REPOSITORY}"
+            echo "GDES commit: ${COMMIT_SHA}"
+            echo "Runner OS: $(. /etc/os-release && echo "$PRETTY_NAME")"
+            echo "Python: $(python3 --version)"
+            echo "UTC timestamp: $(date -u +%FT%TZ)"
+          } | tee "$RUNNER_TEMP/replica-skill-evidence/environment.txt"
 
       - name: Fetch exact upstream Replica Skill source pin
         env:
@@ -39,14 +51,43 @@ jobs:
           git -C "$RUNNER_TEMP/replica-skill" fetch --quiet --depth=1 origin "${UPSTREAM_SHA}"
           git -C "$RUNNER_TEMP/replica-skill" checkout --quiet --detach FETCH_HEAD
           test "$(git -C "$RUNNER_TEMP/replica-skill" rev-parse HEAD)" = "${UPSTREAM_SHA}"
-          echo "Verified upstream SHA: ${UPSTREAM_SHA}"
+          echo "Verified upstream SHA: ${UPSTREAM_SHA}" | tee "$RUNNER_TEMP/replica-skill-evidence/upstream-pin.txt"
 
-      - name: Validate all 11 skill metadata and expected utilities
+      - name: Validate 11 skills and simulate 3 native discovery layouts
         run: |
-          python3 "$RUNNER_TEMP/gdes/scripts/gdes/validate_replica_skill_metadata.py" "$RUNNER_TEMP/replica-skill"
+          set -o pipefail
+          python3 "$RUNNER_TEMP/gdes/scripts/gdes/validate_replica_skill_metadata.py" "$RUNNER_TEMP/replica-skill" 2>&1 | tee "$RUNNER_TEMP/replica-skill-evidence/metadata-and-layout.log"
 
       - name: Run upstream standard-library unit tests
         working-directory: ${{ runner.temp }}/replica-skill
         run: |
-          python3 --version
-          python3 -m unittest discover -s tests -v
+          set -o pipefail
+          python3 --version 2>&1 | tee "$RUNNER_TEMP/replica-skill-evidence/python-version.txt"
+          python3 -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/replica-skill-evidence/upstream-unit-tests.log"
+
+      - name: Write evidence summary
+        if: always()
+        env:
+          COMMIT_SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: |
+          {
+            echo "# GDES Replica Skill isolated evaluation"
+            echo "- Run ID: ${RUN_ID}"
+            echo "- Attempt: ${RUN_ATTEMPT}"
+            echo "- GDES commit: ${COMMIT_SHA}"
+            echo "- Upstream pin: 77c9436fb3d18c3d58169efb8caf4fe906b0dc51"
+            echo "- This job validates static metadata, native directory layouts and upstream Python unit tests."
+            echo "- This job does not invoke Claude Code, Codex or VS Code agent runtimes."
+          } > "$RUNNER_TEMP/replica-skill-evidence/summary.md"
+          cat "$RUNNER_TEMP/replica-skill-evidence/summary.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload logs and test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gdes-replica-skill-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/replica-skill-evidence/
+          if-no-files-found: warn
+          retention-days: 30
