@@ -162,6 +162,31 @@ Source recovery outcome:
 
 The recovered workbook should be version-controlled as source evidence before formal adoption. Do not silently overwrite it or imply it is an approved master.
 
+## 11.1 Infrastructure validation — read-only evidence update (2026-11-11)
+
+The following checks were performed through the connected Vercel and Supabase read-only interfaces. No environment values were decrypted and no project settings or database objects were changed.
+
+| Provider / component | Observed evidence | Assessment |
+|---|---|---|
+| Hostinger | No Hostinger account/hosting connector operation was available in this workspace; no plan, account/service ID, VPS, IP, SSH endpoint, or API runtime evidence was supplied | **NOT VERIFIED**; owner-confirmed future target remains **PLANNED — UNFUNDED** |
+| Vercel project | Project `export-client-mobile-sync`, ID `prj_d7QLVAnsgo7QoDA9xha7fWkbbbC9`; `framework=null`; `nodeVersion=26.x`; `live=false`; environment inventory returned 0 records and 0 hidden production variables | Project exists, but no environment variable records are configured/visible in the inspected inventory; no effective API database connection is evidenced |
+| Vercel deployment | Previously recorded deployment `dpl_7htFkCME5YMAWfPw7vemATRsc1PJ` is READY, target production, SHA `0a3c595c6697f56d0cef8536c3b93c3886cc5ab1`; latest deployment list also shows READY deployments from audit/docs branches with `target=null`, including `dpl_23PPRNb9P4Qad4DYT9HKq425YSB2` at SHA `b1f695a25204abcc1c76c35194a8195fc820742b` | READY is deployment build state, not proof that Express API is running or authoritative |
+| Vercel runtime logs | Seven-day query was rejected because Hobby plan retention does not cover that range; one-hour runtime error query returned no errors | Runtime observability evidence is limited; absence of recent errors is not health proof |
+| Supabase staging | Project `export-client-staging`, ref `utvxuzmtevnmrcpxfpaa`, ACTIVE_HEALTHY, PostgreSQL 17.11, region `ap-south-1`; latest read-only `public` table list returned 0 tables; migration list returned 0 entries | Staging service is active but has no observed application tables/migrations in the queried scope; not proven connected to API |
+| Supabase advisors | Security advisor: `auth_leaked_password_protection` WARN — Leaked Password Protection Disabled. Performance and Health advisors returned no lints | Security configuration follow-up required; no advisor finding does not prove complete security |
+
+**Infrastructure decision:** RT-03D remains NOT STARTED because the actual API runtime and effective connection target are not established. RT-03E remains NOT STARTED because the actual application database has not been identified. Do not run schema migrations, DDL, data operations, deployment, or environment changes as part of this validation.
+
+## 11.2 PR #145 state reconciliation — important deviation
+
+A fresh GitHub pull-request fetch for `muchlisbstg/export-client-mobile-sync#145` returned:
+- `state=closed`, `merged=true`, `draft=false`;
+- `merged_at=2026-11-11T05:24:13Z`;
+- merge commit `b1f695a25204abcc1c76c35194a8195fc820742b`;
+- the PR timeline includes a `COMMENTED` review with body “Approved” by the repository owner.
+
+This conflicts with the earlier instruction/state record that PR #145 should remain Draft and unmerged. The merge has already occurred in GitHub; this audit did not perform it and will not attempt an automatic revert. The repository owner must decide whether a corrective follow-up PR is required. Preserve the merge commit and evidence; do not rewrite history.
+
 ## 12. Cross-register reconciliation status and source gaps
 
 | Register | Current reconciled baseline | Source completeness | Outstanding work | Status |
@@ -195,7 +220,7 @@ The recovered workbook should be version-controlled as source evidence before fo
 | RECON-008 | Run pilot CI and retain logs/artifacts tied to commit SHA | Repository maintainer | Relevant workflow logs and artifact links | NOT TESTED |
 | RECON-009 | Independent review and rollout decision | Independent reviewers + Standards Owner | Findings dispositioned and explicit approval | Pending |
 | RECON-010 | Reconcile GDES Infrastructure Register with canonical workbook/source | Standards Owner / Infrastructure owner | Source linked or repository register explicitly adopted; Hostinger remains PLANNED — UNFUNDED until provisioned | Pending |
-| RECON-011 | Keep Export Client PR #145 Draft and unmerged | Repository maintainer | Draft state and no merge/deploy action | Ongoing constraint |
+| RECON-011 | Reconcile Export Client PR #145 state deviation | Repository owner / maintainer | Owner confirms whether corrective follow-up is required; preserve merge evidence and do not rewrite history | **DEVIATION — GitHub reports closed/merged; not Draft** |
 
 ## 14. Current decision
 
