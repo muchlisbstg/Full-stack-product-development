@@ -139,3 +139,49 @@ GDES-REP-001 is submitted for Standards Owner disposition as **Recommended Pract
 
 
 Standards Owner submission handoff: draft PR #41 — https://github.com/muchlisbstg/Full-stack-product-development/pull/41 (base `gdes/ai-governance-v1-pilot`; OPEN / DRAFT / NOT MERGED). The decision remains PENDING. Runtime tests remain NOT TESTED; the PR is a review handoff, not approval.
+
+
+## 10. Follow-up technical execution — 2026-11-11
+
+### Evidence
+
+- Isolated upstream GitHub Actions run `42981317231`: **SUCCESS**.
+- Pinned upstream SHA: `77c9436fb3d18c3d58169efb8caf4fe906b0dc51`.
+- Ubuntu 26.04 / Python 3.14.4.
+- Metadata inventory: 11/11 PASS.
+- Python helper inventory: 6/6 PASS.
+- Upstream standard-library tests: **57/57 PASS**.
+- Initial run identified missing manual invocation guards in upstream `replica-backend` and `replica-deploy`.
+
+### GDES-controlled remediation overlay
+
+The evaluation branch now includes:
+- Adapted `replica-backend` and `replica-deploy` copies with Claude Code `disable-model-invocation: true` and explicit manual-authorization gates.
+- Adapted helper-using skill copies routed through `scripts/gdes/replica_skill_tool.py`, with explicit `GDES_REPLICA_SKILLS_ROOT` and helper allowlisting.
+- Updated validator for 33 static native discovery-layout copies and GDES overlay validation.
+- Updated workflow to retain test logs, environment metadata, summary and evidence artifact for 30 days.
+- A 33-case platform runtime test matrix.
+
+The adaptation copies are review artifacts only; none are installed or invoked in a GDES project. The resolver is not a security sandbox and does not itself authorize helper file operations.
+
+### Current acceptance status
+
+| Criterion | Status |
+|---|---|
+| Source pin, license, 11-skill inventory | PASS |
+| Upstream unit tests | PASS — 57/57 |
+| Claude Code static format/package | PASS — runtime NOT TESTED |
+| Codex static Agent Skills format | PASS — runtime NOT TESTED |
+| VS Code/Copilot static Agent Skills format | PASS — runtime NOT TESTED |
+| Three native discovery-layout simulation | PENDING — updated workflow run |
+| GDES invocation/path adaptation overlay | IMPLEMENTED — static CI validation pending |
+| Claude Code 11-skill runtime load/invocation | NOT RUN |
+| Codex 11-skill runtime load/invocation | NOT RUN |
+| VS Code/Copilot 11-skill runtime load/invocation | NOT RUN |
+| Negative runtime tests | NOT RUN |
+| Standards Owner decision | PENDING |
+| Adoption | NOT APPROVED |
+
+Runtime validation matrix: `docs/registers/GDES_REPLICA_SKILL_33_CASE_RUNTIME_TEST_MATRIX_v1.0.md`.
+
+**Standards Owner decision remains required.** Proposed classification is Recommended Practice. No Mandatory Standard promotion, installation, merge, adoption or deployment is authorized.
