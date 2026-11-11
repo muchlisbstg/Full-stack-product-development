@@ -190,3 +190,65 @@ The independent Database Reviewer must separately review the DB supplement and t
 This is an internal evidence package only. It is **NOT ISSUED**. The procurement ceiling remains deferred. No candidate search/contact, NDA, appointment, non-public evidence disclosure, independent review or expenditure is authorized until budget availability is confirmed and the Standards Owner provides renewed explicit procurement authorization.
 
 **Package readiness: INTERNAL DOCUMENTATION AND SOURCE EVIDENCE AVAILABLE — FINDINGS OPEN — NOT ISSUED — REVIEWERS NOT APPOINTED — NOT APPROVED.**
+
+
+## 9. CYB-03 refreshed evidence index and handoff controls — 2026-11-11
+
+This internal package is refreshed to the latest generated evidence baseline. It remains **NOT ISSUED** and is not a reviewer appointment or authorization to disclose nonpublic evidence.
+
+### 9.1 Execution and branch evidence
+
+- Repository: `muchlisbstg/Full-stack-product-development`
+- Branch: `gdes/ai-governance-v1-pilot`
+- Workflow run: [42973483998 — SUCCESS](https://github.com/muchlisbstg/Full-stack-product-development/actions/runs/42973483998)
+- Workflow source SHA: `996423e8cef1cf8dde56580a1ab625554c253977`
+- Generated catalog commit: `1e002b8f4e3386d5fb9daf8ba6e6c155b78091fd`
+- Workflow job and all extraction/commit steps: success.
+- Separate Actions artifact list: empty; generated catalogs are repository-committed evidence and were read back from GitHub.
+
+### 9.2 Current evidence objects and blob SHAs
+
+| Evidence object | Path | Blob SHA |
+|---|---|---|
+| Findings register baseline | `docs/registers/GDES_CYBERSECURITY_FINDINGS_REGISTER_v1.0.md` | `e19ebbc45742864eb9a91926140e103d432864c1` |
+| Completeness check baseline | `docs/registers/GDES_CYBERSECURITY_COMPLETENESS_CHECK_v1.0.md` | `f5ffd37f5316965d3871759721ad7fcaedf59c9b` |
+| Framework mapping baseline | `docs/registers/GDES_CYBERSECURITY_FRAMEWORK_MAPPING_v1.0.md` | `2ad594d8a35dd64024103d96c9bab8c0a4f2cabb` |
+| MASWE–MASTG traceability | `docs/registers/data/GDES_MASWE_MASTG_TRACEABILITY_v1.0.0.csv` | `1fd08e82be0352a49630a43c1440939def2c5adb` |
+| ASVS individual catalog | `docs/registers/data/GDES_ASVS_REQUIREMENT_CATALOG_v5.0.0.csv` | `8e1f34ae3f80f8121f29de7fc1b6d33253d0d646` |
+| TCASVS individual catalog | `docs/registers/data/GDES_TCASVS_REQUIREMENT_CATALOG_v5.0.0.csv` | `8410732fab232000050ee2982945eeb91b169bf6` |
+| SAMM activity catalog | `docs/registers/data/GDES_SAMM_ACTIVITY_CATALOG_v2.2.0.csv` | `64f452ba0c5c6790363fe1813ed5b16e276edc0e` |
+| License snapshot register | `docs/registers/data/GDES_UPSTREAM_LICENSE_SNAPSHOT_REGISTER_v1.0.csv` | `ae38a7e516eaa2bb58cc700564323ba1ad7bcdb6` |
+
+The blob SHAs above identify the fetched pre-update file contents at the generated-catalog baseline. After this documentation refresh, the changed Markdown files receive new blob SHAs and commit SHAs; the generated CSV evidence objects remain unchanged unless separately regenerated.
+
+### 9.3 Current reviewer scope to be preserved
+
+**Independent Security Reviewer**
+- MASWE-0097 unresolved beta reference; no semantic substitution.
+- Seven multiple-target beta aliases.
+- 38 versus 36 MASWE-without-test discrepancy.
+- 292 MASTG paths versus 285 release-announcement count.
+- All 345 ASVS requirement candidates, with 282 section-range and 63 chapter candidates.
+- All 132 TCASVS requirement candidates, with 79 description-keyword and 53 chapter-fallback candidates.
+- All 90 SAMM activity candidates, with 71 activity-description and 19 practice-level fallback candidates.
+- Six CC BY-SA 4.0 source-license records and the need for legal disposition.
+
+**Independent Database Reviewer**
+- Separate review of GDES-DB-001–005, database supplement and database-specific findings.
+- PostgreSQL RLS/FORCE RLS/BYPASSRLS, composite tenant FKs, transaction/concurrency, temporal consistency, authorization parity and SQLite/PostgreSQL parity.
+- No claim that source-framework mapping establishes database runtime assurance.
+
+### 9.4 Procurement and disclosure restrictions
+
+- Budget: DEFERRED.
+- Procurement authorization: NOT RENEWED.
+- Candidate search/contact: NOT AUTHORIZED.
+- NDA: NOT STARTED.
+- Reviewer appointment: NOT STARTED.
+- Independent review: BLOCKED.
+- Nonpublic evidence disclosure: NOT AUTHORIZED.
+- Expenditure: NOT AUTHORIZED.
+
+Reopening requires confirmed budget availability and renewed explicit authorization from the Standards Owner. This update is internal documentation maintenance only.
+
+**CYB-03 — EVIDENCE INDEX REFRESHED; INTERNAL ONLY; NOT ISSUED; REVIEW BLOCKED.**
