@@ -1,4 +1,6 @@
-# GDES Cybersecurity External Mapping Matrix v1.0 — Draft for Independent Review
+# GDES Cybersecurity External Mapping Matrix v1.0 — Legacy Technical Crosswalk
+
+> **LEGACY / PROVISIONAL ID SEMANTICS.** This file preserves the earlier GDES-SEC-001–011 mapping and is not authoritative for new control-number meanings. Use `GDES-SEC-DICT-001` as the proposed canonical dictionary. Historical IDs must be qualified by source document and version before any join or reuse. Database controls are now separately named `GDES-DB-001–005`.
 
 | Metadata | Value |
 |---|---|
@@ -160,3 +162,32 @@ The Cybersecurity mapping gate is **NOT CLEARED** until all of the following are
 Drafting SDLC may be planned, but the next formal domain register is not to be treated as authorized by this matrix until the gate is cleared.
 
 **Current overall result: TECHNICAL CROSSWALK CREATED — COVERAGE PARTIAL — INDEPENDENT REVIEW BLOCKED — NOT APPROVED.**
+
+
+## 9. Supersession by Canonical Control Dictionary
+
+The proposed Canonical Control Dictionary `GDES-SEC-DICT-001` establishes the current proposed semantic meanings:
+
+| Canonical ID | Current proposed meaning |
+|---|---|
+| GDES-SEC-001 | Security Governance & Threat Modeling |
+| GDES-SEC-002 | Identity, Authentication & Session Lifecycle |
+| GDES-SEC-003 | Authorization & Privilege Control |
+| GDES-SEC-004 | Input, Output & Injection Defense |
+| GDES-SEC-005 | API, Integration & Network Security |
+| GDES-SEC-006 | Data Protection & Privacy |
+| GDES-SEC-007 | Secrets & Secure Configuration |
+| GDES-SEC-008 | Dependency & Software Supply Chain |
+| GDES-SEC-009 | Security Logging, Monitoring & Error Handling |
+| GDES-SEC-010 | Security Verification, Vulnerability & Evidence Management |
+| GDES-SEC-011 | Incident Response & Operational Resilience |
+
+Database-specific controls are `GDES-DB-001–005` and must not be represented as the former legacy `GDES-SEC-008`. The exact source-qualified alias resolution is maintained in `docs/registers/GDES_CYBERSECURITY_CONTROL_DICTIONARY_v1.0.md`.
+
+### 9.1 Source correction
+
+The earlier SAMM practice pins in this matrix referred to the archived `OWASP/samm` repository. The v2.2.0 source of record is `owaspsamm/core` at commit `21352e0fc79a6764abcd83a008690e32d2d5a3fe`. The earlier SAMM pin values are historical references only and must not be used for v2.2.0 extraction.
+
+The immutable source/license register and planned requirement/activity-level catalogs are documented in `GDES_CYBERSECURITY_FRAMEWORK_MAPPING_v1.0.md`.
+
+**Disposition:** retained for audit history; not canonical for new control-ID joins; not approved.
