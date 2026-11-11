@@ -17,7 +17,7 @@ class RunnerTests(unittest.TestCase):
 
     def test_hardened_synthetic_text_is_only_heuristic_pass(self):
         checks = [{"id": "T-03", "forbidden": [r"sudo\s+"], "required": [r"user-owned prefix"]}]
-        result = evaluate_text([("install.sh", "install to user-owned prefix; no sudo")], checks)
+        result = evaluate_text([("install.sh", "install to user-owned prefix without privilege escalation")], checks)
         self.assertEqual(result[0]["status"], "PASS_STATIC_HEURISTIC")
 
     def test_symlink_rejected(self):
