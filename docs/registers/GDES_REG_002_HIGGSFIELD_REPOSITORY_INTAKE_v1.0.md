@@ -1,6 +1,6 @@
 # GDES-REG-002 — Higgsfield Repository Intake Register v1.0
 
-**Status:** EVALUATION IN PROGRESS — STATIC REVIEW ONLY  
+**Status:** DEEP STATIC SECURITY AUDIT RECORDED — RUNTIME NOT RUN  
 **Evaluation track:** Isolated Skills Evaluation Lab  
 **Source organization:** https://github.com/higgsfield-ai  
 **Date recorded:** 2026-11-12
@@ -53,7 +53,20 @@ Each candidate is evaluated independently in a disposable, isolated environment.
 
 Detailed evidence: [GDES_REG_002_HIGGSFIELD_EVALUATION_EVIDENCE_v1.0.md](../evaluations/GDES_REG_002_HIGGSFIELD_EVALUATION_EVIDENCE_v1.0.md).
 
-## 6. Required evidence bundle
+## 6. Deep static security audit
+
+Detailed report: [GDES_REG_002_HIGGSFIELD_DEEP_STATIC_SECURITY_AUDIT_v1.0.md](../evaluations/GDES_REG_002_HIGGSFIELD_DEEP_STATIC_SECURITY_AUDIT_v1.0.md).
+
+| Candidate | Deep static review | Principal blocker | Disposition |
+|---|---|---|---|
+| HIG-01 | PARTIAL COMPLETE | Mutable curl-to-shell installer; Bash permission across all skills; hosted/third-party egress; potential DNS rebinding hardening gap | DEFER |
+| HIG-02 | PARTIAL — installer only | Binary source, credential storage, TLS, redirects, uploads and logging NOT_VERIFIED | DEFER |
+| HIG-03 | PARTIAL COMPLETE | Optional remote root SSH and no-sandbox Chrome; local unsafe WebGPU flags | DEFER |
+| HIG-04 | PARTIAL COMPLETE | Raw request/response body logging, long-lived API-key cookie, upload host allowlist gap | DEFER |
+
+**No runtime security test, dependency scan, SBOM, installation, network capture, or compatibility invocation was performed.** The static audit is not a penetration test or security certification.
+
+## 7. Required evidence bundle
 
 For every candidate retain:
 - source URL and pinned commit SHA;
@@ -67,8 +80,8 @@ For every candidate retain:
 - compatibility matrix for Codex and VS Code;
 - reproducibility notes and final disposition.
 
-## 7. Governance disposition
+## 8. Governance disposition
 
-**Current recommendation: DEFER — insufficient runtime and security evidence.**
+**Current recommendation: DEFER — static findings and runtime evidence gaps remain.**
 
 The present evidence is source/static review only. No candidate has passed runtime, compatibility, dependency-security, or negative-side-effect testing. No candidate is approved for installation into the primary development environment, production use, or promotion to a GDES standard. Continue only in an isolated disposable offline runner and submit the resulting evidence for Standards Owner review.
