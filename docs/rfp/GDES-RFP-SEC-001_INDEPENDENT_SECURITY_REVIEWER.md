@@ -3,14 +3,15 @@
 | Metadata | Value |
 |---|---|
 | RFP ID | GDES-RFP-SEC-001 |
-| Version | 1.0 |
-| Status | **DRAFT FOR REVIEW — NOT ISSUED** |
+| Version | 1.1 |
+| Status | **REVISED DRAFT — OWNER REVIEWED — PROCUREMENT DEFERRED — NOT ISSUED** |
 | Owner | MUCHLIS BSTG / GDES Standards Owner |
 | Repository | `muchlisbstg/Full-stack-product-development` |
 | Branch | `gdes/ai-governance-v1-pilot` |
 | Related artifacts | `docs/GDES_MASTER_STANDARD_v1.0.md`; `docs/registers/GDES_CYBERSECURITY_REGISTER_v1.0.md`; `docs/registers/GDES_CYBERSECURITY_MAPPING_MATRIX_v1.0.md` |
 | Currency | IDR; indicative planning estimates only |
-| Procurement authority | None granted by this draft |
+| Procurement authority | None; procurement and budget approval deferred |
+| Standards Owner disposition | Conditional acceptance of draft structure; revisions required before issue |
 
 > **Governance notice:** This is an internal draft request-for-proposal template. It has not been issued to vendors, does not appoint a reviewer, does not approve expenditure, and does not authorize repository access, testing, production access, or a security sign-off. GDES Master Standard and the related registers remain draft / not approved.
 
@@ -114,17 +115,17 @@ All figures are planning assumptions for proposal comparison, not verified marke
 | Governance, threat model, identity and authorization review | 4–6 hours |
 | API, web, mobile, desktop, secrets and supply-chain review | 4–7 hours |
 | Framework crosswalk and traceability review | 3–5 hours |
-| Findings, report, walkthrough | 3–3 hours |
-| **Indicative total** | **16–24 hours** |
+| Findings, report, walkthrough | 3–5 hours |
+| **Indicative total** | **16–26 hours** |
 
 | Pricing basis | Indicative range |
 |---|---:|
 | Target professional rate assumption | Rp1.800.000–Rp3.000.000/hour |
 | Indicative base engagement | **Rp28.800.000–Rp72.000.000** |
-| Internal target allocation for planning | **Rp32.000.000** |
+| Approved budget / cap | **DEFERRED — NOT APPROVED** |
 | Preferred commercial structure | Fixed fee with explicit hours, deliverables, assumptions, and exclusions |
 
-The internal target allocation is not a price commitment. If a credible proposal exceeds it, the owner must reduce scope or separately approve a revised budget; the reviewer must not silently reduce assurance coverage.
+No budget cap or procurement funding is approved at this stage. The rate and fee range above are non-binding market-planning assumptions only. Any future cap must be approved in writing before vendor outreach or award. A proposal that cannot meet the full agreed scope within a subsequently approved cap must be escalated; assurance coverage must not be silently reduced.
 
 Vendor proposal must itemize professional fees, taxes, travel, platform fees, subcontracting, optional retest, and any out-of-scope rate. No expense is reimbursable without prior written approval.
 
@@ -140,7 +141,7 @@ Vendor proposal must itemize professional fees, taxes, travel, platform fees, su
 | Commercial clarity and value | 10% |
 | **Total** | **100%** |
 
-Minimum recommended threshold: 75/100, with no unresolved material conflict of interest and no failure of mandatory requirements. The owner may reject all proposals.
+Minimum recommended threshold: 75/100, with no unresolved material conflict of interest and no failure of mandatory requirements. The owner may reject all proposals. Credential claims must be checked with the issuing body or another reliable verification method where available; references must be independently contacted with the candidate's permission.
 
 ## 8. Acceptance criteria
 
@@ -186,7 +187,7 @@ Each proposed reviewer and subcontractor must declare:
 4. personal relationships or other circumstances that could reasonably impair impartiality;
 5. any restriction on reporting adverse findings.
 
-The declaration must identify parties, dates, nature of relationship, affected scope, and proposed mitigation. The owner may reject or narrow the engagement where independence cannot be preserved. Undisclosed material conflicts may be grounds for termination and rejection of deliverables.
+The declaration must identify parties, dates, nature of relationship, affected scope, and proposed mitigation. It must cover all current relationships and relevant relationships, engagements, and financial interests during at least the preceding 24 months; disclose any continuing or reasonably foreseeable conflict; and be updated if circumstances change. The owner may reject or narrow the engagement where independence cannot be preserved. Undisclosed material conflicts may be grounds for termination and rejection of deliverables.
 
 ## 11. Proposal submission requirements
 
@@ -222,13 +223,44 @@ Dates are indicative and depend on reviewer availability and evidence completene
 - Any expansion of scope, hours, access, or cost requires written approval in advance.
 - The owner may pause or terminate the engagement for independence, confidentiality, safety, budget, or scope reasons.
 
-## 14. Approval record
+## 14. Severity classification and review method
+
+Use the following severity definitions consistently; the reviewer must explain the rationale and business impact for every rating:
+
+| Severity | Definition | Expected handling |
+|---|---|---|
+| Critical | Exploitable condition with severe systemic impact, such as broad tenant compromise, authoritative authorization bypass, or compromise of sensitive assets | Immediate owner escalation; no routine acceptance without explicit risk decision and remediation plan |
+| High | Material compromise of confidentiality, integrity, or availability, or a credible path to privilege escalation / cross-tenant access | Prioritized remediation and documented retest or formal risk disposition |
+| Medium | Meaningful weakness with constrained exploitability or impact, or a control gap that materially weakens defense in depth | Remediation plan, owner, and target date required |
+| Low | Limited-impact weakness or improvement with low exploitability | Track and disposition proportionately |
+| Informational | Observation, clarification, or hardening recommendation without a demonstrated vulnerability | Record rationale and optional improvement |
+
+Severity is an assessment, not an automatic release blocker or risk acceptance. The Standards Owner retains risk-decision authority. Review source pins and identifiers against the exact versions listed in the Mapping Matrix; any source update must be recorded as a variance, not silently substituted. Separate desk-review observations from tests actually executed. Technical testing remains excluded unless a separate test plan and authorization are approved.
+
+## 15. Standards Owner review disposition and procurement hold
+
+| Item | Decision |
+|---|---|
+| Standards Owner review | Reviewed; conditional acceptance of the RFP structure |
+| Required revisions | Severity rubric; explicit version-pin handling; 24-month COI lookback; credential/reference verification; corrected effort estimate |
+| Procurement decision | **DEFERRED** |
+| Budget ceiling / funding | **NOT APPROVED — NO CAP AUTHORIZED** |
+| Vendor discovery or contact | **NOT AUTHORIZED** |
+| RFP issue / public posting | **NOT AUTHORIZED** |
+| NDA execution | Not started; required before non-public disclosure to a selected candidate |
+| Appointment / SOW | Not authorized |
+| Review execution | Not started |
+
+This owner review authorizes document revision only. It does not authorize candidate searches, vendor outreach, proposal solicitation, expense, payment, NDA execution, repository access for external parties, or technical testing. A new explicit owner decision is required to lift the procurement hold.
+
+## 16. Approval record
 
 | Decision | Status | Authority / evidence |
 |---|---|---|
 | Draft prepared | DRAFT | Repository commit evidence |
-| RFP review | NOT STARTED | Standards Owner |
-| Budget approval | NOT APPROVED | Separate owner decision required |
+| RFP review | REVIEWED — REVISIONS REQUIRED | Standards Owner |
+| Budget approval | DEFERRED — NOT APPROVED | Owner decision required before procurement |
+| Vendor contact / RFP issue | NOT AUTHORIZED | No outreach permitted |
 | Vendor selection | NOT STARTED | Competitive evaluation required |
 | NDA execution | NOT EXECUTED | Before non-public disclosure |
 | Engagement award | NOT AUTHORIZED | Separate written authorization |
