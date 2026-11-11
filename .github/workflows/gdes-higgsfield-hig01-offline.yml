@@ -35,6 +35,7 @@ jobs:
             tools/gdes-higgsfield-offline-runner/targets/HIG-01/remediated/setup \
             > /tmp/hig01-sha256.txt
           cat /tmp/hig01-sha256.txt | tee -a "$GITHUB_STEP_SUMMARY"
+          find tools/gdes-higgsfield-offline-runner/scan-targets/HIG-01/F02-remediated -type f -print0 | sort -z | xargs -0 sha256sum | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Runner self-test (synthetic fixtures only)
         shell: bash
