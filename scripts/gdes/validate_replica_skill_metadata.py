@@ -49,13 +49,13 @@ def parse_frontmatter(path):
             key, value = line.split(":", 1)
             fields[key.strip()] = value.strip()
         if line.startswith("name:"):
-            name = line.split(":", 1)[1].strip().strip("\\"'")
+            name = line.split(":", 1)[1].strip().strip(chr(34) + chr(39))
             in_description = False
         elif line.startswith("description:"):
             in_description = True
             value = line.split(":", 1)[1].strip()
             if value and value not in (">", ">-", "|", "|-"):
-                description.append(value.strip("\\"'"))
+                description.append(value.strip(chr(34) + chr(39)))
         elif in_description:
             if line.startswith(" ") or not line.strip():
                 description.append(line.strip())
