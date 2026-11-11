@@ -44,10 +44,6 @@ python3 scripts/gdes/replica_skill_tool.py replica-launch listing.py replica/lau
 npm run build                                                        # production build passes
 ```
 
-(Paths are relative to wherever the pack is installed. Under
-`~/.claude/skills/` that is `~/.claude/skills/replica-diff/parity.py` and so
-on.)
-
 Plus by hand: no open S1 or S2 bugs, privacy policy and terms pages live
 (listing every processor), cookie banner if you use non-essential cookies in
 the EU or UK, account deletion works, the favicon, titles and OG image are
