@@ -1,0 +1,121 @@
+{
+  "generated_at_utc": "2026-11-11T06:18:16.448192+00:00",
+  "sources": {
+    "ASVS": {
+      "repository": "OWASP/ASVS",
+      "version": "5.0.0",
+      "commit": "62981c68fd06206e8afa161653943935de9a5047"
+    },
+    "MASVS": {
+      "repository": "OWASP/masvs",
+      "version": "metadata vx.x.x",
+      "commit": "bbe226fd17e6dab51927f392936deef31c816423"
+    },
+    "MASWE": {
+      "repository": "OWASP/maswe",
+      "version": "1.0.0",
+      "commit": "308b82b4bbe29166934fb5a621b40471cfea61db"
+    },
+    "MASTG": {
+      "repository": "OWASP/mastg",
+      "version": "2.0.0",
+      "commit": "990472dbcffe126f5556045d60270c4ffdfdde72"
+    },
+    "TCASVS": {
+      "repository": "OWASP/TCASVS",
+      "version": "5.0.0",
+      "commit": "f10ec111883787dd6f83e0237d0f1b2e043d55e0"
+    },
+    "SAMM": {
+      "repository": "owaspsamm/core",
+      "version": "2.2.0",
+      "commit": "21352e0fc79a6764abcd83a008690e32d2d5a3fe"
+    }
+  },
+  "counts": {
+    "masvs_controls": 24,
+    "maswe_weaknesses": 78,
+    "mastg_test_files": 292,
+    "mastg_structured_weakness_tests": 200,
+    "maswe_mastg_relation_rows": 194,
+    "asvs_requirements": 345,
+    "tcasvs_requirements": 132,
+    "samm_activities": 90,
+    "samm_questions": 90
+  },
+  "checks": {
+    "maswe_missing_id_or_title": [],
+    "mastg_missing_id": [],
+    "mastg_duplicate_ids": [],
+    "mastg_unknown_weakness_refs": [
+      "",
+      "MASWE-0083",
+      "MASWE-0086",
+      "MASWE-0088",
+      "MASWE-0089",
+      "MASWE-0093",
+      "MASWE-0094",
+      "MASWE-0097",
+      "MASWE-0099",
+      "MASWE-0101",
+      "MASWE-0104",
+      "MASWE-0105",
+      "MASWE-0107",
+      "MASWE-0108",
+      "MASWE-0112",
+      "MASWE-0116",
+      "MASWE-0117",
+      "MASWE-0118",
+      "MASWE-0119"
+    ],
+    "maswe_without_test_link": [
+      "MASWE-0018",
+      "MASWE-0019",
+      "MASWE-0023",
+      "MASWE-0024",
+      "MASWE-0025",
+      "MASWE-0041",
+      "MASWE-0042",
+      "MASWE-0043",
+      "MASWE-0048",
+      "MASWE-0049",
+      "MASWE-0010",
+      "MASWE-0011",
+      "MASWE-0013",
+      "MASWE-0015",
+      "MASWE-0016",
+      "MASWE-0017",
+      "MASWE-0026",
+      "MASWE-0028",
+      "MASWE-0029",
+      "MASWE-0030",
+      "MASWE-0031",
+      "MASWE-0032",
+      "MASWE-0033",
+      "MASWE-0034",
+      "MASWE-0035",
+      "MASWE-0036",
+      "MASWE-0037",
+      "MASWE-0038",
+      "MASWE-0039",
+      "MASWE-0040",
+      "MASWE-0068",
+      "MASWE-0070",
+      "MASWE-0073",
+      "MASWE-0074",
+      "MASWE-0078",
+      "MASWE-0051",
+      "MASWE-0056",
+      "MASWE-0057",
+      "MASWE-0059",
+      "MASWE-0060",
+      "MASWE-0065",
+      "MASWE-0002",
+      "MASWE-0003",
+      "MASWE-0005"
+    ],
+    "asvs_unmapped_requirement_count": 63,
+    "license_rows_unverified": [],
+    "samm_activity_without_questions": []
+  }
+}
