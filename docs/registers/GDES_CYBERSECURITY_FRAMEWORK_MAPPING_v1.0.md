@@ -296,3 +296,55 @@ Under `docs/registers/data/`:
 ### 10.6 Current disposition
 
 **EXTRACTION COMPLETE AND REMOTE-VERIFIED — SOURCE MAPPING PARTIAL DUE TO EXPLICIT FINDINGS — LICENSE SNAPSHOTS VERIFIED — INDEPENDENT REVIEW NOT STARTED — NOT APPROVED.**
+
+
+## 11. CYB-04 / CYB-05 / CYB-06 individual mapping reconciliation — 2026-11-11
+
+**Evidence baseline:** generated catalogs at commit `1e002b8f4e3386d5fb9daf8ba6e6c155b78091fd`, following successful workflow run [42973483998](https://github.com/muchlisbstg/Full-stack-product-development/actions/runs/42973483998). The catalogs were fetched back from the pilot branch. All candidate links remain unapproved.
+
+### 11.1 ASVS v5.0.0 — CYB-04
+
+- Catalog: `data/GDES_ASVS_REQUIREMENT_CATALOG_v5.0.0.csv`
+- Catalog blob SHA: `8e1f34ae3f80f8121f29de7fc1b6d33253d0d646`
+- Unique requirement IDs: 345 / 345.
+- `SECTION_RANGE_CANDIDATE`: 282.
+- `CHAPTER_CANDIDATE`: 63.
+- Mapping status: all 345 rows are `CANDIDATE — REVIEW REQUIRED`.
+- Structural disposition: unique ID inventory verified; candidate coverage is present for every row.
+- Semantic disposition: NOT REVIEWED / NOT APPROVED. Section-range and chapter candidates require requirement-by-requirement applicability review, control-owner rationale and explicit disposition. Zero structurally unmapped rows does not imply zero semantic gaps.
+
+### 11.2 TCASVS v5.0.0 — CYB-05
+
+- Catalog: `data/GDES_TCASVS_REQUIREMENT_CATALOG_v5.0.0.csv`
+- Catalog blob SHA: `8410732fab232000050ee2982945eeb91b169bf6`
+- Unique requirement IDs: 132 / 132.
+- `DESCRIPTION-KEYWORD CANDIDATE`: 79.
+- `CHAPTER FALLBACK CANDIDATE`: 53.
+- Mapping status: all 132 rows are `CANDIDATE — REVIEW REQUIRED`.
+- Structural disposition: six-chapter source catalog emitted at requirement level; unique ID inventory verified.
+- Semantic disposition: NOT REVIEWED / NOT APPROVED. Keyword-derived links are heuristic candidates; chapter fallback is broader and must not be represented as requirement-specific validation.
+
+### 11.3 SAMM v2.2.0 — CYB-06
+
+- Catalog: `data/GDES_SAMM_ACTIVITY_CATALOG_v2.2.0.csv`
+- Catalog blob SHA: `64f452ba0c5c6790363fe1813ed5b16e276edc0e`
+- Unique activity GUIDs: 90 / 90.
+- `ACTIVITY-DESCRIPTION KEYWORD CANDIDATE`: 71.
+- `PRACTICE-LEVEL FALLBACK CANDIDATE`: 19.
+- Mapping status: all 90 rows are `CANDIDATE — REVIEW REQUIRED`.
+- Activity-question linkage: source extraction records 90 questions linked to activity GUIDs.
+- Structural disposition: activity GUID inventory and question linkage extracted.
+- Semantic disposition: NOT REVIEWED / NOT APPROVED. Activity description candidates and practice-level fallbacks do not constitute SAMM maturity scoring, GDES compliance, or implementation evidence.
+
+### 11.4 Shared mapping rules and reviewer disposition
+
+1. Preserve source IDs, source paths, framework versions and activity GUIDs exactly.
+2. Preserve the method label for each candidate; never upgrade a heuristic or fallback to a direct mapping without documented rationale.
+3. Allow one-to-many and many-to-many relationships only where source semantics and GDES control boundaries justify them.
+4. Permit explicit `UNMAPPED`, `PARTIAL`, `NOT APPLICABLE` or `NEEDS DOMAIN REVIEW` dispositions with rationale; do not force coverage.
+5. Security Reviewer disposition is required for security-framework semantics; Standards Owner approval is required for final GDES adoption.
+6. Database-specific control interpretation and evidence remain subject to independent Database Reviewer scope; the crosswalk is not a substitute for database-engine testing.
+
+**CYB-04 — STRUCTURAL INVENTORY VERIFIED; SEMANTIC REVIEW OPEN.**  
+**CYB-05 — STRUCTURAL INVENTORY VERIFIED; SEMANTIC REVIEW OPEN.**  
+**CYB-06 — STRUCTURAL INVENTORY VERIFIED; SEMANTIC REVIEW OPEN.**
