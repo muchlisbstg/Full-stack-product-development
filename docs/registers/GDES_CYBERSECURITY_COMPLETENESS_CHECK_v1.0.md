@@ -187,10 +187,10 @@ All six exact upstream license file snapshots were inspected and identify CC BY-
 
 | Gate | Current status |
 |---|---|
-| Source metadata extraction | <badge color="success">Complete — remote verified</badge> |
-| Framework candidate mapping | <badge color="warning">Partial — review required</badge> |
-| Canonical dictionary | <badge color="warning">Pending Standards Owner — Issue #40</badge> |
-| Independent Security Reviewer | <badge color="danger">Blocked — procurement deferred</badge> |
+| Source metadata extraction | COMPLETE — REMOTE VERIFIED |
+| Framework candidate mapping | PARTIAL — REVIEW REQUIRED |
+| Canonical dictionary | PENDING STANDARDS OWNER — ISSUE #40 |
+| Independent Security Reviewer | BLOCKED — PROCUREMENT DEFERRED |
 | Independent Database Reviewer | <badge color="danger">Blocked — procurement deferred</badge> |
 | Database runtime/security testing | Not tested |
 | Operational runtime/security testing | Not tested |
