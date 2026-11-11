@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - gdes/higgsfield-hig01-remediation-snapshot
+      - gdes/higgsfield-hig01-f02-least-privilege
     paths:
       - "tools/gdes-higgsfield-offline-runner/**"
       - ".github/workflows/gdes-higgsfield-hig01-offline.yml"
@@ -40,6 +41,12 @@ jobs:
         run: |
           set -euo pipefail
           python -I -S -B tools/gdes-higgsfield-offline-runner/runner.py --self-test
+
+      - name: Validate F02 least-privilege source policy
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -I -S -B tools/gdes-higgsfield-offline-runner/test_f02_policy.py
 
       - name: Scan inert HIG-01 source snapshot
         shell: bash
