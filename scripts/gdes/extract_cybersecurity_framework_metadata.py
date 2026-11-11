@@ -199,15 +199,36 @@ def main() -> None:
     beta_asset_bytes = get(beta_asset_url)
     beta_asset_doc = yaml.safe_load(beta_asset_bytes.decode("utf-8"))
     (OUT / "OWASP_MASWE_v1.0.0_BETA_MAPPING_SOURCE.yaml").write_bytes(beta_asset_bytes)
+    asset_weaknesses = beta_asset_doc.get("weaknesses", {}) if isinstance(beta_asset_doc, dict) else {}
+    asset_beta_to_stable = defaultdict(list)
+    for stable_id, entry in asset_weaknesses.items():
+        for beta_id in norm_list((entry.get("mappings") or {}).get("maswe-beta")):
+            asset_beta_to_stable[str(beta_id)].append(stable_id)
+    frontmatter_beta_to_stable = {k: sorted(set(v)) for k, v in beta_to_stable.items()}
+    beta_to_stable = asset_beta_to_stable
+    beta_asset_sha256 = sha256(beta_asset_bytes)
     manifest["maswe_beta_mapping_asset"] = {
-        "url": beta_asset_url, "sha256": sha256(beta_asset_bytes),
+        "url": beta_asset_url, "sha256": beta_asset_sha256,
         "root_type": type(beta_asset_doc).__name__,
         "root_keys": list(beta_asset_doc.keys()) if isinstance(beta_asset_doc, dict) else [],
+        "stable_weakness_count": len(asset_weaknesses),
+        "beta_alias_id_count": len(beta_to_stable),
+        "beta_0097_targets": beta_to_stable.get("MASWE-0097", []),
+        "frontmatter_asset_mapping_differences": sorted(
+            k for k in set(frontmatter_beta_to_stable) | set(beta_to_stable)
+            if frontmatter_beta_to_stable.get(k, []) != sorted(set(beta_to_stable.get(k, [])))
+        ),
     }
-    print(json.dumps({"maswe_beta_asset_root_type": type(beta_asset_doc).__name__,
-                      "maswe_beta_asset_root_keys": list(beta_asset_doc.keys()) if isinstance(beta_asset_doc, dict) else [],
-                      "maswe_beta_asset_sample": (list(beta_asset_doc.items())[:2] if isinstance(beta_asset_doc, dict) else beta_asset_doc[:2] if isinstance(beta_asset_doc, list) else beta_asset_doc)},
-                     ensure_ascii=False, default=str))
+    beta_alias_rows = [{"beta_id": beta_id, "stable_maswe_ids": sorted(set(targets)),
+                        "mapping_source": "OWASP MASWE v1.0.0 release asset mappings.maswe-beta",
+                        "mapping_status": "SOURCE-MAPPED" if len(set(targets)) == 1 else "SOURCE-MAPPED — MULTIPLE TARGETS"}
+                       for beta_id, targets in sorted(beta_to_stable.items())]
+    write_csv("GDES_MASWE_BETA_ALIAS_CROSSWALK_v1.0.0.csv",
+              ["beta_id", "stable_maswe_ids", "mapping_source", "mapping_status"], beta_alias_rows)
+    print(json.dumps({"maswe_beta_asset_stable_weaknesses": len(asset_weaknesses),
+                      "maswe_beta_asset_alias_ids": len(beta_to_stable),
+                      "maswe_beta_0097_targets": beta_to_stable.get("MASWE-0097", []),
+                      "maswe_beta_asset_sha256": beta_asset_sha256}, ensure_ascii=False))
     write_csv("GDES_MASWE_CATALOG_v1.0.0.csv",
               ["id", "title", "alias", "requirement", "platforms", "profiles", "threat", "attacks", "masvs_group",
                "masvs_v2_controls", "candidate_gdes_controls", "cwe", "maswe_beta_ids", "source_path", "source_blob_sha"], maswe_rows)
@@ -264,6 +285,21 @@ def main() -> None:
                                   "relation": "MASTG_WEAKNESS_METADATA_RESOLVED_THROUGH_MASWE_V1_BETA_ALIAS",
                                   "gdes_controls_candidate": w["candidate_gdes_controls"]})
     unknown_weaknesses = sorted({str(w) for t in test_rows for w in t["unmapped_beta_ids"] if str(w).strip()})
+    alias_finding_rows = []
+    for beta_id, targets in sorted(beta_to_stable.items()):
+        unique_targets = sorted(set(targets))
+        if len(unique_targets) > 1:
+            alias_finding_rows.append({"beta_id": beta_id, "stable_targets": unique_targets,
+                                       "candidate_stable_id": "", "status": "MULTI_TARGET_SOURCE_MAPPING",
+                                       "rationale": "The official v1.0.0 release asset maps this beta ID to multiple stable weaknesses; preserve all source targets pending reviewer disposition."})
+    for beta_id in unknown_weaknesses:
+        candidate = "MASWE-0051" if beta_id == "MASWE-0097" else ""
+        rationale = ("MASTG-TEST-0324/0325 titles describe root/jailbreak detection and stable MASWE-0051 has the matching title; the release asset has no explicit alias for this beta ID. Candidate only; do not treat as source-mapped."
+                     if candidate else "No stable target is present in the pinned MASWE v1.0.0 release asset.")
+        alias_finding_rows.append({"beta_id": beta_id, "stable_targets": [], "candidate_stable_id": candidate,
+                                   "status": "UNRESOLVED_SOURCE_BETA_ID", "rationale": rationale})
+    write_csv("GDES_MASWE_BETA_ALIAS_FINDINGS_v1.0.0.csv",
+              ["beta_id", "stable_targets", "candidate_stable_id", "status", "rationale"], alias_finding_rows)
     write_csv("GDES_MASWE_MASTG_TRACEABILITY_v1.0.0.csv",
               ["maswe_id", "maswe_title", "maswe_beta_ids", "masvs_group", "masvs_controls", "mastg_test_id",
                "mastg_source_weakness_ids", "platform", "profiles", "test_type", "relation", "gdes_controls_candidate"], relation_rows)
@@ -362,13 +398,17 @@ def main() -> None:
     manifest["counts"] = {"masvs_controls": len(masvs_rows), "maswe_weaknesses": len(maswe_rows),
                           "mastg_test_files": len(test_rows), "mastg_structured_weakness_tests": sum(1 for x in test_rows if x["source_weakness_ids"]),
                           "maswe_beta_alias_ids": len(beta_to_stable),
+                          "maswe_beta_aliases_multi_target": sum(1 for v in beta_to_stable.values() if len(set(v)) > 1),
                           "maswe_mastg_relation_rows": len(relation_rows), "asvs_requirements": len(asvs_rows),
                           "tcasvs_requirements": len(tcasvs_rows), "samm_activities": len(samm_rows), "samm_questions": len(questions)}
     manifest["checks"] = {"maswe_missing_id_or_title": [x["source_path"] for x in maswe_rows if not x["id"] or not x["title"]],
                           "mastg_missing_id": [x["source_path"] for x in test_rows if not x["test_id"]],
                           "mastg_duplicate_ids": duplicate_test_ids, "mastg_unknown_weakness_refs": unknown_weaknesses,
-                          "maswe_beta_aliases_with_multiple_targets": {k: v for k, v in beta_to_stable.items() if len(v) > 1},
+                          "maswe_beta_aliases_with_multiple_targets": {k: sorted(set(v)) for k, v in beta_to_stable.items() if len(set(v)) > 1},
+                          "maswe_beta_alias_findings": alias_finding_rows,
                           "maswe_without_test_link": [x["id"] for x in maswe_rows if not tests_by_weakness.get(x["id"])],
+                          "maswe_without_test_link_release_note_expected": 36,
+                          "maswe_without_test_link_count_delta": sum(1 for x in maswe_rows if not tests_by_weakness.get(x["id"])) - 36,
                           "asvs_unmapped_requirement_count": sum(1 for x in asvs_rows if not x["candidate_gdes_controls"]),
                           "license_rows_unverified": [x["framework"] for x in license_rows if x["verification_status"] != "SOURCE FILE VERIFIED"],
                           "samm_activity_without_questions": [x["activity_code"] for x in samm_rows if not x["question_ids"]]}
