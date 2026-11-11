@@ -32,3 +32,10 @@ jobs:
       - name: Generate common synthetic fixtures
         working-directory: evaluation-labs/office-ai
         run: python tools/office_ai_harness.py prepare --output-dir "$RUNNER_TEMP/office-ai-fixtures"
+      - name: Upload common fixture bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: gdes-office-ai-common-fixtures
+          path: ${{ runner.temp }}/office-ai-fixtures/
+          if-no-files-found: error
+          retention-days: 30
