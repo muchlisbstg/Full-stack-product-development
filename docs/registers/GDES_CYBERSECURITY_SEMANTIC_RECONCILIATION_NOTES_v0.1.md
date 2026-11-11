@@ -309,3 +309,30 @@ The latest batches show two distinct control domains not fully represented by th
 2. **Abuse resistance and service availability** — anti-automation, rate limiting, resource exhaustion and service-interface abuse. Existing SEC-005/SEC-011 cover parts, but their definitions should be checked to ensure rate-limit and abuse controls have an explicit owner.
 
 Do not approve either extension by inference. Keep the source rows explicitly marked GAP or PARTIAL until the Standards Owner decides the canonical dictionary scope.
+
+
+## 17. Complete inventory-level crosswalks — 2026-11-11
+
+Three row-level first-pass crosswalk files were generated from the pinned source catalogs:
+- `data/GDES_ASVS_SEMANTIC_CROSSWALK_v0.1.csv` — 345 unique ASVS source IDs.
+- `data/GDES_TCASVS_SEMANTIC_CROSSWALK_v0.1.csv` — 132 unique TCASVS source IDs.
+- `data/GDES_SAMM_SEMANTIC_CROSSWALK_v0.1.csv` — 90 unique SAMM activity codes.
+
+| Framework | Rows | Proposed multi-control rows | GAP / needs owner disposition |
+|---|---:|---:|---:|
+| ASVS | 345 | 112 | 18 |
+| TCASVS | 132 | 58 | 25 |
+| SAMM | 90 | 65 | 2 |
+| Total | 567 | 235 | 45 |
+
+These are complete row inventories with machine-assisted first-pass proposed primary/supporting relationships and source excerpts. They are **not human-approved semantic mappings**. Generic “verify” wording was explicitly removed as a reason to map SEC-010. A source row must have a defensible primary owner; no chapter/practice fallback is approval evidence.
+
+The crosswalks retain unresolved rows and identify SEC-012 only as a non-canonical proposal. See `GDES_CYBERSECURITY_STANDARDS_OWNER_DECISION_MEMO_v0.2.md` for the consolidated decision request and control boundaries.
+
+### Updated status
+
+- Source-row inventory coverage: 567 / 567.
+- Human semantic adjudication: NOT COMPLETE.
+- Standards Owner approval: NOT RECORDED.
+- SEC-012: PROPOSED ONLY; NOT CANONICAL.
+- GDES: DRAFT — NOT APPROVED.
