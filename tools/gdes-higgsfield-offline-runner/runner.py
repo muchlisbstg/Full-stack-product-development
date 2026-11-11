@@ -10,6 +10,7 @@ import argparse
 import json
 import re
 import sys
+import importlib.util
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -17,6 +18,8 @@ POLICY = ROOT / "policy.json"
 EXTENSIONS = {".py", ".sh", ".ts", ".tsx", ".js", ".mjs", ".cjs", ".go", ".md", ".json", ".yml", ".yaml", ".toml", ".txt"}
 
 def safe_read_tree(root: Path) -> list[tuple[str, str]]:
+    if root.is_symlink():
+        raise ValueError(f"target root must not be a symlink: {root}")
     base = root.resolve(strict=True)
     if not base.is_dir():
         raise ValueError(f"target is not a directory: {root}")
@@ -61,8 +64,13 @@ def main() -> int:
 
     if args.self_test:
         import unittest
-        from test_runner import RunnerTests
-        suite = unittest.defaultTestLoader.loadTestsFromTestCase(RunnerTests)
+        sys.modules.setdefault("runner", sys.modules[__name__])
+        spec = importlib.util.spec_from_file_location("gdes_test_runner", ROOT / "test_runner.py")
+        if spec is None or spec.loader is None:
+            raise RuntimeError("unable to load self-test module")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        suite = unittest.defaultTestLoader.loadTestsFromTestCase(module.RunnerTests)
         result = unittest.TextTestRunner(verbosity=2).run(suite)
         return 0 if result.wasSuccessful() else 1
 
