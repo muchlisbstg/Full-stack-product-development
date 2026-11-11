@@ -195,6 +195,19 @@ def main() -> None:
     for weakness in maswe_rows:
         for beta_id in weakness["maswe_beta_ids"]:
             beta_to_stable[str(beta_id)].append(weakness["id"])
+    beta_asset_url = "https://github.com/OWASP/maswe/releases/download/v1.0.0/OWASP_MASWE.yaml"
+    beta_asset_bytes = get(beta_asset_url)
+    beta_asset_doc = yaml.safe_load(beta_asset_bytes.decode("utf-8"))
+    (OUT / "OWASP_MASWE_v1.0.0_BETA_MAPPING_SOURCE.yaml").write_bytes(beta_asset_bytes)
+    manifest["maswe_beta_mapping_asset"] = {
+        "url": beta_asset_url, "sha256": sha256(beta_asset_bytes),
+        "root_type": type(beta_asset_doc).__name__,
+        "root_keys": list(beta_asset_doc.keys()) if isinstance(beta_asset_doc, dict) else [],
+    }
+    print(json.dumps({"maswe_beta_asset_root_type": type(beta_asset_doc).__name__,
+                      "maswe_beta_asset_root_keys": list(beta_asset_doc.keys()) if isinstance(beta_asset_doc, dict) else [],
+                      "maswe_beta_asset_sample": (list(beta_asset_doc.items())[:2] if isinstance(beta_asset_doc, dict) else beta_asset_doc[:2] if isinstance(beta_asset_doc, list) else beta_asset_doc)},
+                     ensure_ascii=False, default=str))
     write_csv("GDES_MASWE_CATALOG_v1.0.0.csv",
               ["id", "title", "alias", "requirement", "platforms", "profiles", "threat", "attacks", "masvs_group",
                "masvs_v2_controls", "candidate_gdes_controls", "cwe", "maswe_beta_ids", "source_path", "source_blob_sha"], maswe_rows)
