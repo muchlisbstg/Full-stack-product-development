@@ -150,3 +150,80 @@ This is a practice-area mapping, not a SAMM maturity score. Full stream/activity
 | MAP-002-08 | MASVS/MASWE/MASTG license snapshots require verification. | Record LICENSE blob SHAs before redistribution. | OPEN |
 
 **Disposition: Framework crosswalk assembled; not complete for independent approval until the listed row-level gaps are closed.**
+
+
+## 9. Immutable source pin and license reconciliation — 2026-11-11
+
+This section supersedes earlier provisional pins where repository identity or release resolution was incomplete. The source snapshots below were read from GitHub at the exact commits shown. The license file content was checked for the Creative Commons Attribution-ShareAlike 4.0 International designation. This is a source-level license verification, not legal advice or an approval to redistribute adapted material.
+
+| Framework | Source repository / version | Immutable commit | Data source path and blob SHA | License path and blob SHA | Source license result |
+|---|---|---|---|---|---|
+| ASVS | OWASP/ASVS — 5.0.0 CSV snapshot | `62981c68fd06206e8afa161653943935de9a5047` | `5.0/docs_en/OWASP_Application_Security_Verification_Standard_5.0.0_en.csv` — `184cf3b04a8fe1809dbed8b6e73be7a6fbaf8689` | `LICENSE.md` — `2d58298e6eda10e7204abb52722efbc840db2390` | CC BY-SA 4.0 verified |
+| MASVS | OWASP/masvs — metadata version `vx.x.x` (upstream does not declare a semantic release in the pinned YAML) | `bbe226fd17e6dab51927f392936deef31c816423` | `OWASP_MASVS.yaml` — `759acf74ebad2e9f06d34f7dfb92e5881e9340a2` | `License.md` — `a4543ddbacf00400a038c0fe22bd8c70a38810ee` | CC BY-SA 4.0 verified |
+| MASWE | OWASP/maswe — v1.0.0 | `308b82b4bbe29166934fb5a621b40471cfea61db` | 78 weakness Markdown files under `weaknesses/` | `License.md` — `bf3f89d72ab3ae01eb8e06c24b80a1be4ca169d2` | CC BY-SA 4.0 verified |
+| MASTG | OWASP/mastg — v2.0.0 | `990472dbcffe126f5556045d60270c4ffdfdde72` | Test pages under `tests-beta/` and legacy `tests/` | `License.md` — `bf3f89d72ab3ae01eb8e06c24b80a1be4ca169d2` | CC BY-SA 4.0 verified |
+| TCASVS | OWASP/TCASVS — v5.0.0 | `f10ec111883787dd6f83e0237d0f1b2e043d55e0` | Six chapter files under `5.0/en/` | `LICENSE.md` — `7d4f96c54aa155a17387e64501c50b6a0469932c` | CC BY-SA 4.0 verified |
+| SAMM | owaspsamm/core — v2.2.0 | `21352e0fc79a6764abcd83a008690e32d2d5a3fe` | `model/activities/`, `model/questions/`, `model/security_practices/` | `license.txt` — `3b7b82d0da2db857eda1a798dbd908ea136f07b5` | CC BY-SA 4.0 verified |
+
+### 9.1 Source identity corrections
+
+- The prior SAMM source pins pointed to the archived `OWASP/samm` repository, which is the historical SAMM v2.0 repository. The v2.2.0 release is published from `owaspsamm/core`; its tag resolves to commit `21352e0fc79a6764abcd83a008690e32d2d5a3fe`. Replace the prior practice blob references with the v2.2.0 source commit above.
+- MASVS does not provide a semantic version in the pinned YAML; retain the upstream `vx.x.x` metadata rather than inventing a version number. The commit SHA is the immutable source pin.
+- ASVS v5.0.0 content is pinned to the exact repository commit and CSV blob above. The commit pin is used because a separate v5.0.0 tag ref was not resolved in the inspected GitHub API.
+- TCASVS v5.0.0 is pinned to the exact release tag commit, not merely the project-card version string.
+
+### 9.2 Source inventory counts and reconciliation notes
+
+| Source | Tree inventory | Interpretation |
+|---|---:|---|
+| MASVS | 24 controls | Eight control groups in pinned YAML |
+| MASWE | 78 weakness files | Full v1.0.0 weakness catalogue |
+| MASTG | 200 `tests-beta/` files + 92 legacy `tests/` files = 292 paths | Preserve both sets; only tests carrying v2 frontmatter can form metadata-driven MASWE links |
+| TCASVS | Six chapter files | Requirement-level extraction required from each chapter table |
+| SAMM | 90 activity files + 90 question files | Activity/question-level extraction; 15 practices and three maturity levels |
+
+MASTG count reconciliation remains open: the v2.0.0 release announcement reports 285 tests, while the pinned Git tree contains 292 unique test Markdown paths (200 under `tests-beta/` and 92 under legacy `tests/`). The counts are not treated as equivalent. The extractor must preserve all paths, distinguish structured weakness-linked tests from legacy pages, and report the discrepancy for reviewer disposition.
+
+### 9.3 Canonical ID precedence
+
+The proposed `GDES-SEC-DICT-001` dictionary is the canonical mapping target for this work. In particular:
+
+- `GDES-SEC-008` = Dependency & Software Supply Chain.
+- `GDES-SEC-009` = Security Logging, Monitoring & Error Handling.
+- `GDES-SEC-010` = Security Verification, Vulnerability & Evidence Management.
+- `GDES-SEC-011` = Incident Response & Operational Resilience.
+- Database-specific controls are `GDES-DB-001–005`.
+
+The older `GDES_CYBERSECURITY_MAPPING_MATRIX_v1.0.md` uses source-qualified historical meanings for some `GDES-SEC-00x` IDs. It is a legacy technical crosswalk only; never join its bare IDs to new catalogs without the source-qualified legacy crosswalk in the Canonical Control Dictionary.
+
+### 9.4 Extraction pipeline and generated artifacts
+
+A reproducible extractor and branch-scoped GitHub Actions workflow have been added:
+
+- `scripts/gdes/extract_cybersecurity_framework_metadata.py`
+- `.github/workflows/gdes-cybersecurity-source-reconciliation-v2.yml`
+
+The intended generated catalogs are:
+
+- `GDES_MASVS_CONTROL_CATALOG_v1.0.csv`
+- `GDES_MASWE_CATALOG_v1.0.0.csv`
+- `GDES_MASTG_TEST_CATALOG_v2.0.0.csv`
+- `GDES_MASWE_MASTG_TRACEABILITY_v1.0.0.csv`
+- `GDES_ASVS_REQUIREMENT_CATALOG_v5.0.0.csv`
+- `GDES_TCASVS_REQUIREMENT_CATALOG_v5.0.0.csv`
+- `GDES_SAMM_ACTIVITY_CATALOG_v2.2.0.csv`
+- `GDES_SAMM_QUESTION_CATALOG_v2.2.0.csv`
+- `GDES_UPSTREAM_LICENSE_SNAPSHOT_REGISTER_v1.0.csv`
+- `GDES_SOURCE_EXTRACTION_MANIFEST_v1.0.json`
+
+The extraction workflow has not yet produced a verified successful run. The first two observed workflow attempts failed during checkout due to an incorrect ref value; the workflow has since been corrected to use the branch name. Do not claim the catalogs above have been generated or verified until a successful Actions run and remote artifact/file read-back are recorded.
+
+### 9.5 Mapping disposition
+
+- ASVS: requirement-level candidate mapping is generated from the section ranges already documented in the legacy crosswalk; every row remains reviewer-confirmable and may be marked unmapped.
+- TCASVS: every requirement is emitted with chapter-based candidate GDES controls; requirement-specific semantic review is still required.
+- MASVS/MASWE/MASTG: direct test links must come only from each MASTG test frontmatter `weakness` field; MASWE `mappings.masvs-v2` identifies the upstream MASVS controls. No inferred test relation is accepted.
+- SAMM: every activity and coverage question is extracted by its stable GUID and linked through the activity GUID; the practice-code-to-GDES mapping is a candidate organizational crosswalk, not a SAMM maturity score.
+- All candidate mappings require independent Security Reviewer disposition. Database mappings and database-engine assurance remain within the separate GDES-DB supplement and Independent Database Reviewer scope.
+
+**Status: SOURCE COMMIT AND LICENSE SNAPSHOTS VERIFIED — AUTOMATED CATALOG GENERATION NOT YET VERIFIED — MAPPING REVIEW REQUIRED — NOT APPROVED.**
