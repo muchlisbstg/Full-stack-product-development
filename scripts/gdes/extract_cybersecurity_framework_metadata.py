@@ -333,13 +333,14 @@ def main() -> None:
         data = raw(spec["repo"], spec["ref"], spec["license"])
         lower = data.decode("utf-8", errors="replace").lower()
         match = "CC-BY-SA-4.0" if ("attribution-sharealike 4.0" in lower or "cc-by-sa-4.0" in lower) else "UNVERIFIED"
+        license_blob_sha = next(x["sha"] for x in trees[key] if x["path"] == spec["license"])
         license_rows.append({"framework": key, "version": spec["version"], "repository": spec["repo"],
                              "source_commit": spec["ref"], "license_path": spec["license"],
-                             "license_sha256": sha256(data), "license_spdx_candidate": match,
+                             "license_blob_sha": license_blob_sha, "license_sha256": sha256(data), "license_spdx_candidate": match,
                              "verification_status": "SOURCE FILE VERIFIED" if match == "CC-BY-SA-4.0" else "LEGAL/LICENSING REVIEW REQUIRED",
                              "source_url": f"https://github.com/{spec['repo']}/blob/{spec['ref']}/{spec['license']}"})
     write_csv("GDES_UPSTREAM_LICENSE_SNAPSHOT_REGISTER_v1.0.csv",
-              ["framework", "version", "repository", "source_commit", "license_path", "license_sha256",
+              ["framework", "version", "repository", "source_commit", "license_path", "license_blob_sha", "license_sha256",
                "license_spdx_candidate", "verification_status", "source_url"], license_rows)
 
     # Manifest: counts and explicit gaps make source drift visible.
