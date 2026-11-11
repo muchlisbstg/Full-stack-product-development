@@ -114,3 +114,20 @@ The proposed dictionary and crosswalk are prepared. The following are still expl
 - [ ] Approve the canonical dictionary version/effective date after independent review.
 
 **Disposition: PROPOSED CANONICAL DICTIONARY — DRAFT — NOT APPROVED.**
+
+
+## 8. Formal Standards Owner decision submission
+
+- Decision request: [Issue #40 — Standards Owner Decision: GDES-SEC-DICT-001](https://github.com/muchlisbstg/Full-stack-product-development/issues/40)
+- Submission date: 2026-11-11
+- Issue state at submission: OPEN
+- Requested disposition: Pending Standards Owner decision
+- Dictionary state: **PROPOSED — DRAFT — NOT APPROVED**
+- Effective date: Not assigned
+- Rollout authority: Not granted
+
+The issue requests an explicit decision on the canonical GDES-SEC/GDES-DB namespaces and semantics, many-to-many traceability, source-qualified legacy aliases, and the v1.1 workbook's candidate-source status. It expressly defers effective status until independent Security and Database review is complete and findings are dispositioned.
+
+No approval is inferred from issue creation or from the Standards Owner's identity. A written disposition must be recorded in the issue and reflected in a versioned dictionary revision.
+
+**Current disposition: SUBMITTED FOR STANDARDS OWNER DECISION — PENDING — NOT APPROVED.**
