@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
-"""Read-only structural validation for the pinned Replica Skill collection.
+"""Static Agent Skills metadata and native discovery-layout validation.
 
-This validator checks the Agent Skills metadata contract and expected helper
-inventory. It does not execute SKILL.md instructions or Python helper scripts.
+This validator does not load or invoke Claude Code, Codex, or VS Code agents.
+It copies the pinned skill folders into disposable native discovery paths and
+checks metadata there. No upstream instructions or helper scripts are run.
 """
 from pathlib import Path
 import re
+import shutil
 import sys
+import tempfile
 
 EXPECTED = (
     "replica-recon", "replica-architect", "replica-design", "replica-build",
@@ -21,75 +24,94 @@ EXPECTED_HELPERS = (
     "replica-brand/sweep.py",
     "replica-launch/listing.py",
 )
+PLATFORM_PATHS = {
+    "Claude Code": Path(".claude/skills"),
+    "Codex": Path(".agents/skills"),
+    "VS Code Copilot": Path(".github/skills"),
+}
 
 def parse_frontmatter(path):
-    text = path.read_text(encoding="utf-8")
-    lines = text.splitlines()
+    lines = path.read_text(encoding="utf-8").splitlines()
     if not lines or lines[0].strip() != "---":
         raise ValueError("frontmatter must start on line 1")
     try:
         end = lines.index("---", 1)
     except ValueError:
         raise ValueError("closing frontmatter delimiter missing")
-    block = lines[1:end]
-    name = None
-    description = []
-    in_description = False
-    for line in block:
+    name, description, in_description = None, [], False
+    for line in lines[1:end]:
         if line.startswith("name:"):
-            name = line.split(":", 1)[1].strip().strip("\"'")
+            name = line.split(":", 1)[1].strip().strip("\\"'")
             in_description = False
         elif line.startswith("description:"):
             in_description = True
             value = line.split(":", 1)[1].strip()
             if value and value not in (">", ">-", "|", "|-"):
-                description.append(value.strip("\"'"))
+                description.append(value.strip("\\"'"))
         elif in_description:
             if line.startswith(" ") or not line.strip():
                 description.append(line.strip())
             else:
                 in_description = False
-    return name, " ".join(x for x in description if x).strip(), text
+    return name, " ".join(x for x in description if x).strip(), len(lines)
+
+def validate_skill(folder, expected_name):
+    file = folder / "SKILL.md"
+    if not file.is_file():
+        raise ValueError("SKILL.md missing")
+    name, description, line_count = parse_frontmatter(file)
+    if name != expected_name:
+        raise ValueError(f"frontmatter name mismatch ({name!r})")
+    if not re.fullmatch(r"[a-z0-9-]{1,64}", name or ""):
+        raise ValueError("invalid Agent Skills name")
+    if not description:
+        raise ValueError("description missing")
+    if len(description) > 1024:
+        raise ValueError(f"description exceeds 1,024 characters ({len(description)})")
+    return line_count, len(description)
 
 def main(root):
-    errors = []
-    warnings = []
+    errors, warnings = [], []
     for skill in EXPECTED:
-        folder = root / skill
-        file = folder / "SKILL.md"
-        if not file.is_file():
-            errors.append(f"{skill}: SKILL.md missing")
-            continue
         try:
-            name, description, body = parse_frontmatter(file)
+            line_count, desc_len = validate_skill(root / skill, skill)
+            if line_count > 500:
+                warnings.append(f"{skill}: SKILL.md exceeds Claude Code 500-line guidance")
+            if skill in ("replica-backend", "replica-deploy"):
+                text = (root / skill / "SKILL.md").read_text(encoding="utf-8")
+                if "disable-model-invocation: true" not in text:
+                    warnings.append(f"{skill}: upstream source lacks Claude manual-invocation guard")
         except Exception as exc:
-            errors.append(f"{skill}: frontmatter error: {exc}")
-            continue
-        if name != skill:
-            errors.append(f"{skill}: frontmatter name mismatch ({name!r})")
-        if not re.fullmatch(r"[a-z0-9-]{1,64}", name or ""):
-            errors.append(f"{skill}: invalid Agent Skills name")
-        if not description:
-            errors.append(f"{skill}: description missing")
-        if len(description) > 1024:
-            errors.append(f"{skill}: description exceeds VS Code 1024-char limit")
-        if len(body.splitlines()) > 500:
-            warnings.append(f"{skill}: SKILL.md exceeds Claude Code 500-line guidance")
-        if skill in ("replica-backend", "replica-deploy") and "disable-model-invocation: true" not in body:
-            warnings.append(f"{skill}: side-effect-capable workflow has no disable-model-invocation: true guard")
+            errors.append(f"{skill}: {exc}")
     for rel in EXPECTED_HELPERS:
         if not (root / rel).is_file():
             errors.append(f"expected utility missing: {rel}")
+
     if errors:
-        print("FAIL — structural validation")
+        print("FAIL — source metadata validation")
         for item in errors:
             print("ERROR:", item)
         return 1
-    print(f"PASS — {len(EXPECTED)} skill folders have required name/description metadata and matching folder names")
-    print(f"PASS — {len(EXPECTED_HELPERS)} expected Python helper files are present")
+
+    print(f"PASS — {len(EXPECTED)} upstream skills: required metadata, matching folder names, description length <= 1,024")
+    print(f"PASS — {len(EXPECTED_HELPERS)} expected Python helper files present")
+
+    copied = 0
+    with tempfile.TemporaryDirectory(prefix="gdes-replica-layout-") as tmp:
+        workspace = Path(tmp)
+        for platform, relative_root in PLATFORM_PATHS.items():
+            target_root = workspace / relative_root
+            target_root.mkdir(parents=True, exist_ok=True)
+            for skill in EXPECTED:
+                shutil.copytree(root / skill, target_root / skill)
+                validate_skill(target_root / skill, skill)
+                copied += 1
+            print(f"PASS — {platform}: {len(EXPECTED)} skills staged at {relative_root.as_posix()}")
+    print(f"PASS — {copied} disposable discovery-layout copies validated across 3 platform paths")
     for item in warnings:
         print("WARN:", item)
-    print("NOTE: this is a structural check only; no agent runtime, skill instruction, or helper execution is performed here.")
+    print("LIMITATION: directory-layout simulation only; no Claude Code, Codex, or VS Code agent runtime was loaded or invoked.")
+    print("LIMITATION: no upstream Python helper was executed by this validator.")
     return 0
 
 if __name__ == "__main__":
