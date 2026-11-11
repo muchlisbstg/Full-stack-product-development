@@ -158,3 +158,18 @@ This supplement does not authorize any migration or database mutation.
 - [ ] Findings have severity, owner, disposition and retest evidence.
 
 **Current status: NOT TESTED; independent Database Reviewer not appointed; no database change authorized.**
+
+
+## 10. Database control acceptance criteria and evidence
+
+| Canonical control | Positive acceptance criteria | Required negative tests / evidence |
+|---|---|---|
+| GDES-DB-001 — Relational Schema & Integrity | Required PK/FK/unique/check/not-null constraints exist and enforce tenant/resource composite relationships. | Attempt orphan insert, cross-tenant FK reference, duplicate tenant-scoped key, invalid state transition; verify rejection and no partial write. Capture schema catalog and test output. |
+| GDES-DB-002 — Tenant, Row & Resource Isolation | RLS and trusted server-side tenant context enforce row isolation for all tenant-scoped operations. | Forged/missing tenant context; cross-tenant SELECT/INSERT/UPDATE/DELETE; runtime role without tenant context; owner/BYPASSRLS comparison; pooled connection context reuse. |
+| GDES-DB-003 — Transaction, Concurrency & Temporal Consistency | Business invariants remain valid under retries, concurrent writes and temporal boundary conditions. | Concurrent last-unit reservation, duplicate callback, unknown commit outcome retry, approval/revocation race, timezone/clock skew, deadlock/retry. Verify atomicity and idempotent outcome. |
+| GDES-DB-004 — Database Identity, Privilege & Audit | Runtime roles are least privilege and cannot own protected tables, bypass RLS or perform DDL. | Attempt DDL, role escalation, PUBLIC grant use, SECURITY DEFINER abuse, search_path manipulation, unauthorized audit/log access. Capture grants and catalog evidence. |
+| GDES-DB-005 — Migration, Backup, Restore & Engine Parity | Authorized schema changes have verified migration history, recovery plan, restore evidence and documented SQLite/PostgreSQL behavior. | Restore from selected backup; rollback/recovery rehearsal; constraint parity checks; engine-specific transaction and timestamp tests; verify SQLite success is not misreported as PostgreSQL RLS proof. |
+
+Evidence record must include test ID, expected result, actual result, repository/commit SHA, database engine/version, disposable environment identifier, timestamp, operator and independent reviewer disposition. No test is marked PASS without executed evidence.
+
+**Acceptance status: SPECIFIED — NOT EXECUTED — INDEPENDENT DATABASE REVIEW BLOCKED.**
