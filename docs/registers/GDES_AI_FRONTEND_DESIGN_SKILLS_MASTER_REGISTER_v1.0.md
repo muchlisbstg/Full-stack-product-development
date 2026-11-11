@@ -185,3 +185,37 @@ The adaptation copies are review artifacts only; none are installed or invoked i
 Runtime validation matrix: `docs/registers/GDES_REPLICA_SKILL_33_CASE_RUNTIME_TEST_MATRIX_v1.0.md`.
 
 **Standards Owner decision remains required.** Proposed classification is Recommended Practice. No Mandatory Standard promotion, installation, merge, adoption or deployment is authorized.
+
+
+## 11. Final isolated CI evidence update — 2026-11-11
+
+Follow-up CI run **42983181464** completed SUCCESS:
+https://github.com/muchlisbstg/Full-stack-product-development/actions/runs/42983181464
+
+- Upstream Python unit tests: 57/57 PASS.
+- Upstream metadata: 11/11 PASS.
+- Static native discovery-layout copies: 33/33 PASS (11 per platform path).
+- GDES adaptation overlays: 7/7 PASS.
+- Helper resolver allowlist inventory: 6/6 PASS.
+- Retained artifact: `gdes-replica-skill-evidence-42983181464-1`, ID `13837959420`, SHA-256 `f22c14122bf1ccf11656772a014387fa51c4dd1a798cb974944b72e79d8b23fe`, expires 2026-12-11.
+- Artifact URL: https://github.com/muchlisbstg/Full-stack-product-development/actions/runs/42983181464/artifacts/13837959420
+
+A preceding follow-up CI run failed on a syntax error in the validator. The error was fixed, a compile check was added, and the subsequent run passed. The failed run remains in the audit trail.
+
+### Updated acceptance decision table
+
+| Criterion | Status |
+|---|---|
+| Upstream source pin/license and 11-skill inventory | PASS |
+| Upstream Python unit tests | PASS — 57/57 |
+| 33 static discovery-layout simulations | PASS — 33/33 |
+| GDES adaptation overlays | PASS — 7/7 static checks |
+| Resolver helper inventory | PASS — 6/6 presence checks |
+| Claude Code actual runtime loading/invocation | NOT RUN |
+| Codex actual runtime loading/invocation | NOT RUN |
+| VS Code/Copilot actual runtime loading/invocation | NOT RUN |
+| Negative runtime tests | NOT RUN |
+| Standards Owner decision | PENDING |
+| Adoption | NOT APPROVED |
+
+The static discovery simulation does not equal an agent runtime PASS. The 33 platform runtime cases remain NOT RUN and must be completed using the actual platform runtimes in a disposable workspace. GDES-REP-001 remains submitted for a Standards Owner decision; no adoption or installation is authorized.
