@@ -146,3 +146,30 @@ Production deployment, staging mutation, migrations, secret changes, access gran
 - [ ] Release and rollback require explicit approval and have evidence.
 
 **Current status: NOT TESTED. No deployment, infrastructure mutation, credential rotation or paid provisioning is authorized by this document.**
+
+
+## 11. Canonical operational control alignment and acceptance criteria
+
+The operational supplement implements the following proposed Canonical Control Dictionary controls. All mappings remain Draft until Standards Owner approval and independent Security review.
+
+| Canonical control | Operational scope | Positive acceptance criteria | Required negative tests / evidence |
+|---|---|---|---|
+| GDES-SEC-007 — Secrets & Secure Configuration | Secret inventory, protected storage, runtime configuration, rotation and revocation. | No secret in source, client bundle, build artifact or logs; access is least privilege; rotation/revocation is evidenced. | Secret scanning on source/artifacts; deliberate canary-secret test confirms redaction and no client exposure; revoked credential is rejected. |
+| GDES-SEC-008 — Dependency & Software Supply Chain | Dependency inventory, SBOM, pinned build inputs, provenance, artifact integrity and vulnerability triage. | Build inputs are traceable to commit; dependency findings are triaged; release artifact digest and provenance are retained. | Introduce a known vulnerable or unapproved dependency in a disposable branch; verify policy detection/block or documented exception. Verify altered artifact digest is rejected. |
+| GDES-SEC-009 — Security Logging, Monitoring & Error Handling | Security event taxonomy, protected logs, alerting, privacy-aware redaction and escalation. | Required events are attributable, time-correlated, access-controlled and privacy-minimized; alert owner and escalation are defined. | Verify tokens/passwords/PII are redacted; unauthorized log access is denied; simulated authentication/tenant boundary anomaly generates the expected alert. |
+| GDES-SEC-010 — Security Verification, Vulnerability & Evidence Management | CI security checks, vulnerability intake, finding ownership, evidence integrity and retest. | Findings carry severity, affected component, owner, due date, remediation, evidence and retest; release gate checks required evidence. | Introduce a controlled failing test/finding; verify the gate blocks release and cannot be marked closed without retest evidence. |
+| GDES-SEC-011 — Incident Response & Operational Resilience | Incident response, containment, credential revocation, recovery, backup/restore, RTO/RPO and rollback. | Named response roles, escalation, containment and recovery runbooks exist; restore and rollback exercises meet approved objectives. | Tabletop incident exercise; restore from selected backup; simulate failed release and validate rollback; verify unauthorized break-glass access is denied and audited. |
+
+### 11.1 Operational evidence acceptance
+
+Each evidence item must include:
+- canonical control ID and evidence ID;
+- source repository, branch, commit SHA and workflow run where relevant;
+- environment classification and actual provisioned state;
+- procedure, expected result, actual result and timestamp;
+- redacted logs/artifact digest and reviewer;
+- finding reference, remediation and retest where applicable.
+
+Do not mark planned/unfunded infrastructure as operational evidence. Do not infer security PASS from a green build alone.
+
+**Acceptance status: SPECIFIED — NOT EXECUTED — INDEPENDENT SECURITY REVIEW BLOCKED.**
