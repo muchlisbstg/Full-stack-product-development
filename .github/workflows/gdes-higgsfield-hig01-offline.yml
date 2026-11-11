@@ -47,7 +47,7 @@ jobs:
           set -uo pipefail
           set +e
           python -I -S -B tools/gdes-higgsfield-offline-runner/runner.py \
-            --targets tools/gdes-higgsfield-offline-runner/targets \
+            --targets tools/gdes-higgsfield-offline-runner/scan-targets \
             --output tools/gdes-higgsfield-offline-runner/results/hig01-snapshot.json
           rc=$?
           set -e
