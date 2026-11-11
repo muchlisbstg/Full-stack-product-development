@@ -258,3 +258,61 @@ GDES-REP-001 remains **PENDING STANDARDS OWNER DECISION**. The PR is a review
 handoff, not an approval. No installation, merge, adoption, production use,
 migration, payment configuration, infrastructure provisioning, publication or
 deployment is authorized.
+
+
+## 13. Verified follow-up CI result and retained artifact — 2026-11-11
+
+The follow-up workflow completed with conclusion **SUCCESS**:
+
+- Run: `42983181464`
+- URL: https://github.com/muchlisbstg/Full-stack-product-development/actions/runs/42983181464
+- Evaluated GDES commit: `2b2fdb3e9a52d02633a419c16390ae5cbd9a92e0`
+- Runner: Ubuntu 26.04.1 LTS
+- Python: 3.14.4
+- Pinned upstream SHA verified: `77c9436fb3d18c3d58169efb8caf4fe906b0dc51`
+
+Verified output:
+- Upstream skill metadata: 11/11 PASS.
+- Expected upstream Python utilities: 6/6 PASS.
+- Claude Code native discovery directory simulation: 11 static copies PASS.
+- Codex native discovery directory simulation: 11 static copies PASS.
+- VS Code/Copilot native discovery directory simulation: 11 static copies PASS.
+- Total discovery-layout simulations: 33 PASS.
+- GDES adaptation overlays: 7/7 PASS.
+- Adapted backend/deploy manual invocation frontmatter and policy text: PASS (static).
+- Adapted helper-using skills route through GDES resolver: PASS (static).
+- Resolver allowlist/helper inventory: 6/6 PASS.
+- Upstream Python unit tests: **57/57 PASS**.
+
+Retained artifact:
+- Artifact name: `gdes-replica-skill-evidence-42983181464-1`
+- Artifact ID: `13837959420`
+- Size: 3,259 bytes
+- SHA-256: `f22c14122bf1ccf11656772a014387fa51c4dd1a798cb974944b72e79d8b23fe`
+- Retention expiry: 2026-12-11
+- Artifact URL: https://github.com/muchlisbstg/Full-stack-product-development/actions/runs/42983181464/artifacts/13837959420
+
+A preceding follow-up run `42982885642` failed because of a Python quoting syntax error in the new metadata validator. This failure was captured in its artifact, the parser was corrected in commit `ff2126de79c0637da8425a59660a74d39d127a80`, and a `py_compile` step was added. The subsequent run `42983181464` passed all configured checks. The failed run is retained as part of the audit trail, not hidden.
+
+### Final acceptance status after CI run #42983181464
+
+| ID | Acceptance criterion | Status |
+|---|---|---|
+| REP-AC-01 | Upstream source/version/commit/license recorded | PASS |
+| REP-AC-02 | 11 skills inventoried | PASS |
+| REP-AC-03 | Six Python helpers source-inspected | PARTIAL — static source review; not full security review |
+| REP-AC-04 | No skill installed or invoked in a GDES product repository | PASS |
+| REP-AC-05 | Claude Code static metadata/package and discovery layout | PASS — runtime NOT TESTED |
+| REP-AC-06 | Codex static metadata and discovery layout | PASS — runtime NOT TESTED |
+| REP-AC-07 | VS Code/Copilot static metadata and discovery layout | PASS — runtime NOT TESTED |
+| REP-AC-08 | Upstream Python unit tests | PASS — 57/57 |
+| REP-AC-09 | 33 static native discovery-layout simulations | PASS — 33/33 |
+| REP-AC-10 | Seven GDES adaptation overlays statically validated | PASS — 7/7 |
+| REP-AC-11 | Resolver allowlist/helper inventory | PASS — 6/6 presence checks; runtime dispatch tests outstanding |
+| REP-AC-12 | Claude Code 11-skill actual load/invocation | NOT RUN |
+| REP-AC-13 | Codex 11-skill actual load/invocation | NOT RUN |
+| REP-AC-14 | VS Code/Copilot 11-skill actual load/invocation | NOT RUN |
+| REP-AC-15 | Negative agent runtime/prompt-injection/side-effect tests | NOT RUN |
+| REP-AC-16 | Standards Owner decision | PENDING |
+
+**Critical distinction:** the 33/33 result proves static file layout and metadata at the three documented discovery paths. It does not prove that any platform agent loaded, selected or invoked the skills. All 33 actual runtime cases remain NOT RUN.
