@@ -231,7 +231,7 @@ The corrected branch-scoped extraction workflow completed successfully in GitHub
 
 ## 10. Generated metadata catalogs and traceability results — 2026-11-11
 
-<badge>Source extraction successful — mapping review still required</badge>
+**Status:** Source extraction successful — mapping review still required.
 
 **Execution evidence**
 - GitHub Actions: [GDES Cybersecurity Source Reconciliation — run 42972384713](https://github.com/muchlisbstg/Full-stack-product-development/actions/runs/42972384713)
