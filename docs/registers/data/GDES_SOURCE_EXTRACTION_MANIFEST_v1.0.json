@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-11-11T06:23:50.972086+00:00",
+  "generated_at_utc": "2026-11-11T06:26:08.567151+00:00",
   "sources": {
     "ASVS": {
       "repository": "OWASP/ASVS",
@@ -38,6 +38,7 @@
     "mastg_test_files": 292,
     "mastg_structured_weakness_tests": 200,
     "maswe_beta_alias_ids": 118,
+    "maswe_beta_aliases_multi_target": 7,
     "maswe_mastg_relation_rows": 236,
     "asvs_requirements": 345,
     "tcasvs_requirements": 132,
@@ -52,6 +53,19 @@
       "MASWE-0097"
     ],
     "maswe_beta_aliases_with_multiple_targets": {
+      "MASWE-0002": [
+        "MASWE-0001",
+        "MASWE-0002"
+      ],
+      "MASWE-0013": [
+        "MASWE-0003",
+        "MASWE-0004"
+      ],
+      "MASWE-0012": [
+        "MASWE-0007",
+        "MASWE-0009",
+        "MASWE-0010"
+      ],
       "MASWE-0059": [
         "MASWE-0018",
         "MASWE-0030"
@@ -59,11 +73,6 @@
       "MASWE-0032": [
         "MASWE-0019",
         "MASWE-0047"
-      ],
-      "MASWE-0012": [
-        "MASWE-0007",
-        "MASWE-0009",
-        "MASWE-0010"
       ],
       "MASWE-0109": [
         "MASWE-0067",
@@ -73,16 +82,89 @@
       "MASWE-0108": [
         "MASWE-0073",
         "MASWE-0074"
-      ],
-      "MASWE-0002": [
-        "MASWE-0001",
-        "MASWE-0002"
-      ],
-      "MASWE-0013": [
-        "MASWE-0003",
-        "MASWE-0004"
       ]
     },
+    "maswe_beta_alias_findings": [
+      {
+        "beta_id": "MASWE-0002",
+        "stable_targets": [
+          "MASWE-0001",
+          "MASWE-0002"
+        ],
+        "candidate_stable_id": "",
+        "status": "MULTI_TARGET_SOURCE_MAPPING",
+        "rationale": "The official v1.0.0 release asset maps this beta ID to multiple stable weaknesses; preserve all source targets pending reviewer disposition."
+      },
+      {
+        "beta_id": "MASWE-0012",
+        "stable_targets": [
+          "MASWE-0007",
+          "MASWE-0009",
+          "MASWE-0010"
+        ],
+        "candidate_stable_id": "",
+        "status": "MULTI_TARGET_SOURCE_MAPPING",
+        "rationale": "The official v1.0.0 release asset maps this beta ID to multiple stable weaknesses; preserve all source targets pending reviewer disposition."
+      },
+      {
+        "beta_id": "MASWE-0013",
+        "stable_targets": [
+          "MASWE-0003",
+          "MASWE-0004"
+        ],
+        "candidate_stable_id": "",
+        "status": "MULTI_TARGET_SOURCE_MAPPING",
+        "rationale": "The official v1.0.0 release asset maps this beta ID to multiple stable weaknesses; preserve all source targets pending reviewer disposition."
+      },
+      {
+        "beta_id": "MASWE-0032",
+        "stable_targets": [
+          "MASWE-0019",
+          "MASWE-0047"
+        ],
+        "candidate_stable_id": "",
+        "status": "MULTI_TARGET_SOURCE_MAPPING",
+        "rationale": "The official v1.0.0 release asset maps this beta ID to multiple stable weaknesses; preserve all source targets pending reviewer disposition."
+      },
+      {
+        "beta_id": "MASWE-0059",
+        "stable_targets": [
+          "MASWE-0018",
+          "MASWE-0030"
+        ],
+        "candidate_stable_id": "",
+        "status": "MULTI_TARGET_SOURCE_MAPPING",
+        "rationale": "The official v1.0.0 release asset maps this beta ID to multiple stable weaknesses; preserve all source targets pending reviewer disposition."
+      },
+      {
+        "beta_id": "MASWE-0108",
+        "stable_targets": [
+          "MASWE-0073",
+          "MASWE-0074"
+        ],
+        "candidate_stable_id": "",
+        "status": "MULTI_TARGET_SOURCE_MAPPING",
+        "rationale": "The official v1.0.0 release asset maps this beta ID to multiple stable weaknesses; preserve all source targets pending reviewer disposition."
+      },
+      {
+        "beta_id": "MASWE-0109",
+        "stable_targets": [
+          "MASWE-0067",
+          "MASWE-0070",
+          "MASWE-0071"
+        ],
+        "candidate_stable_id": "",
+        "status": "MULTI_TARGET_SOURCE_MAPPING",
+        "rationale": "The official v1.0.0 release asset maps this beta ID to multiple stable weaknesses; preserve all source targets pending reviewer disposition."
+      },
+      {
+        "beta_id": "MASWE-0097",
+        "stable_targets": [],
+        "candidate_stable_id": "MASWE-0051",
+        "status": "UNRESOLVED_SOURCE_BETA_ID",
+        "rationale": "MASTG-TEST-0324/0325 titles describe root/jailbreak detection and stable MASWE-0051 has the matching title; the release asset has no explicit alias for this beta ID. Candidate only; do not treat as source-mapped."
+      }
+    ],
     "maswe_without_test_link": [
       "MASWE-0019",
       "MASWE-0023",
@@ -123,6 +205,8 @@
       "MASWE-0003",
       "MASWE-0005"
     ],
+    "maswe_without_test_link_release_note_expected": 36,
+    "maswe_without_test_link_count_delta": 2,
     "asvs_unmapped_requirement_count": 0,
     "license_rows_unverified": [],
     "samm_activity_without_questions": []
@@ -134,6 +218,10 @@
     "root_keys": [
       "metadata",
       "weaknesses"
-    ]
+    ],
+    "stable_weakness_count": 78,
+    "beta_alias_id_count": 118,
+    "beta_0097_targets": [],
+    "frontmatter_asset_mapping_differences": []
   }
 }

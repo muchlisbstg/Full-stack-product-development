@@ -1,0 +1,9 @@
+beta_id,stable_targets,candidate_stable_id,status,rationale
+MASWE-0002,"[""MASWE-0001"", ""MASWE-0002""]",,MULTI_TARGET_SOURCE_MAPPING,The official v1.0.0 release asset maps this beta ID to multiple stable weaknesses; preserve all source targets pending reviewer disposition.
+MASWE-0012,"[""MASWE-0007"", ""MASWE-0009"", ""MASWE-0010""]",,MULTI_TARGET_SOURCE_MAPPING,The official v1.0.0 release asset maps this beta ID to multiple stable weaknesses; preserve all source targets pending reviewer disposition.
+MASWE-0013,"[""MASWE-0003"", ""MASWE-0004""]",,MULTI_TARGET_SOURCE_MAPPING,The official v1.0.0 release asset maps this beta ID to multiple stable weaknesses; preserve all source targets pending reviewer disposition.
+MASWE-0032,"[""MASWE-0019"", ""MASWE-0047""]",,MULTI_TARGET_SOURCE_MAPPING,The official v1.0.0 release asset maps this beta ID to multiple stable weaknesses; preserve all source targets pending reviewer disposition.
+MASWE-0059,"[""MASWE-0018"", ""MASWE-0030""]",,MULTI_TARGET_SOURCE_MAPPING,The official v1.0.0 release asset maps this beta ID to multiple stable weaknesses; preserve all source targets pending reviewer disposition.
+MASWE-0108,"[""MASWE-0073"", ""MASWE-0074""]",,MULTI_TARGET_SOURCE_MAPPING,The official v1.0.0 release asset maps this beta ID to multiple stable weaknesses; preserve all source targets pending reviewer disposition.
+MASWE-0109,"[""MASWE-0067"", ""MASWE-0070"", ""MASWE-0071""]",,MULTI_TARGET_SOURCE_MAPPING,The official v1.0.0 release asset maps this beta ID to multiple stable weaknesses; preserve all source targets pending reviewer disposition.
+MASWE-0097,[],MASWE-0051,UNRESOLVED_SOURCE_BETA_ID,MASTG-TEST-0324/0325 titles describe root/jailbreak detection and stable MASWE-0051 has the matching title; the release asset has no explicit alias for this beta ID. Candidate only; do not treat as source-mapped.
