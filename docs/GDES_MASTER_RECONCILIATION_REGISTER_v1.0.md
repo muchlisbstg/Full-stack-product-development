@@ -222,6 +222,52 @@ This conflicts with the earlier instruction/state record that PR #145 should rem
 | RECON-010 | Reconcile GDES Infrastructure Register with canonical workbook/source | Standards Owner / Infrastructure owner | Source linked or repository register explicitly adopted; Hostinger remains PLANNED — UNFUNDED until provisioned | Pending |
 | RECON-011 | Reconcile Export Client PR #145 state deviation | Repository owner / maintainer | Owner confirms whether corrective follow-up is required; preserve merge evidence and do not rewrite history | **DEVIATION — GitHub reports closed/merged; not Draft** |
 
+## 13.1 External reference framework pairing — proposed baseline
+
+The following upstream projects and standards are selected as **reference frames** for GDES domain registers. They are not wholesale adoption, automatic certification, or a replacement for GDES ownership and approval. Each GDES control retains its own stable ID; upstream references are mapped in separate columns and do not overwrite GDES IDs or historical evidence.
+
+| GDES domain | Primary reference frame | Supporting reference | Intended use in GDES | Classification |
+|---|---|---|---|---|
+| Frontend Design | W3C Design Tokens Community Group, Design Tokens Format 2025.10 | GOV.UK Design System; WCAG 2.2 | Token interchange and governance; component/pattern/accessibility reference; accessibility acceptance criteria across Web/Mobile/Desktop | DTCG/WCAG: normative or technical reference as applicable; GOV.UK: Recommended Practice, not a global UI mandate |
+| Cybersecurity | OWASP ASVS 5.0 | OWASP SAMM 2.2; OWASP Cheat Sheet Series | ASVS maps verifiable application security requirements; SAMM provides maturity/roadmap assessment; Cheat Sheets provide implementation guidance | ASVS: Mandatory GDES control-mapping baseline after tailoring; SAMM/Cheat Sheets: Recommended Practice |
+| SDLC | FINOS SDLC Controls Framework | GDES six approval gates; repository CI/evidence controls | Reusable control catalogue, requirement definitions, mitigations and evidence mapping; map FINOS controls to Planning, Requirements, Architecture, Development, QA/Security, Release | Recommended Practice/reference catalog; GDES gates remain company governance requirements |
+| AI Governance | NIST AI RMF 1.0 + Playbook | OWASP Top 10 for LLM Applications / OWASP AI security resources | Map GAI controls to Govern, Map, Measure, Manage; assess AI system lifecycle and risks; add application/LLM threat controls | NIST AI RMF is a voluntary framework used as GDES reference; GDES-specific controls become mandatory only after approval; OWASP AI security is supporting practice |
+
+### 13.1.1 Reference source links
+
+- W3C Design Tokens Community Group: https://github.com/design-tokens/community-group — stable specification 2025.10 is listed by the upstream project.
+- GOV.UK Design System: https://github.com/alphagov/govuk-frontend — reference components and accessibility patterns; MIT license for GOV.UK code.
+- WCAG 2.2: https://www.w3.org/TR/WCAG22/
+- OWASP ASVS: https://github.com/OWASP/ASVS — upstream project identifies ASVS 5.0.0 as stable; ASVS project documentation uses CC BY-SA 4.0.
+- OWASP SAMM: https://github.com/OWASP/samm — maturity model; project documentation identifies CC-BY-SA-4.0.
+- OWASP Cheat Sheet Series: https://github.com/OWASP/CheatSheetSeries
+- FINOS SDLC Controls Framework: https://github.com/finos-labs/SDLC-Controls-Framework — CC BY 4.0, technology-agnostic shared control catalogue.
+- NIST AI RMF: https://www.nist.gov/itl/ai-risk-management-framework and Playbook https://airc.nist.gov/airmf-resources/playbook/ — voluntary guidance organized as Govern, Map, Measure, Manage.
+- OWASP AI Security: https://owasp.org/www-project-top-10-for-large-language-model-applications/
+
+### 13.1.2 Mapping and licensing rules
+
+1. Preserve GDES IDs (GDES-UX-xxx, GDES-SEC-xxx, GDES-SDLC-xxx, GAI-xx) as canonical identifiers. Store upstream IDs/clauses in a separate `external_reference_id` field.
+2. Record source repository, exact release/tag or commit SHA, source license, retrieval date, and applicable version. A repository URL alone is not immutable evidence.
+3. Do not copy upstream text wholesale into GDES. Prefer original GDES control wording with concise references; comply with attribution and share-alike obligations when reproducing licensed material.
+4. Verify each selected repository's current license file and release before adoption. The licenses stated above are source-level leads, not legal approval for redistribution.
+5. Map each GDES control to one or more upstream references with relationship `covers`, `partially_covers`, `informs`, or `not_applicable`; document rationale and gaps.
+6. A control is not PASS merely because an upstream framework contains a similar control. PASS requires project-specific implementation and test evidence; APPROVED requires an authorized human decision.
+7. Cross-platform frontend acceptance must explicitly cover responsive Web, Android, iOS, and Desktop behavior; GOV.UK examples are a reference, not proof of mobile-native compliance.
+
+### 13.1.3 Recommended domain register workbook tabs
+
+- `00_README_VERSIONING`: purpose, owner, version, source workbook, changelog.
+- `01_CONTROL_REGISTER`: stable ID, control statement, class, domain, applicability, priority, owner, reviewer, approval.
+- `02_EXTERNAL_MAPPING`: GDES ID, framework, upstream ID/clause, source URL, release/SHA, mapping relation, rationale.
+- `03_ACCEPTANCE_CRITERIA`: measurable criteria, positive/negative cases, platforms, test method.
+- `04_EVIDENCE_REGISTER`: evidence ID, artifact/log/PR URL, repository, branch, SHA, run ID, date, integrity/hash, result.
+- `05_FINDINGS_EXCEPTIONS`: finding, severity, risk owner, remediation, exception expiry, residual risk, approval.
+- `06_REVIEW_APPROVAL`: reviewer independence, scope, decision, conditions, timestamp.
+- `07_CHANGELOG`: prior ID/version, change type, rationale, source and approver.
+
+These are proposed workbook schemas. They are not evidence that the four domain workbooks have already been created or approved.
+
 ## 14. Current decision
 
 **HOLD — Wider Rollout.** The v1.1 Master Standard workbook has been recovered and is the latest candidate baseline; v1.0 is historical. The repository register maps available AI Governance, Frontend, Cybersecurity, SDLC, and Infrastructure decisions to that workbook, but the separate detailed domain source registers and canonical Google Sheets URL have not been located. Row-by-row metadata verification, runtime tests, independent reviews, and formal approval remain outstanding. This is not a declaration that all registers are fully audited or approved.
