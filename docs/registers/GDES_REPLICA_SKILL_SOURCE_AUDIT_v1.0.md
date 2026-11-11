@@ -133,3 +133,45 @@ The target repository was inspected read-only before branch creation.
 | QA/Verification Owner | PENDING | — |
 
 **Final status:** SOURCE AUDIT COMPLETED; ADOPTION NOT APPROVED; RUNTIME TESTS NOT TESTED.
+
+
+## 10. Cross-platform compatibility and isolated evaluation addendum — 2026-11-11
+
+A separate compatibility review was completed against official platform documentation. See `docs/registers/GDES_REPLICA_SKILL_COMPATIBILITY_AND_SANDBOX_EVALUATION_v1.0.md` for the full matrix and test plan.
+
+### Static results
+
+- All 11 `SKILL.md` files contain `name` and `description` metadata, with the name matching the parent directory.
+- Observed description lengths: 421–592 characters.
+- Claude Code package metadata is present in `.claude-plugin/marketplace.json` and `.claude-plugin/plugin.json`.
+- Codex-compatible Agent Skills metadata is present; native project path is `.agents/skills/<skill-name>/`.
+- VS Code/Copilot-compatible metadata is present; native Copilot project path is `.github/skills/<skill-name>/`. VS Code Codex integration is documented as experimental.
+
+These are static format/package findings. No Claude Code, Codex or VS Code agent session loaded or invoked the skills. Runtime compatibility remains NOT TESTED.
+
+### Findings
+
+1. **High — invocation control:** `replica-backend` and `replica-deploy` lack `disable-model-invocation: true` despite describing database, payment, infrastructure and production-release operations. Require manual-only invocation and explicit human approval in any GDES adaptation.
+2. **Medium — script path resolution:** helper commands use bare/parent-relative paths in skill bodies while README examples use repository-root-relative paths. Validate and normalize paths for each supported harness.
+3. **Medium — packaging:** upstream plugin manifests are Claude-specific; Codex and VS Code require their own supported discovery locations.
+
+### Isolated test harness
+
+Added:
+- `.github/workflows/gdes-replica-skill-isolated-eval.yml`
+- `scripts/gdes/validate_replica_skill_metadata.py`
+
+The workflow pins upstream commit `77c9436fb3d18c3d58169efb8caf4fe906b0dc51`, uses an ephemeral Ubuntu runner with read-only permissions, validates metadata and expected utility files, then runs the upstream standard-library unittest suite. It does not invoke an AI agent or perform production operations.
+
+The workflow and validator are committed, but GitHub returned no run ID and no commit status records. The workflow therefore remains **NOT EXECUTED / NOT VERIFIED**. No test PASS is claimed.
+
+### Updated acceptance disposition
+
+- Metadata/source inventory: PASS.
+- Utility source review: PARTIAL.
+- Claude Code: PARTIAL static; runtime NOT TESTED.
+- Codex: PARTIAL static; runtime NOT TESTED.
+- VS Code: PARTIAL static; runtime NOT TESTED.
+- Isolated unit-test suite: NOT TESTED.
+- Standards Owner approval: PENDING.
+- Adoption: NOT APPROVED.
