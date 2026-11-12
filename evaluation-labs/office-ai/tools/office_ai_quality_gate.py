@@ -336,7 +336,7 @@ def write_evidence_manifest(evidence: Path) -> Path:
                        if p.is_file() and p != destination and p.name != "evidence-audit.json"):
         lines.append(f"{sha256(path)}  {path.relative_to(evidence).as_posix()}")
     destination.parent.mkdir(parents=True, exist_ok=True)
-    destination.write_text("\\n".join(lines) + "\\n", encoding="utf-8")
+    destination.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return destination
 
 
