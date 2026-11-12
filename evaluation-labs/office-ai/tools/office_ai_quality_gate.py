@@ -329,10 +329,22 @@ def write_hash_report(paths: list[Path], destination: Path, base: Path) -> dict[
     return report
 
 
+def write_evidence_manifest(evidence: Path) -> Path:
+    destination = evidence / "evidence-manifest.sha256"
+    lines = []
+    for path in sorted(p for p in evidence.rglob("*")
+                       if p.is_file() and p != destination and p.name != "evidence-audit.json"):
+        lines.append(f"{sha256(path)}  {path.relative_to(evidence).as_posix()}")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text("\\n".join(lines) + "\\n", encoding="utf-8")
+    return destination
+
+
 def audit_evidence(evidence: Path) -> dict[str, Any]:
     required = ["execution", "integrity/input-sha256.json", "integrity/output-sha256.json",
                 "formula/formulas-before-after.json", "rendering/docx", "rendering/pptx",
-                "visual/visual-review.json", "reproducibility/comparison.json"]
+                "visual/visual-review.json", "reproducibility/comparison.json",
+                "evidence-manifest.sha256"]
     missing = [p for p in required if not (evidence / p).exists()]
     review_path = evidence / "visual/visual-review.json"
     visual_ok = False
@@ -345,8 +357,12 @@ def audit_evidence(evidence: Path) -> dict[str, Any]:
                          and bool(reviewed) and all(item.get("reviewed") is True for item in reviewed))
         except (OSError, json.JSONDecodeError):
             pass
-    report = {"status": "PASS" if not missing and visual_ok else "BLOCKED",
+    manifest_path = evidence / "evidence-manifest.sha256"
+    manifest_check = verify_manifest(manifest_path, evidence) if manifest_path.is_file() else {
+        "status": "BLOCKED", "checks": []}
+    report = {"status": "PASS" if not missing and visual_ok and manifest_check["status"] == "PASS" else "BLOCKED",
               "generated_at_utc": now(), "missing_evidence": missing,
+              "manifest_verification": manifest_check,
               "human_visual_signoff": "PASS" if visual_ok else "BLOCKED",
               "candidate_execution_authorized": False}
     write_json(evidence / "audit/evidence-audit.json", report)
@@ -363,6 +379,7 @@ def main() -> int:
     parser.add_argument("--hash-outputs", nargs="*", type=Path, default=[])
     parser.add_argument("--run-a", type=Path)
     parser.add_argument("--run-b", type=Path)
+    parser.add_argument("--write-evidence-manifest", action="store_true")
     parser.add_argument("--audit", action="store_true")
     args = parser.parse_args()
     root, evidence = args.root.resolve(), args.root.resolve() / "evidence"
@@ -402,6 +419,8 @@ def main() -> int:
         b = json.loads(args.run_b.read_text(encoding="utf-8"))
         write_json(evidence / "reproducibility/comparison.json", compare_reproducibility(a, b))
     write_json(evidence / "runner-results.json", results)
+    if args.write_evidence_manifest:
+        write_evidence_manifest(evidence)
     if args.audit:
         report = audit_evidence(evidence)
         print(json.dumps(report, indent=2))
