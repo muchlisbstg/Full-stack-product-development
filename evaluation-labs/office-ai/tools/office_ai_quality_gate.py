@@ -67,11 +67,13 @@ def verify_manifest(manifest: Path, base: Path) -> dict[str, Any]:
     for line in manifest.read_text(encoding="utf-8").splitlines():
         if not line.strip():
             continue
-        # Match sha256sum's fixed-width digest field and tolerate filenames with spaces.
-        if len(line) < 67 or line[64:66] != "  ":
+        parts = line.strip().split(maxsplit=1)
+        if len(parts) != 2:
             checks.append({"path": line, "status": "FAIL", "reason": "invalid SHA256SUMS line"})
             continue
-        expected, relative = line[:64].strip(), line[66:].strip()
+        expected, relative = parts
+        if relative.startswith("*"):
+            relative = relative[1:]
         target = base / relative
         actual = sha256(target) if target.is_file() else None
         checks.append({"path": relative, "expected": expected, "actual": actual,
