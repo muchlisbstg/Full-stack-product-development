@@ -8,6 +8,7 @@ from tools.office_ai_quality_gate import (
     audit_evidence,
     compare_reproducibility,
     inspect_ooxml,
+    expected_sum_range,
     sha256,
     verify_manifest,
     visual_review_template,
@@ -32,6 +33,14 @@ class OfficeQualityGateTests(unittest.TestCase):
             self.assertEqual(len(snapshot["formulas"]), 1)
             self.assertEqual(snapshot["formulas"][0]["formula"], "SUM(B2:B3)")
             self.assertEqual(snapshot["formulas"][0]["cached_value"], "25")
+
+    def test_expected_formula_value_is_derived_from_source_cells(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            prepare(root)
+            value = expected_sum_range(root / "inputs/common.xlsx",
+                                       "xl/worksheets/sheet1.xml", "SUM(B2:B3)")
+            self.assertEqual(value, 25.0)
 
     def test_manifest_verification_detects_tampering(self):
         with tempfile.TemporaryDirectory() as tmp:
