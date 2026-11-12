@@ -66,13 +66,16 @@ class OfficeQualityGateTests(unittest.TestCase):
             self.assertEqual(report["status"], "BLOCKED")
             self.assertFalse(report["candidate_execution_authorized"])
 
-    def test_visual_review_template_is_pending_not_approved(self):
+    def test_visual_review_template_aggregates_all_rendered_pages(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "visual-review.json"
-            visual_review_template([{"path": "page-1.png", "sha256": "abc"}], path)
+            visual_review_template([{"path": "docx-page-1.png", "sha256": "abc"}], path)
+            visual_review_template([{"path": "pptx-page-1.png", "sha256": "def"}], path)
             data = json.loads(path.read_text(encoding="utf-8"))
             self.assertFalse(data["approved"])
             self.assertEqual(data["review_status"], "PENDING_HUMAN_REVIEW")
+            self.assertEqual(len(data["reviewed_images"]), 2)
+            self.assertTrue(all(not item["reviewed"] for item in data["reviewed_images"]))
 
 
 if __name__ == "__main__":
