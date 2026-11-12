@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - gdes/higgsfield-hig01-remediation-snapshot
+      - gdes/higgsfield-hig01-f02-least-privilege
     paths:
       - "tools/gdes-higgsfield-offline-runner/**"
       - ".github/workflows/gdes-higgsfield-hig01-offline.yml"
@@ -34,12 +35,19 @@ jobs:
             tools/gdes-higgsfield-offline-runner/targets/HIG-01/remediated/setup \
             > /tmp/hig01-sha256.txt
           cat /tmp/hig01-sha256.txt | tee -a "$GITHUB_STEP_SUMMARY"
+          find tools/gdes-higgsfield-offline-runner/scan-targets/HIG-01/F02-remediated -type f -print0 | sort -z | xargs -0 sha256sum | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Runner self-test (synthetic fixtures only)
         shell: bash
         run: |
           set -euo pipefail
           python -I -S -B tools/gdes-higgsfield-offline-runner/runner.py --self-test
+
+      - name: Validate F02 least-privilege source policy
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -I -S -B tools/gdes-higgsfield-offline-runner/test_f02_policy.py
 
       - name: Scan inert HIG-01 source snapshot
         shell: bash

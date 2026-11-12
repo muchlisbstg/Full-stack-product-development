@@ -61,3 +61,16 @@ The current runner is regex-based and only supports triage. It can miss semantic
 - `higgsfield-websites/references/security.md` contains SSRF/fetch security guidance and example code; this must be distinguished from production runtime implementation.
 - Inventory is complete for tracked paths and Git blob identifiers, but not yet a complete byte-for-byte body snapshot of all 161 files. Full callsite review remains open.
 - Runner self-test and previous candidate scan evidence remain as recorded above; this inventory commit itself has not yet been tested by Actions.
+
+
+## F02 source remediation evidence — 2026-11-12
+
+- All nine pinned `*/SKILL.md` files declared `allowed-tools: Bash` in upstream frontmatter.
+- Created nine F02 remediation overlays under `scan-targets/HIG-01/F02-remediated/`; removed the broad Bash grant and added a per-skill execution approval boundary.
+- Added `targets/HIG-01/F02_REMEDIATION_POLICY.md` and `targets/HIG-01/F02_REMEDIATION_EVIDENCE_v1.0.md`.
+- Added semantic source-policy test `test_f02_policy.py`: 4/4 passed in Actions run [43090014092](https://github.com/muchlisbstg/Full-stack-product-development/actions/runs/43090014092).
+- Existing offline harness self-test: 5/5 passed in the same run.
+- Static scanner result for F02: `PASS_STATIC_HEURISTIC`; F02 source policy tests: `PASS_SOURCE_POLICY_TESTS`.
+- F02 host-enforcement verification: `NOT_RUN`. Codex/Claude/Cursor permission prompts, tool availability, and sandbox behavior are not yet proven.
+- F03 provider/network side effects, F01 installer command removal, and other HIG-01 findings remain open. Overall release gate remains `BLOCKED`.
+- No candidate shell/CLI scripts, installers, network calls, provider APIs, credentials, or billing actions were executed.
