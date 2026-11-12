@@ -18,7 +18,7 @@ permissions:
 jobs:
   harness-tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -78,6 +78,13 @@ jobs:
               assert data["status"] == "PASS", report
           print("Local quality-gate smoke checks: PASS")
           PY
+      - name: Upload CI quality-gate evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: gdes-office-ai-ci-quality-evidence
+          path: evaluation-labs/office-ai/evidence/
+          if-no-files-found: error
+          retention-days: 30
       - name: Upload common fixture bundle
         uses: actions/upload-artifact@v4
         with:
