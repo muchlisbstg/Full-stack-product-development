@@ -1,0 +1,94 @@
+name: GDES Office AI Harness
+
+on:
+  pull_request:
+    paths:
+      - "evaluation-labs/office-ai/**"
+      - ".github/workflows/gdes-office-ai-harness.yml"
+  push:
+    branches:
+      - "gdes/office-ai-evaluation-harness"
+    paths:
+      - "evaluation-labs/office-ai/**"
+      - ".github/workflows/gdes-office-ai-harness.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  harness-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run offline harness tests
+        working-directory: evaluation-labs/office-ai
+        run: python -m unittest discover -s tests -v
+      - name: Generate common synthetic fixtures
+        working-directory: evaluation-labs/office-ai
+        run: python tools/office_ai_harness.py prepare --output-dir "$RUNNER_TEMP/office-ai-fixtures"
+      - name: Install local document quality-gate dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes libreoffice poppler-utils
+          python -m pip install --disable-pip-version-check openpyxl PyMuPDF
+      - name: Exercise LibreOffice recalculation and Office rendering
+        working-directory: evaluation-labs/office-ai
+        shell: bash
+        run: |
+          python tools/office_ai_quality_gate.py \
+            --root . \
+            --check-ooxml \
+              "$RUNNER_TEMP/office-ai-fixtures/inputs/common.xlsx" \
+              "$RUNNER_TEMP/office-ai-fixtures/inputs/common.docx" \
+              "$RUNNER_TEMP/office-ai-fixtures/inputs/common.pptx" \
+            --recalculate "$RUNNER_TEMP/office-ai-fixtures/inputs/common.xlsx" \
+            --render \
+              "$RUNNER_TEMP/office-ai-fixtures/inputs/common.docx" \
+              "$RUNNER_TEMP/office-ai-fixtures/inputs/common.pptx" \
+            --hash-inputs \
+              "$RUNNER_TEMP/office-ai-fixtures/inputs/common.xlsx" \
+              "$RUNNER_TEMP/office-ai-fixtures/inputs/common.docx" \
+              "$RUNNER_TEMP/office-ai-fixtures/inputs/common.pptx"
+          cp evidence/runner-results.json evidence/quality-gate-smoke-results.json
+          mapfile -t rendered_pngs < <(find evidence/visual -type f -name '*.png' | sort)
+          test "${#rendered_pngs[@]}" -gt 0
+          python tools/office_ai_quality_gate.py \
+            --root . \
+            --hash-outputs \
+              evidence/formula/recalculated/recalculated.xlsx \
+              evidence/rendering/docx/common.pdf \
+              evidence/rendering/pptx/common.pdf \
+              "${rendered_pngs[@]}" \
+            --write-evidence-manifest
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          result = json.loads(Path("evidence/quality-gate-smoke-results.json").read_text())
+          statuses = [item.get("status") for item in result["checks"]]
+          assert statuses and all(status == "PASS" for status in statuses), statuses
+          for report in ("evidence/integrity/input-sha256.json",
+                         "evidence/integrity/output-sha256.json"):
+              data = json.loads(Path(report).read_text())
+              assert data["status"] == "PASS", report
+          print("Local quality-gate smoke checks: PASS")
+          PY
+      - name: Upload CI quality-gate evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: gdes-office-ai-ci-quality-evidence
+          path: evaluation-labs/office-ai/evidence/
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload common fixture bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: gdes-office-ai-common-fixtures
+          path: ${{ runner.temp }}/office-ai-fixtures/
+          if-no-files-found: error
+          retention-days: 30
