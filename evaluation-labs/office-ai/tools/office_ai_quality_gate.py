@@ -278,6 +278,11 @@ def inspect_pdf(pdf: Path) -> dict[str, Any]:
         return {"status": "FAIL", "reason": str(exc)}
 
 
+def visual_output_directory(evidence: Path, source: Path) -> Path:
+    """Keep same-named DOCX and PPTX render pages in separate evidence folders."""
+    return evidence / "visual" / source.suffix.lstrip(".").lower() / source.stem
+
+
 def render_pngs(pdf: Path, output: Path, logs: Path) -> dict[str, Any]:
     binary = shutil.which("pdftoppm")
     if not binary:
@@ -400,7 +405,7 @@ def main() -> int:
         if rendered.get("status") == "PASS":
             pdf = Path(rendered["pdf"])
             rendered["pdf_integrity"] = inspect_pdf(pdf)
-            png = render_pngs(pdf, evidence / f"visual/{source.suffix[1:]}/{source.stem}", evidence / "execution")
+            png = render_pngs(pdf, visual_output_directory(evidence, source), evidence / "execution")
             rendered["png_render"] = png
             if png.get("status") == "PASS":
                 visual_review_template(png["images"], evidence / "visual/visual-review.json")
