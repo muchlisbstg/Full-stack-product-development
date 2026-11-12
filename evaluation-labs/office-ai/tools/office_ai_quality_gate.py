@@ -292,9 +292,19 @@ def render_pngs(pdf: Path, output: Path, logs: Path) -> dict[str, Any]:
 
 
 def visual_review_template(images: list[dict[str, Any]], path: Path) -> None:
+    existing = []
+    if path.is_file():
+        try:
+            existing = json.loads(path.read_text(encoding="utf-8")).get("reviewed_images", [])
+        except (OSError, json.JSONDecodeError):
+            existing = []
+    merged = {item.get("path"): item for item in existing if item.get("path")}
+    for item in images:
+        if item.get("path"):
+            merged[item["path"]] = {**item, "reviewed": False}
     write_json(path, {"review_status": "PENDING_HUMAN_REVIEW", "reviewer": "",
-                      "reviewed_at_utc": None, "reviewed_images": images, "findings": [],
-                      "approved": False,
+                      "reviewed_at_utc": None, "reviewed_images": list(merged.values()),
+                      "findings": [], "approved": False,
                       "instruction": "Inspect every listed PNG manually before approval."})
 
 
@@ -377,6 +387,9 @@ def main() -> int:
             rendered["png_render"] = png
             if png.get("status") == "PASS":
                 visual_review_template(png["images"], evidence / "visual/visual-review.json")
+            if rendered["pdf_integrity"].get("status") != "PASS" or png.get("status") != "PASS":
+                rendered["status"] = "BLOCKED" if "BLOCKED" in (
+                    rendered["pdf_integrity"].get("status"), png.get("status")) else "FAIL"
         results["checks"].append({"check": "office_render", "source": str(source), **rendered})
     if args.hash_inputs:
         results["input_hash_report"] = write_hash_report(
@@ -394,7 +407,11 @@ def main() -> int:
         print(json.dumps(report, indent=2))
         return 0 if report["status"] == "PASS" else 2
     print(json.dumps(results, indent=2))
-    return 1 if any(x.get("status") == "FAIL" for x in results["checks"]) else 0
+    if any(x.get("status") == "FAIL" for x in results["checks"]):
+        return 1
+    if any(x.get("status") == "BLOCKED" for x in results["checks"]):
+        return 2
+    return 0
 
 
 if __name__ == "__main__":
