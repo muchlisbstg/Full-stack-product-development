@@ -151,7 +151,7 @@ def xlsx_formula_snapshot(path: Path) -> dict[str, Any]:
 
 def expected_sum_range(path: Path, worksheet_part: str, formula: str) -> float | None:
     """Evaluate the fixture's supported SUM(A1:B2) subset from source numeric cells."""
-    match = re.fullmatch(r"SUM\\(([A-Z]+[0-9]+):([A-Z]+[0-9]+)\\)", formula.strip(), re.IGNORECASE)
+    match = re.fullmatch(r"SUM\(([A-Z]+[0-9]+):([A-Z]+[0-9]+)\\)", formula.strip(), re.IGNORECASE)
     if not match:
         return None
 
