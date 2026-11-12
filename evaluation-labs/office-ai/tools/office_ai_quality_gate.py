@@ -400,7 +400,7 @@ def main() -> int:
         if rendered.get("status") == "PASS":
             pdf = Path(rendered["pdf"])
             rendered["pdf_integrity"] = inspect_pdf(pdf)
-            png = render_pngs(pdf, evidence / f"visual/{source.stem}", evidence / "execution")
+            png = render_pngs(pdf, evidence / f"visual/{source.suffix[1:]}/{source.stem}", evidence / "execution")
             rendered["png_render"] = png
             if png.get("status") == "PASS":
                 visual_review_template(png["images"], evidence / "visual/visual-review.json")
