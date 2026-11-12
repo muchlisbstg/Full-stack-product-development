@@ -54,6 +54,8 @@ python tools/office_ai_quality_gate.py \
 
 The runner writes command JSON logs (including exact argv, stdout, stderr, timestamps, and exit codes), formula snapshots, recalculated XLSX, PDFs, PNGs, and a pending human visual review template under evidence/.
 
+DOCX and PPTX page images are isolated under `evidence/visual/docx/` and `evidence/visual/pptx/` respectively. This prevents same-named source files such as `common.docx` and `common.pptx` from overwriting one another. GitHub Actions also runs a synthetic LibreOffice/Poppler smoke test; that CI result is supplemental and does not replace execution on the designated Linux/VS Code workstation.
+
 ## Evidence requirements
 
 The Standards Owner evidence package must contain:
