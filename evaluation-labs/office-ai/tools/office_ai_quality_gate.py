@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import shutil
 import subprocess
 import tempfile
@@ -148,6 +149,42 @@ def xlsx_formula_snapshot(path: Path) -> dict[str, Any]:
     return {"sha256": sha256(path), "formulas": formulas}
 
 
+def expected_sum_range(path: Path, worksheet_part: str, formula: str) -> float | None:
+    """Evaluate the fixture's supported SUM(A1:B2) subset from source numeric cells."""
+    match = re.fullmatch(r"SUM\\(([A-Z]+[0-9]+):([A-Z]+[0-9]+)\\)", formula.strip(), re.IGNORECASE)
+    if not match:
+        return None
+
+    def coordinates(cell: str) -> tuple[int, int]:
+        m = re.fullmatch(r"([A-Z]+)([0-9]+)", cell.upper())
+        if not m:
+            raise ValueError(f"Invalid A1 cell reference: {cell}")
+        column = 0
+        for char in m.group(1):
+            column = column * 26 + ord(char) - 64
+        return int(m.group(2)), column
+
+    start_row, start_col = coordinates(match.group(1))
+    end_row, end_col = coordinates(match.group(2))
+    values: dict[tuple[int, int], float] = {}
+    with zipfile.ZipFile(path) as archive:
+        sheet = ET.fromstring(archive.read(worksheet_part))
+        for cell in sheet.findall(".//x:c", NS):
+            ref = cell.attrib.get("r", "")
+            value = cell.find("x:v", NS)
+            if not ref or value is None or value.text is None:
+                continue
+            try:
+                values[coordinates(ref)] = float(value.text)
+            except ValueError:
+                continue
+    total = 0.0
+    for row in range(min(start_row, end_row), max(start_row, end_row) + 1):
+        for col in range(min(start_col, end_col), max(start_col, end_col) + 1):
+            total += values.get((row, col), 0.0)
+    return total
+
+
 def recalculate_xlsx(source: Path, output: Path, logs: Path) -> dict[str, Any]:
     binary = shutil.which("libreoffice") or shutil.which("soffice")
     if not binary:
@@ -172,8 +209,22 @@ def recalculate_xlsx(source: Path, output: Path, logs: Path) -> dict[str, Any]:
     before, after = xlsx_formula_snapshot(source), xlsx_formula_snapshot(destination)
     same_formula = [x["formula"] for x in before["formulas"]] == [x["formula"] for x in after["formulas"]]
     cache_present = bool(after["formulas"]) and all(x["cached_value"] is not None for x in after["formulas"])
+    expected_checks = []
+    for item in after["formulas"]:
+        expected = expected_sum_range(source, item["worksheet_part"], item["formula"])
+        cached = item["cached_value"]
+        try:
+            cached_number = float(cached) if cached is not None else None
+        except (TypeError, ValueError):
+            cached_number = None
+        expected_checks.append({"cell": item["cell"], "formula": item["formula"],
+                                "expected_value": expected, "cached_value": cached_number,
+                                "status": "PASS" if expected is not None and cached_number is not None
+                                and abs(expected - cached_number) < 1e-9 else "FAIL"})
+    expected_match = bool(expected_checks) and all(x["status"] == "PASS" for x in expected_checks)
     details = {"before": before, "after": after, "output": str(destination),
-               "formula_text_preserved": same_formula, "cached_values_present": cache_present}
+               "formula_text_preserved": same_formula, "cached_values_present": cache_present,
+               "expected_value_checks": expected_checks, "cached_values_match_expected": expected_match}
     try:
         from openpyxl import load_workbook
         formulas = load_workbook(destination, data_only=False, read_only=True)
@@ -190,7 +241,7 @@ def recalculate_xlsx(source: Path, output: Path, logs: Path) -> dict[str, Any]:
     except ImportError:
         details["spreadsheet_engine_values"] = None
         details["note"] = "Install openpyxl to inspect cached values through a workbook reader."
-    details["status"] = "PASS" if same_formula and cache_present else "FAIL"
+    details["status"] = "PASS" if same_formula and cache_present and expected_match else "FAIL"
     return details
 
 
