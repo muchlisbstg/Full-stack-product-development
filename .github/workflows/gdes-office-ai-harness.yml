@@ -55,6 +55,7 @@ jobs:
               "$RUNNER_TEMP/office-ai-fixtures/inputs/common.xlsx" \
               "$RUNNER_TEMP/office-ai-fixtures/inputs/common.docx" \
               "$RUNNER_TEMP/office-ai-fixtures/inputs/common.pptx"
+          cp evidence/runner-results.json evidence/quality-gate-smoke-results.json
           mapfile -t rendered_pngs < <(find evidence/visual -type f -name '*.png' | sort)
           test "${#rendered_pngs[@]}" -gt 0
           python tools/office_ai_quality_gate.py \
@@ -68,7 +69,7 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
-          result = json.loads(Path("evidence/runner-results.json").read_text())
+          result = json.loads(Path("evidence/quality-gate-smoke-results.json").read_text())
           statuses = [item.get("status") for item in result["checks"]]
           assert statuses and all(status == "PASS" for status in statuses), statuses
           for report in ("evidence/integrity/input-sha256.json",
