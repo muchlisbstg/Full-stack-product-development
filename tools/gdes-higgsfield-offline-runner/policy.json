@@ -1,0 +1,179 @@
+{
+  "policy_version": "1.0.0",
+  "candidates": [
+    {
+      "id": "HIG-01",
+      "checks": [
+        {
+          "id": "HIG-01-F01",
+          "forbidden": [
+            "curl[^\\n]{0,300}\\|\\s*(sh|bash)"
+          ],
+          "required": [
+            "(INSTALLER_COMMIT|INSTALLER_SHA|pinned.{0,30}(commit|digest|sha))"
+          ]
+        },
+        {
+          "id": "HIG-01-F02",
+          "forbidden": [
+            "allowed-tools:\\s*Bash\\s*$"
+          ],
+          "required": [
+            "(sandbox|approval|allowlist|command policy)"
+          ]
+        },
+        {
+          "id": "HIG-01-F03",
+          "forbidden": [
+            "https?://api\\.higgsfield\\.ai"
+          ],
+          "required": [
+            "(offline|egress|network).{0,40}(deny|block|disabled|allowlist)"
+          ]
+        },
+        {
+          "id": "HIG-01-F04",
+          "forbidden": [
+            "socket\\.getaddrinfo[\\s\\S]{0,500}urllib\\.request"
+          ],
+          "required": [
+            "(pinned DNS|connect to validated IP|DNS pinning)"
+          ]
+        },
+        {
+          "id": "HIG-01-F07",
+          "forbidden": [
+            "xml\\.etree\\.ElementTree\\.fromstring"
+          ],
+          "required": [
+            "(defusedxml|resolve_entities\\s*=\\s*False|no_network\\s*=\\s*True)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "HIG-02",
+      "checks": [
+        {
+          "id": "HIG-02-F01",
+          "forbidden": [
+            "sudo\\s+"
+          ],
+          "required": [
+            "(XDG_BIN_HOME|HOME.{0,20}\\.local|user[-_ ]owned prefix)"
+          ]
+        },
+        {
+          "id": "HIG-02-F02",
+          "forbidden": [
+            "releases/latest"
+          ],
+          "required": [
+            "(cosign|sigstore|attestation|pinned.{0,20}(tag|version|sha))"
+          ]
+        },
+        {
+          "id": "HIG-02-F03",
+          "forbidden": [
+            "log\\.(Print|Printf|Debug|Info)[^\\n]{0,100}(token|authorization|secret)"
+          ],
+          "required": [
+            "(redact|credential.{0,20}permissions|token.{0,20}mode)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "HIG-03",
+      "checks": [
+        {
+          "id": "HIG-03-F01",
+          "forbidden": [
+            "ssh\\s+root@",
+            "runpodctl\\s+.*(create|deploy)"
+          ],
+          "required": [
+            "(remote.{0,20}(disabled|off|deny)|offline.{0,20}remote)"
+          ]
+        },
+        {
+          "id": "HIG-03-F02",
+          "forbidden": [
+            "--no-sandbox"
+          ],
+          "required": [
+            "(sandbox|unprivileged|non-root)"
+          ]
+        },
+        {
+          "id": "HIG-03-F03",
+          "forbidden": [
+            "--enable-unsafe-webgpu",
+            "--disable-gpu-watchdog",
+            "disallow_unsafe_apis"
+          ],
+          "required": [
+            "(resource limit|timeout|trusted scene)"
+          ]
+        },
+        {
+          "id": "HIG-03-F04",
+          "forbidden": [
+            "curl[^\\n]{0,200}registry.npmjs.org"
+          ],
+          "required": [
+            "(offline cache|offline mirror|npm ci --offline)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "HIG-04",
+      "checks": [
+        {
+          "id": "HIG-04-F01",
+          "forbidden": [
+            "console\\.(log|info|debug)\\([^\\n]{0,100}(body|prompt|request)"
+          ],
+          "required": [
+            "(safe metadata|redact|allowlisted fields)"
+          ]
+        },
+        {
+          "id": "HIG-04-F02",
+          "forbidden": [
+            "name:\\s*[\\\"']api_key[\\\"'][\\s\\S]{0,300}maxAge:\\s*2592000"
+          ],
+          "required": [
+            "(server-side encrypted|opaque session|short-lived session)"
+          ]
+        },
+        {
+          "id": "HIG-04-F03",
+          "forbidden": [
+            "console\\.(log|info|debug)\\([^\\n]{0,100}(payload|response\\.json)"
+          ],
+          "required": [
+            "(sanitized error|redacted response|allowlisted fields)"
+          ]
+        },
+        {
+          "id": "HIG-04-F04",
+          "forbidden": [],
+          "required": [
+            "(UPLOAD_HOST_ALLOWLIST|allowedUploadHosts|host allowlist)"
+          ]
+        },
+        {
+          "id": "HIG-04-F05",
+          "forbidden": [
+            "if\\s*\\(origin\\s*&&"
+          ],
+          "required": [
+            "(origin\\s*\\)|!origin|csrf token)"
+          ]
+        }
+      ]
+    }
+  ]
+}
