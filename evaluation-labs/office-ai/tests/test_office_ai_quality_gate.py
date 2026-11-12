@@ -12,6 +12,7 @@ from tools.office_ai_quality_gate import (
     sha256,
     verify_manifest,
     visual_review_template,
+    visual_output_directory,
     write_evidence_manifest,
     xlsx_formula_snapshot,
 )
@@ -75,6 +76,14 @@ class OfficeQualityGateTests(unittest.TestCase):
             report = audit_evidence(evidence)
             self.assertEqual(report["status"], "BLOCKED")
             self.assertFalse(report["candidate_execution_authorized"])
+
+    def test_docx_and_pptx_visual_outputs_do_not_collide(self):
+        evidence = Path("/tmp/evidence")
+        docx = visual_output_directory(evidence, Path("common.docx"))
+        pptx = visual_output_directory(evidence, Path("common.pptx"))
+        self.assertNotEqual(docx, pptx)
+        self.assertEqual(docx, evidence / "visual/docx/common")
+        self.assertEqual(pptx, evidence / "visual/pptx/common")
 
     def test_visual_review_template_aggregates_all_rendered_pages(self):
         with tempfile.TemporaryDirectory() as tmp:
