@@ -39,7 +39,7 @@ class OfficeQualityGateTests(unittest.TestCase):
             target = root / "fixture.txt"
             target.write_text("fixture", encoding="utf-8")
             manifest = root / "SHA256SUMS"
-            manifest.write_text(f"{sha256(target)}  fixture\n", encoding="utf-8")
+            manifest.write_text(f"{sha256(target)}  fixture.txt\n", encoding="utf-8")
             report = verify_manifest(manifest, root)
             self.assertEqual(report["status"], "PASS", report)
             target.write_text("tampered", encoding="utf-8")
