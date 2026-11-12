@@ -12,6 +12,7 @@ from tools.office_ai_quality_gate import (
     sha256,
     verify_manifest,
     visual_review_template,
+    write_evidence_manifest,
     xlsx_formula_snapshot,
 )
 
@@ -58,6 +59,15 @@ class OfficeQualityGateTests(unittest.TestCase):
         a = {"fixture_manifest_sha256": "a", "semantic_content_sha256": "same"}
         b = {"fixture_manifest_sha256": "a", "semantic_content_sha256": "changed"}
         self.assertEqual(compare_reproducibility(a, b)["status"], "FAIL")
+
+    def test_evidence_manifest_is_generated_and_verifiable(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            evidence = Path(tmp) / "evidence"
+            (evidence / "execution").mkdir(parents=True)
+            (evidence / "execution/command.json").write_text("{}", encoding="utf-8")
+            manifest = write_evidence_manifest(evidence)
+            report = verify_manifest(manifest, evidence)
+            self.assertEqual(report["status"], "PASS")
 
     def test_evidence_audit_blocks_without_human_visual_signoff(self):
         with tempfile.TemporaryDirectory() as tmp:
