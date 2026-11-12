@@ -250,6 +250,18 @@ def compare_reproducibility(a: dict[str, Any], b: dict[str, Any]) -> dict[str, A
             "note": "PDF byte hashes may differ due to metadata; compare semantic and visual evidence."}
 
 
+def write_hash_report(paths: list[Path], destination: Path, base: Path) -> dict[str, Any]:
+    entries = []
+    for path in paths:
+        target = path if path.is_absolute() else base / path
+        entries.append({"path": str(target), "sha256": sha256(target) if target.is_file() else None,
+                        "status": "PASS" if target.is_file() else "FAIL"})
+    report = {"status": "PASS" if entries and all(x["status"] == "PASS" for x in entries) else "FAIL",
+              "generated_at_utc": now(), "files": entries}
+    write_json(destination, report)
+    return report
+
+
 def audit_evidence(evidence: Path) -> dict[str, Any]:
     required = ["execution", "integrity/input-sha256.json", "integrity/output-sha256.json",
                 "formula/formulas-before-after.json", "rendering/docx", "rendering/pptx",
@@ -260,8 +272,10 @@ def audit_evidence(evidence: Path) -> dict[str, Any]:
     if review_path.is_file():
         try:
             review = json.loads(review_path.read_text(encoding="utf-8"))
+            reviewed = review.get("reviewed_images", [])
             visual_ok = (review.get("approved") is True and review.get("review_status") == "APPROVED"
-                         and bool(review.get("reviewer")) and bool(review.get("reviewed_images")))
+                         and bool(review.get("reviewer")) and bool(review.get("reviewed_at_utc"))
+                         and bool(reviewed) and all(item.get("reviewed") is True for item in reviewed))
         except (OSError, json.JSONDecodeError):
             pass
     report = {"status": "PASS" if not missing and visual_ok else "BLOCKED",
@@ -278,6 +292,10 @@ def main() -> int:
     parser.add_argument("--check-ooxml", nargs="*", type=Path, default=[])
     parser.add_argument("--recalculate", type=Path)
     parser.add_argument("--render", nargs="*", type=Path, default=[])
+    parser.add_argument("--hash-inputs", nargs="*", type=Path, default=[])
+    parser.add_argument("--hash-outputs", nargs="*", type=Path, default=[])
+    parser.add_argument("--run-a", type=Path)
+    parser.add_argument("--run-b", type=Path)
     parser.add_argument("--audit", action="store_true")
     args = parser.parse_args()
     root, evidence = args.root.resolve(), args.root.resolve() / "evidence"
@@ -287,9 +305,10 @@ def main() -> int:
         results["checks"].append({"check": "ooxml_integrity", "path": str(path), **inspect_ooxml(path)})
     if args.recalculate:
         source = args.recalculate if args.recalculate.is_absolute() else root / args.recalculate
-        results["checks"].append({"check": "formula_recalculation",
-                                  **recalculate_xlsx(source, evidence / "formula/recalculated",
-                                                     evidence / "execution")})
+        formula_result = recalculate_xlsx(source, evidence / "formula/recalculated",
+                                          evidence / "execution")
+        write_json(evidence / "formula/formulas-before-after.json", formula_result)
+        results["checks"].append({"check": "formula_recalculation", **formula_result})
     for item in args.render:
         source = item if item.is_absolute() else root / item
         rendered = render_office(source, evidence / f"rendering/{source.suffix[1:]}",
@@ -302,6 +321,16 @@ def main() -> int:
             if png.get("status") == "PASS":
                 visual_review_template(png["images"], evidence / "visual/visual-review.json")
         results["checks"].append({"check": "office_render", "source": str(source), **rendered})
+    if args.hash_inputs:
+        results["input_hash_report"] = write_hash_report(
+            args.hash_inputs, evidence / "integrity/input-sha256.json", root)
+    if args.hash_outputs:
+        results["output_hash_report"] = write_hash_report(
+            args.hash_outputs, evidence / "integrity/output-sha256.json", root)
+    if args.run_a and args.run_b:
+        a = json.loads(args.run_a.read_text(encoding="utf-8"))
+        b = json.loads(args.run_b.read_text(encoding="utf-8"))
+        write_json(evidence / "reproducibility/comparison.json", compare_reproducibility(a, b))
     write_json(evidence / "runner-results.json", results)
     if args.audit:
         report = audit_evidence(evidence)
